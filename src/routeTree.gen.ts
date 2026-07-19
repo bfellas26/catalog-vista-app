@@ -9,61 +9,628 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as BusinessRouteImport } from './routes/business'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CustomerRouteImport } from './routes/_customer'
+import { Route as BusinessIndexRouteImport } from './routes/business.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as CustomerIndexRouteImport } from './routes/_customer.index'
+import { Route as BusinessSubscribersRouteImport } from './routes/business.subscribers'
+import { Route as BusinessSettingsRouteImport } from './routes/business.settings'
+import { Route as BusinessProductsRouteImport } from './routes/business.products'
+import { Route as BusinessProductTagsRouteImport } from './routes/business.product-tags'
+import { Route as BusinessEnquiriesRouteImport } from './routes/business.enquiries'
+import { Route as BusinessDashboardRouteImport } from './routes/business.dashboard'
+import { Route as BusinessCategoriesRouteImport } from './routes/business.categories'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminClientsRouteImport } from './routes/admin.clients'
+import { Route as CustomerContactRouteImport } from './routes/_customer.contact'
+import { Route as CustomerCartRouteImport } from './routes/_customer.cart'
+import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
+import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
+import { Route as AdminClientsNewRouteImport } from './routes/admin.clients.new'
+import { Route as CustomerProductIdRouteImport } from './routes/_customer.product.$id'
+import { Route as CustomerCategoryIdRouteImport } from './routes/_customer.category.$id'
+import { Route as BusinessProductsEditIdRouteImport } from './routes/business.products.edit.$id'
+import { Route as BusinessCategoriesEditIdRouteImport } from './routes/business.categories.edit.$id'
+import { Route as AdminClientsEditIdRouteImport } from './routes/admin.clients.edit.$id'
 
-const IndexRoute = IndexRouteImport.update({
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessRoute = BusinessRouteImport.update({
+  id: '/business',
+  path: '/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerRoute = CustomerRouteImport.update({
+  id: '/_customer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessIndexRoute = BusinessIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => BusinessRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const CustomerIndexRoute = CustomerIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const BusinessSubscribersRoute = BusinessSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessSettingsRoute = BusinessSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessProductsRoute = BusinessProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessProductTagsRoute = BusinessProductTagsRouteImport.update({
+  id: '/product-tags',
+  path: '/product-tags',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessEnquiriesRoute = BusinessEnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessDashboardRoute = BusinessDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessCategoriesRoute = BusinessCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientsRoute = AdminClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const CustomerContactRoute = CustomerContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerCartRoute = CustomerCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const BusinessProductsNewRoute = BusinessProductsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => BusinessProductsRoute,
+} as any)
+const BusinessCategoriesNewRoute = BusinessCategoriesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => BusinessCategoriesRoute,
+} as any)
+const AdminClientsNewRoute = AdminClientsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminClientsRoute,
+} as any)
+const CustomerProductIdRoute = CustomerProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerCategoryIdRoute = CustomerCategoryIdRouteImport.update({
+  id: '/category/$id',
+  path: '/category/$id',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const BusinessProductsEditIdRoute = BusinessProductsEditIdRouteImport.update({
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => BusinessProductsRoute,
+} as any)
+const BusinessCategoriesEditIdRoute =
+  BusinessCategoriesEditIdRouteImport.update({
+    id: '/edit/$id',
+    path: '/edit/$id',
+    getParentRoute: () => BusinessCategoriesRoute,
+  } as any)
+const AdminClientsEditIdRoute = AdminClientsEditIdRouteImport.update({
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => AdminClientsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof CustomerIndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/business': typeof BusinessRouteWithChildren
+  '/login': typeof LoginRoute
+  '/cart': typeof CustomerCartRoute
+  '/contact': typeof CustomerContactRoute
+  '/admin/clients': typeof AdminClientsRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/business/categories': typeof BusinessCategoriesRouteWithChildren
+  '/business/dashboard': typeof BusinessDashboardRoute
+  '/business/enquiries': typeof BusinessEnquiriesRoute
+  '/business/product-tags': typeof BusinessProductTagsRoute
+  '/business/products': typeof BusinessProductsRouteWithChildren
+  '/business/settings': typeof BusinessSettingsRoute
+  '/business/subscribers': typeof BusinessSubscribersRoute
+  '/admin/': typeof AdminIndexRoute
+  '/business/': typeof BusinessIndexRoute
+  '/category/$id': typeof CustomerCategoryIdRoute
+  '/product/$id': typeof CustomerProductIdRoute
+  '/admin/clients/new': typeof AdminClientsNewRoute
+  '/business/categories/new': typeof BusinessCategoriesNewRoute
+  '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
+  '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/cart': typeof CustomerCartRoute
+  '/contact': typeof CustomerContactRoute
+  '/admin/clients': typeof AdminClientsRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/business/categories': typeof BusinessCategoriesRouteWithChildren
+  '/business/dashboard': typeof BusinessDashboardRoute
+  '/business/enquiries': typeof BusinessEnquiriesRoute
+  '/business/product-tags': typeof BusinessProductTagsRoute
+  '/business/products': typeof BusinessProductsRouteWithChildren
+  '/business/settings': typeof BusinessSettingsRoute
+  '/business/subscribers': typeof BusinessSubscribersRoute
+  '/': typeof CustomerIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/business': typeof BusinessIndexRoute
+  '/category/$id': typeof CustomerCategoryIdRoute
+  '/product/$id': typeof CustomerProductIdRoute
+  '/admin/clients/new': typeof AdminClientsNewRoute
+  '/business/categories/new': typeof BusinessCategoriesNewRoute
+  '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
+  '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_customer': typeof CustomerRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/business': typeof BusinessRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_customer/cart': typeof CustomerCartRoute
+  '/_customer/contact': typeof CustomerContactRoute
+  '/admin/clients': typeof AdminClientsRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/business/categories': typeof BusinessCategoriesRouteWithChildren
+  '/business/dashboard': typeof BusinessDashboardRoute
+  '/business/enquiries': typeof BusinessEnquiriesRoute
+  '/business/product-tags': typeof BusinessProductTagsRoute
+  '/business/products': typeof BusinessProductsRouteWithChildren
+  '/business/settings': typeof BusinessSettingsRoute
+  '/business/subscribers': typeof BusinessSubscribersRoute
+  '/_customer/': typeof CustomerIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/business/': typeof BusinessIndexRoute
+  '/_customer/category/$id': typeof CustomerCategoryIdRoute
+  '/_customer/product/$id': typeof CustomerProductIdRoute
+  '/admin/clients/new': typeof AdminClientsNewRoute
+  '/business/categories/new': typeof BusinessCategoriesNewRoute
+  '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
+  '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/business'
+    | '/login'
+    | '/cart'
+    | '/contact'
+    | '/admin/clients'
+    | '/admin/dashboard'
+    | '/business/categories'
+    | '/business/dashboard'
+    | '/business/enquiries'
+    | '/business/product-tags'
+    | '/business/products'
+    | '/business/settings'
+    | '/business/subscribers'
+    | '/admin/'
+    | '/business/'
+    | '/category/$id'
+    | '/product/$id'
+    | '/admin/clients/new'
+    | '/business/categories/new'
+    | '/business/products/new'
+    | '/admin/clients/edit/$id'
+    | '/business/categories/edit/$id'
+    | '/business/products/edit/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/login'
+    | '/cart'
+    | '/contact'
+    | '/admin/clients'
+    | '/admin/dashboard'
+    | '/business/categories'
+    | '/business/dashboard'
+    | '/business/enquiries'
+    | '/business/product-tags'
+    | '/business/products'
+    | '/business/settings'
+    | '/business/subscribers'
+    | '/'
+    | '/admin'
+    | '/business'
+    | '/category/$id'
+    | '/product/$id'
+    | '/admin/clients/new'
+    | '/business/categories/new'
+    | '/business/products/new'
+    | '/admin/clients/edit/$id'
+    | '/business/categories/edit/$id'
+    | '/business/products/edit/$id'
+  id:
+    | '__root__'
+    | '/_customer'
+    | '/admin'
+    | '/business'
+    | '/login'
+    | '/_customer/cart'
+    | '/_customer/contact'
+    | '/admin/clients'
+    | '/admin/dashboard'
+    | '/business/categories'
+    | '/business/dashboard'
+    | '/business/enquiries'
+    | '/business/product-tags'
+    | '/business/products'
+    | '/business/settings'
+    | '/business/subscribers'
+    | '/_customer/'
+    | '/admin/'
+    | '/business/'
+    | '/_customer/category/$id'
+    | '/_customer/product/$id'
+    | '/admin/clients/new'
+    | '/business/categories/new'
+    | '/business/products/new'
+    | '/admin/clients/edit/$id'
+    | '/business/categories/edit/$id'
+    | '/business/products/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  CustomerRoute: typeof CustomerRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  BusinessRoute: typeof BusinessRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business': {
+      id: '/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof BusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_customer': {
+      id: '/_customer'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof CustomerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business/': {
+      id: '/business/'
+      path: '/'
+      fullPath: '/business/'
+      preLoaderRoute: typeof BusinessIndexRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_customer/': {
+      id: '/_customer/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof CustomerIndexRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/business/subscribers': {
+      id: '/business/subscribers'
+      path: '/subscribers'
+      fullPath: '/business/subscribers'
+      preLoaderRoute: typeof BusinessSubscribersRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/settings': {
+      id: '/business/settings'
+      path: '/settings'
+      fullPath: '/business/settings'
+      preLoaderRoute: typeof BusinessSettingsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/products': {
+      id: '/business/products'
+      path: '/products'
+      fullPath: '/business/products'
+      preLoaderRoute: typeof BusinessProductsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/product-tags': {
+      id: '/business/product-tags'
+      path: '/product-tags'
+      fullPath: '/business/product-tags'
+      preLoaderRoute: typeof BusinessProductTagsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/enquiries': {
+      id: '/business/enquiries'
+      path: '/enquiries'
+      fullPath: '/business/enquiries'
+      preLoaderRoute: typeof BusinessEnquiriesRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/dashboard': {
+      id: '/business/dashboard'
+      path: '/dashboard'
+      fullPath: '/business/dashboard'
+      preLoaderRoute: typeof BusinessDashboardRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/categories': {
+      id: '/business/categories'
+      path: '/categories'
+      fullPath: '/business/categories'
+      preLoaderRoute: typeof BusinessCategoriesRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/clients': {
+      id: '/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_customer/contact': {
+      id: '/_customer/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof CustomerContactRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/_customer/cart': {
+      id: '/_customer/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CustomerCartRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/business/products/new': {
+      id: '/business/products/new'
+      path: '/new'
+      fullPath: '/business/products/new'
+      preLoaderRoute: typeof BusinessProductsNewRouteImport
+      parentRoute: typeof BusinessProductsRoute
+    }
+    '/business/categories/new': {
+      id: '/business/categories/new'
+      path: '/new'
+      fullPath: '/business/categories/new'
+      preLoaderRoute: typeof BusinessCategoriesNewRouteImport
+      parentRoute: typeof BusinessCategoriesRoute
+    }
+    '/admin/clients/new': {
+      id: '/admin/clients/new'
+      path: '/new'
+      fullPath: '/admin/clients/new'
+      preLoaderRoute: typeof AdminClientsNewRouteImport
+      parentRoute: typeof AdminClientsRoute
+    }
+    '/_customer/product/$id': {
+      id: '/_customer/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof CustomerProductIdRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/_customer/category/$id': {
+      id: '/_customer/category/$id'
+      path: '/category/$id'
+      fullPath: '/category/$id'
+      preLoaderRoute: typeof CustomerCategoryIdRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/business/products/edit/$id': {
+      id: '/business/products/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/business/products/edit/$id'
+      preLoaderRoute: typeof BusinessProductsEditIdRouteImport
+      parentRoute: typeof BusinessProductsRoute
+    }
+    '/business/categories/edit/$id': {
+      id: '/business/categories/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/business/categories/edit/$id'
+      preLoaderRoute: typeof BusinessCategoriesEditIdRouteImport
+      parentRoute: typeof BusinessCategoriesRoute
+    }
+    '/admin/clients/edit/$id': {
+      id: '/admin/clients/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/admin/clients/edit/$id'
+      preLoaderRoute: typeof AdminClientsEditIdRouteImport
+      parentRoute: typeof AdminClientsRoute
     }
   }
 }
 
+interface CustomerRouteChildren {
+  CustomerCartRoute: typeof CustomerCartRoute
+  CustomerContactRoute: typeof CustomerContactRoute
+  CustomerIndexRoute: typeof CustomerIndexRoute
+  CustomerCategoryIdRoute: typeof CustomerCategoryIdRoute
+  CustomerProductIdRoute: typeof CustomerProductIdRoute
+}
+
+const CustomerRouteChildren: CustomerRouteChildren = {
+  CustomerCartRoute: CustomerCartRoute,
+  CustomerContactRoute: CustomerContactRoute,
+  CustomerIndexRoute: CustomerIndexRoute,
+  CustomerCategoryIdRoute: CustomerCategoryIdRoute,
+  CustomerProductIdRoute: CustomerProductIdRoute,
+}
+
+const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
+  CustomerRouteChildren,
+)
+
+interface AdminClientsRouteChildren {
+  AdminClientsNewRoute: typeof AdminClientsNewRoute
+  AdminClientsEditIdRoute: typeof AdminClientsEditIdRoute
+}
+
+const AdminClientsRouteChildren: AdminClientsRouteChildren = {
+  AdminClientsNewRoute: AdminClientsNewRoute,
+  AdminClientsEditIdRoute: AdminClientsEditIdRoute,
+}
+
+const AdminClientsRouteWithChildren = AdminClientsRoute._addFileChildren(
+  AdminClientsRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminClientsRoute: typeof AdminClientsRouteWithChildren
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminClientsRoute: AdminClientsRouteWithChildren,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface BusinessCategoriesRouteChildren {
+  BusinessCategoriesNewRoute: typeof BusinessCategoriesNewRoute
+  BusinessCategoriesEditIdRoute: typeof BusinessCategoriesEditIdRoute
+}
+
+const BusinessCategoriesRouteChildren: BusinessCategoriesRouteChildren = {
+  BusinessCategoriesNewRoute: BusinessCategoriesNewRoute,
+  BusinessCategoriesEditIdRoute: BusinessCategoriesEditIdRoute,
+}
+
+const BusinessCategoriesRouteWithChildren =
+  BusinessCategoriesRoute._addFileChildren(BusinessCategoriesRouteChildren)
+
+interface BusinessProductsRouteChildren {
+  BusinessProductsNewRoute: typeof BusinessProductsNewRoute
+  BusinessProductsEditIdRoute: typeof BusinessProductsEditIdRoute
+}
+
+const BusinessProductsRouteChildren: BusinessProductsRouteChildren = {
+  BusinessProductsNewRoute: BusinessProductsNewRoute,
+  BusinessProductsEditIdRoute: BusinessProductsEditIdRoute,
+}
+
+const BusinessProductsRouteWithChildren =
+  BusinessProductsRoute._addFileChildren(BusinessProductsRouteChildren)
+
+interface BusinessRouteChildren {
+  BusinessCategoriesRoute: typeof BusinessCategoriesRouteWithChildren
+  BusinessDashboardRoute: typeof BusinessDashboardRoute
+  BusinessEnquiriesRoute: typeof BusinessEnquiriesRoute
+  BusinessProductTagsRoute: typeof BusinessProductTagsRoute
+  BusinessProductsRoute: typeof BusinessProductsRouteWithChildren
+  BusinessSettingsRoute: typeof BusinessSettingsRoute
+  BusinessSubscribersRoute: typeof BusinessSubscribersRoute
+  BusinessIndexRoute: typeof BusinessIndexRoute
+}
+
+const BusinessRouteChildren: BusinessRouteChildren = {
+  BusinessCategoriesRoute: BusinessCategoriesRouteWithChildren,
+  BusinessDashboardRoute: BusinessDashboardRoute,
+  BusinessEnquiriesRoute: BusinessEnquiriesRoute,
+  BusinessProductTagsRoute: BusinessProductTagsRoute,
+  BusinessProductsRoute: BusinessProductsRouteWithChildren,
+  BusinessSettingsRoute: BusinessSettingsRoute,
+  BusinessSubscribersRoute: BusinessSubscribersRoute,
+  BusinessIndexRoute: BusinessIndexRoute,
+}
+
+const BusinessRouteWithChildren = BusinessRoute._addFileChildren(
+  BusinessRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  CustomerRoute: CustomerRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  BusinessRoute: BusinessRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
