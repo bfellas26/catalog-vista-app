@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { TagBadge } from "@/components/common/Badges";
 import { placeholderCategories, placeholderProducts } from "@/lib/placeholders";
 
-export const Route = createFileRoute("/_customer/")({
+export const Route = createFileRoute("/_customer/catalog")({
   head: () => ({
     meta: [
       { title: "Aurora Studio — Thoughtfully designed goods" },

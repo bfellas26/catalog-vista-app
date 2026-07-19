@@ -15,7 +15,6 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CustomerRouteImport } from './routes/_customer'
 import { Route as BusinessIndexRouteImport } from './routes/business.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as CustomerIndexRouteImport } from './routes/_customer.index'
 import { Route as BusinessSubscribersRouteImport } from './routes/business.subscribers'
 import { Route as BusinessSettingsRouteImport } from './routes/business.settings'
 import { Route as BusinessProductsRouteImport } from './routes/business.products'
@@ -26,6 +25,7 @@ import { Route as BusinessCategoriesRouteImport } from './routes/business.catego
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminClientsRouteImport } from './routes/admin.clients'
 import { Route as CustomerContactRouteImport } from './routes/_customer.contact'
+import { Route as CustomerCatalogRouteImport } from './routes/_customer.catalog'
 import { Route as CustomerCartRouteImport } from './routes/_customer.cart'
 import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
 import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
@@ -64,11 +64,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
-} as any)
-const CustomerIndexRoute = CustomerIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => CustomerRoute,
 } as any)
 const BusinessSubscribersRoute = BusinessSubscribersRouteImport.update({
   id: '/subscribers',
@@ -120,6 +115,11 @@ const CustomerContactRoute = CustomerContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => CustomerRoute,
 } as any)
+const CustomerCatalogRoute = CustomerCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
+  getParentRoute: () => CustomerRoute,
+} as any)
 const CustomerCartRoute = CustomerCartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -168,11 +168,12 @@ const AdminClientsEditIdRoute = AdminClientsEditIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof CustomerIndexRoute
+  '/': typeof CustomerRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/business': typeof BusinessRouteWithChildren
   '/login': typeof LoginRoute
   '/cart': typeof CustomerCartRoute
+  '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
   '/admin/clients': typeof AdminClientsRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -195,8 +196,10 @@ export interface FileRoutesByFullPath {
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof CustomerRouteWithChildren
   '/login': typeof LoginRoute
   '/cart': typeof CustomerCartRoute
+  '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
   '/admin/clients': typeof AdminClientsRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -207,7 +210,6 @@ export interface FileRoutesByTo {
   '/business/products': typeof BusinessProductsRouteWithChildren
   '/business/settings': typeof BusinessSettingsRoute
   '/business/subscribers': typeof BusinessSubscribersRoute
-  '/': typeof CustomerIndexRoute
   '/admin': typeof AdminIndexRoute
   '/business': typeof BusinessIndexRoute
   '/category/$id': typeof CustomerCategoryIdRoute
@@ -226,6 +228,7 @@ export interface FileRoutesById {
   '/business': typeof BusinessRouteWithChildren
   '/login': typeof LoginRoute
   '/_customer/cart': typeof CustomerCartRoute
+  '/_customer/catalog': typeof CustomerCatalogRoute
   '/_customer/contact': typeof CustomerContactRoute
   '/admin/clients': typeof AdminClientsRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -236,7 +239,6 @@ export interface FileRoutesById {
   '/business/products': typeof BusinessProductsRouteWithChildren
   '/business/settings': typeof BusinessSettingsRoute
   '/business/subscribers': typeof BusinessSubscribersRoute
-  '/_customer/': typeof CustomerIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
   '/_customer/category/$id': typeof CustomerCategoryIdRoute
@@ -256,6 +258,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/login'
     | '/cart'
+    | '/catalog'
     | '/contact'
     | '/admin/clients'
     | '/admin/dashboard'
@@ -278,8 +281,10 @@ export interface FileRouteTypes {
     | '/business/products/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/login'
     | '/cart'
+    | '/catalog'
     | '/contact'
     | '/admin/clients'
     | '/admin/dashboard'
@@ -290,7 +295,6 @@ export interface FileRouteTypes {
     | '/business/products'
     | '/business/settings'
     | '/business/subscribers'
-    | '/'
     | '/admin'
     | '/business'
     | '/category/$id'
@@ -308,6 +312,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/login'
     | '/_customer/cart'
+    | '/_customer/catalog'
     | '/_customer/contact'
     | '/admin/clients'
     | '/admin/dashboard'
@@ -318,7 +323,6 @@ export interface FileRouteTypes {
     | '/business/products'
     | '/business/settings'
     | '/business/subscribers'
-    | '/_customer/'
     | '/admin/'
     | '/business/'
     | '/_customer/category/$id'
@@ -381,13 +385,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/_customer/': {
-      id: '/_customer/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof CustomerIndexRouteImport
-      parentRoute: typeof CustomerRoute
     }
     '/business/subscribers': {
       id: '/business/subscribers'
@@ -459,6 +456,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerContactRouteImport
       parentRoute: typeof CustomerRoute
     }
+    '/_customer/catalog': {
+      id: '/_customer/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof CustomerCatalogRouteImport
+      parentRoute: typeof CustomerRoute
+    }
     '/_customer/cart': {
       id: '/_customer/cart'
       path: '/cart'
@@ -527,16 +531,16 @@ declare module '@tanstack/react-router' {
 
 interface CustomerRouteChildren {
   CustomerCartRoute: typeof CustomerCartRoute
+  CustomerCatalogRoute: typeof CustomerCatalogRoute
   CustomerContactRoute: typeof CustomerContactRoute
-  CustomerIndexRoute: typeof CustomerIndexRoute
   CustomerCategoryIdRoute: typeof CustomerCategoryIdRoute
   CustomerProductIdRoute: typeof CustomerProductIdRoute
 }
 
 const CustomerRouteChildren: CustomerRouteChildren = {
   CustomerCartRoute: CustomerCartRoute,
+  CustomerCatalogRoute: CustomerCatalogRoute,
   CustomerContactRoute: CustomerContactRoute,
-  CustomerIndexRoute: CustomerIndexRoute,
   CustomerCategoryIdRoute: CustomerCategoryIdRoute,
   CustomerProductIdRoute: CustomerProductIdRoute,
 }
@@ -634,13 +638,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
