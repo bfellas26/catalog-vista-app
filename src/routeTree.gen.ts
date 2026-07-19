@@ -9,11 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CustomerRouteImport } from './routes/_customer'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginIndexRouteImport } from './routes/login.index'
 import { Route as BusinessIndexRouteImport } from './routes/business.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as LoginBusinessRouteImport } from './routes/login.business'
@@ -39,11 +39,6 @@ import { Route as BusinessProductsEditIdRouteImport } from './routes/business.pr
 import { Route as BusinessCategoriesEditIdRouteImport } from './routes/business.categories.edit.$id'
 import { Route as AdminClientsEditIdRouteImport } from './routes/admin.clients.edit.$id'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BusinessRoute = BusinessRouteImport.update({
   id: '/business',
   path: '/business',
@@ -63,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BusinessIndexRoute = BusinessIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -74,14 +74,14 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => AdminRoute,
 } as any)
 const LoginBusinessRoute = LoginBusinessRouteImport.update({
-  id: '/business',
-  path: '/business',
-  getParentRoute: () => LoginRoute,
+  id: '/login/business',
+  path: '/login/business',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LoginAdminRoute = LoginAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => LoginRoute,
+  id: '/login/admin',
+  path: '/login/admin',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const BusinessSubscribersRoute = BusinessSubscribersRouteImport.update({
   id: '/subscribers',
@@ -189,7 +189,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/business': typeof BusinessRouteWithChildren
-  '/login': typeof LoginRouteWithChildren
   '/cart': typeof CustomerCartRoute
   '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
@@ -206,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/login/business': typeof LoginBusinessRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
+  '/login/': typeof LoginIndexRoute
   '/category/$id': typeof CustomerCategoryIdRoute
   '/product/$id': typeof CustomerProductIdRoute
   '/admin/clients/new': typeof AdminClientsNewRoute
@@ -217,7 +217,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRouteWithChildren
   '/cart': typeof CustomerCartRoute
   '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
@@ -234,6 +233,7 @@ export interface FileRoutesByTo {
   '/login/business': typeof LoginBusinessRoute
   '/admin': typeof AdminIndexRoute
   '/business': typeof BusinessIndexRoute
+  '/login': typeof LoginIndexRoute
   '/category/$id': typeof CustomerCategoryIdRoute
   '/product/$id': typeof CustomerProductIdRoute
   '/admin/clients/new': typeof AdminClientsNewRoute
@@ -249,7 +249,6 @@ export interface FileRoutesById {
   '/_customer': typeof CustomerRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/business': typeof BusinessRouteWithChildren
-  '/login': typeof LoginRouteWithChildren
   '/_customer/cart': typeof CustomerCartRoute
   '/_customer/catalog': typeof CustomerCatalogRoute
   '/_customer/contact': typeof CustomerContactRoute
@@ -266,6 +265,7 @@ export interface FileRoutesById {
   '/login/business': typeof LoginBusinessRoute
   '/admin/': typeof AdminIndexRoute
   '/business/': typeof BusinessIndexRoute
+  '/login/': typeof LoginIndexRoute
   '/_customer/category/$id': typeof CustomerCategoryIdRoute
   '/_customer/product/$id': typeof CustomerProductIdRoute
   '/admin/clients/new': typeof AdminClientsNewRoute
@@ -281,7 +281,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/business'
-    | '/login'
     | '/cart'
     | '/catalog'
     | '/contact'
@@ -298,6 +297,7 @@ export interface FileRouteTypes {
     | '/login/business'
     | '/admin/'
     | '/business/'
+    | '/login/'
     | '/category/$id'
     | '/product/$id'
     | '/admin/clients/new'
@@ -309,7 +309,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
     | '/cart'
     | '/catalog'
     | '/contact'
@@ -326,6 +325,7 @@ export interface FileRouteTypes {
     | '/login/business'
     | '/admin'
     | '/business'
+    | '/login'
     | '/category/$id'
     | '/product/$id'
     | '/admin/clients/new'
@@ -340,7 +340,6 @@ export interface FileRouteTypes {
     | '/_customer'
     | '/admin'
     | '/business'
-    | '/login'
     | '/_customer/cart'
     | '/_customer/catalog'
     | '/_customer/contact'
@@ -357,6 +356,7 @@ export interface FileRouteTypes {
     | '/login/business'
     | '/admin/'
     | '/business/'
+    | '/login/'
     | '/_customer/category/$id'
     | '/_customer/product/$id'
     | '/admin/clients/new'
@@ -372,18 +372,13 @@ export interface RootRouteChildren {
   CustomerRoute: typeof CustomerRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   BusinessRoute: typeof BusinessRouteWithChildren
-  LoginRoute: typeof LoginRouteWithChildren
+  LoginAdminRoute: typeof LoginAdminRoute
+  LoginBusinessRoute: typeof LoginBusinessRoute
+  LoginIndexRoute: typeof LoginIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/business': {
       id: '/business'
       path: '/business'
@@ -412,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/business/': {
       id: '/business/'
       path: '/'
@@ -428,17 +430,17 @@ declare module '@tanstack/react-router' {
     }
     '/login/business': {
       id: '/login/business'
-      path: '/business'
+      path: '/login/business'
       fullPath: '/login/business'
       preLoaderRoute: typeof LoginBusinessRouteImport
-      parentRoute: typeof LoginRoute
+      parentRoute: typeof rootRouteImport
     }
     '/login/admin': {
       id: '/login/admin'
-      path: '/admin'
+      path: '/login/admin'
       fullPath: '/login/admin'
       preLoaderRoute: typeof LoginAdminRouteImport
-      parentRoute: typeof LoginRoute
+      parentRoute: typeof rootRouteImport
     }
     '/business/subscribers': {
       id: '/business/subscribers'
@@ -683,24 +685,14 @@ const BusinessRouteWithChildren = BusinessRoute._addFileChildren(
   BusinessRouteChildren,
 )
 
-interface LoginRouteChildren {
-  LoginAdminRoute: typeof LoginAdminRoute
-  LoginBusinessRoute: typeof LoginBusinessRoute
-}
-
-const LoginRouteChildren: LoginRouteChildren = {
-  LoginAdminRoute: LoginAdminRoute,
-  LoginBusinessRoute: LoginBusinessRoute,
-}
-
-const LoginRouteWithChildren = LoginRoute._addFileChildren(LoginRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CustomerRoute: CustomerRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   BusinessRoute: BusinessRouteWithChildren,
-  LoginRoute: LoginRouteWithChildren,
+  LoginAdminRoute: LoginAdminRoute,
+  LoginBusinessRoute: LoginBusinessRoute,
+  LoginIndexRoute: LoginIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

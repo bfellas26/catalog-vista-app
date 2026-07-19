@@ -34,6 +34,7 @@ function SuperAdminDashboard() {
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        {/* Charts temporarily disabled per request
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -66,6 +67,19 @@ function SuperAdminDashboard() {
             </ResponsiveContainer>
           </div>
         </motion.div>
+        */}
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="card-surface p-5 lg:col-span-2"
+        >
+          <SectionHeader title="Platform growth" description="Charts coming soon" />
+          <div className="grid h-72 place-items-center text-sm text-muted-foreground">
+            Charts have been temporarily disabled.
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -87,6 +101,10 @@ function SuperAdminDashboard() {
           </ul>
         </motion.div>
       </div>
+
+      {/* Original recent activity block kept above; extra closing removed */}
+      <div className="hidden">
+
 
       <div className="mt-8">
         <SectionHeader title="Recent clients" description="Latest brands to join the platform" />
