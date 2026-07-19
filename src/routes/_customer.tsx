@@ -35,7 +35,7 @@ function CustomerLayout() {
       {/* Sticky header */}
       <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/catalog" className="flex items-center gap-2">
             <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
               <span className="font-display text-sm font-bold">A</span>
             </div>
@@ -45,7 +45,7 @@ function CustomerLayout() {
           </Link>
 
           <nav className="ml-6 hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
-            <Link to="/" className="hover:text-foreground" activeProps={{ className: "text-foreground" }}>
+            <Link to="/catalog" className="hover:text-foreground" activeProps={{ className: "text-foreground" }}>
               Home
             </Link>
             <Link to="/contact" className="hover:text-foreground">
@@ -88,7 +88,7 @@ function CustomerLayout() {
 
         {mobileOpen && (
           <div className="border-t border-border bg-card px-4 py-3 md:hidden">
-            <Link to="/" className="block py-2 text-sm">
+            <Link to="/catalog" className="block py-2 text-sm">
               Home
             </Link>
             <Link to="/contact" className="block py-2 text-sm">
@@ -134,7 +134,7 @@ function Footer() {
         <div>
           <p className="text-sm font-semibold text-foreground">Shop</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/" className="hover:text-foreground">Catalog</Link></li>
+            <li><Link to="/catalog" className="hover:text-foreground">Catalog</Link></li>
             <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
           </ul>
         </div>
