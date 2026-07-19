@@ -1,8 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Menu, Search, Bell, ChevronDown } from "lucide-react";
-import type { LucideIcon, ReactNode } from "react";
-import { Breadcrumbs } from "./Breadcrumbs";
+import { Menu, Search, Bell, ChevronDown, type LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
+import { Breadcrumbs } from "@/components/common/Breadcrumbs";
 import { useUIStore } from "@/store";
 import { cn } from "@/lib/utils";
 import {
