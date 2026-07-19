@@ -1,15 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Package, FolderTree, Users, MessageSquare } from "lucide-react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+// Charts temporarily disabled per request
+// import {
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   CartesianGrid,
+// } from "recharts";
 import { PageContainer, PageHeader, SectionHeader } from "@/components/common/PageContainer";
 import { StatCard } from "@/components/common/StatCard";
 import { TagBadge, StatusBadge } from "@/components/common/Badges";
@@ -18,7 +19,6 @@ import {
   placeholderProducts,
   placeholderSubscribers,
   placeholderEnquiries,
-  chartData,
 } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/business/dashboard")({
@@ -46,24 +46,9 @@ function BusinessDashboard() {
           transition={{ delay: 0.15 }}
           className="card-surface p-5 lg:col-span-2"
         >
-          <SectionHeader title="Product views" description="Views per month" />
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
-                <XAxis dataKey="name" stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--color-card)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 12,
-                    fontSize: 12,
-                  }}
-                />
-                <Bar dataKey="value" fill="var(--color-primary)" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <SectionHeader title="Product views" description="Charts coming soon" />
+          <div className="grid h-72 place-items-center rounded-xl border border-dashed border-border text-sm text-muted-foreground">
+            Chart placeholder — analytics coming soon.
           </div>
         </motion.div>
 

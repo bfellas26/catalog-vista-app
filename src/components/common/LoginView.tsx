@@ -1,29 +1,38 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
-});
 
 interface LoginForm {
   username: string;
   password: string;
 }
 
-function LoginPage() {
+export interface LoginViewProps {
+  role: "Super Admin" | "Business Admin";
+  tagline: string;
+  redirectTo: "/admin/dashboard" | "/business/dashboard";
+  altLabel: string;
+  altHref: "/login/admin" | "/login/business";
+}
+
+export function LoginView({
+  role,
+  tagline,
+  redirectTo,
+  altLabel,
+  altHref,
+}: LoginViewProps) {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
 
   const onSubmit = (data: LoginForm) => {
-    // UI-only — no auth logic. Route to super admin by default.
     toast.success(`Welcome back, ${data.username}`);
-    navigate({ to: "/admin/dashboard" });
+    navigate({ to: redirectTo });
   };
 
   return (
@@ -41,12 +50,12 @@ function LoginPage() {
           />
         </div>
         <div className="relative flex h-full flex-col justify-between text-primary-foreground">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary-foreground text-primary">
               <span className="font-display font-bold">C</span>
             </div>
             <span className="font-display text-lg font-semibold">Catalogo</span>
-          </div>
+          </Link>
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -56,20 +65,19 @@ function LoginPage() {
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-3 py-1 text-xs font-medium">
               <Sparkles className="h-3 w-3 text-gold" />
-              Digital Catalog Platform
+              {role} Portal
             </div>
             <h1 className="mt-6 font-display text-4xl leading-tight font-bold">
-              Beautifully organized catalogs, effortlessly shared.
+              {tagline}
             </h1>
-            <p className="mt-4 text-sm text-primary-foreground/70">
-              Manage products, categories and enquiries in one place — designed
-              for modern brands and their customers.
-            </p>
           </motion.div>
 
-          <p className="text-xs text-primary-foreground/50">
-            © 2025 Catalogo. All rights reserved.
-          </p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-primary-foreground/60 hover:text-primary-foreground"
+          >
+            <ArrowLeft className="h-3 w-3" /> Back to home
+          </Link>
         </div>
       </div>
 
@@ -81,7 +89,10 @@ function LoginPage() {
           className="w-full max-w-sm"
         >
           <div className="mb-8">
-            <h2 className="font-display text-2xl font-bold tracking-tight">
+            <p className="text-xs font-medium tracking-widest text-primary uppercase">
+              {role}
+            </p>
+            <h2 className="mt-1 font-display text-2xl font-bold tracking-tight">
               Sign in to your account
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -120,18 +131,14 @@ function LoginPage() {
               disabled={isSubmitting}
               className="w-full bg-primary text-primary-foreground hover:bg-primary-dark"
             >
-              {isSubmitting ? "Signing in…" : "Sign in"}
+              {isSubmitting ? "Signing in…" : `Sign in as ${role}`}
             </Button>
           </form>
 
           <p className="mt-8 text-center text-xs text-muted-foreground">
-            Continue as a{" "}
-            <Link to="/" className="font-medium text-primary hover:underline">
-              customer
-            </Link>{" "}
-            or{" "}
-            <Link to="/business/dashboard" className="font-medium text-primary hover:underline">
-              business admin
+            Not a {role.toLowerCase()}?{" "}
+            <Link to={altHref} className="font-medium text-primary hover:underline">
+              {altLabel}
             </Link>
           </p>
         </motion.div>
