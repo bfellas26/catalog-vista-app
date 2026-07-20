@@ -13,7 +13,7 @@ function SuperAdminLogin() {
     <LoginView
       role="Super Admin"
       tagline="Oversee every brand on the platform, from one calm dashboard."
-      redirectTo="/admin/dashboard"
+      redirectTo="/admin/clients"
       altLabel="Business Admin login"
       altHref="/login/business"
     />

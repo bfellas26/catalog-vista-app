@@ -15,7 +15,7 @@ interface LoginForm {
 export interface LoginViewProps {
   role: "Super Admin" | "Business Admin";
   tagline: string;
-  redirectTo: "/admin/dashboard" | "/business/dashboard";
+  redirectTo: string;
   altLabel: string;
   altHref: "/login/admin" | "/login/business";
 }

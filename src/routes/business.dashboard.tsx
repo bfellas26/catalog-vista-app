@@ -1,113 +1,101 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Package, FolderTree, Users, MessageSquare } from "lucide-react";
-// Charts temporarily disabled per request
-// import {
-//   ResponsiveContainer,
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   CartesianGrid,
-// } from "recharts";
+import { Package, Users, MessageSquare, Settings, ArrowRight, FolderTree } from "lucide-react";
 import { PageContainer, PageHeader, SectionHeader } from "@/components/common/PageContainer";
 import { StatCard } from "@/components/common/StatCard";
-import { TagBadge, StatusBadge } from "@/components/common/Badges";
-import {
-  placeholderBusinessStats,
-  placeholderProducts,
-  placeholderSubscribers,
-  placeholderEnquiries,
-} from "@/lib/placeholders";
+import { placeholderBusinessStats } from "@/lib/placeholders";
 
 export const Route = createFileRoute("/business/dashboard")({
   component: BusinessDashboard,
 });
 
-const icons = [Package, FolderTree, Users, MessageSquare];
+const statIcons = [Package, FolderTree, Users, MessageSquare];
+
+const quickAccessItems = [
+  {
+    title: "Product Management",
+    description: "Manage categories, products, and product tags in your catalogue.",
+    icon: Package,
+    href: "/business/products",
+    color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+    hoverColor: "hover:border-blue-500/40 hover:bg-blue-500/[0.02]",
+  },
+  {
+    title: "Account Settings",
+    description: "Update your business profile, metadata, and catalogue styling.",
+    icon: Settings,
+    href: "/business/settings",
+    color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    hoverColor: "hover:border-purple-500/40 hover:bg-purple-500/[0.02]",
+  },
+  {
+    title: "Enquiries",
+    description: "Review messages, orders, and inquiries sent by catalogue viewers.",
+    icon: MessageSquare,
+    href: "/business/enquiries",
+    color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+    hoverColor: "hover:border-emerald-500/40 hover:bg-emerald-500/[0.02]",
+  },
+  {
+    title: "Subscribers",
+    description: "Monitor and manage email addresses subscribed to updates.",
+    icon: Users,
+    href: "/business/subscribers",
+    color: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+    hoverColor: "hover:border-amber-500/40 hover:bg-amber-500/[0.02]",
+  },
+];
 
 function BusinessDashboard() {
   return (
     <PageContainer>
       <PageHeader title="Dashboard" description="Your catalog at a glance." />
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {placeholderBusinessStats.map((s, i) => {
-          const Icon = icons[i];
+          const Icon = statIcons[i];
           return <StatCard key={s.label} {...s} index={i} icon={<Icon className="h-4 w-4" />} />;
         })}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-3">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="card-surface p-5 lg:col-span-2"
-        >
-          <SectionHeader title="Product views" description="Charts coming soon" />
-          <div className="grid h-72 place-items-center rounded-xl border border-dashed border-border text-sm text-muted-foreground">
-            Chart placeholder — analytics coming soon.
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card-surface p-5"
-        >
-          <SectionHeader title="Recent enquiries" />
-          <ul className="space-y-3">
-            {placeholderEnquiries.slice(0, 4).map((e) => (
-              <li key={e.id} className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{e.name}</p>
-                  <p className="text-xs text-muted-foreground">{e.items} items</p>
-                </div>
-                <StatusBadge status={e.status} />
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      </div>
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="card-surface p-5">
-          <SectionHeader title="Recent products" />
-          <ul className="divide-y divide-border">
-            {placeholderProducts.slice(0, 5).map((p) => (
-              <li key={p.id} className="flex items-center gap-3 py-3">
-                <div className="h-10 w-10 shrink-0 rounded-lg bg-accent" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">{p.category}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold">${p.price}</p>
-                  <div className="mt-1 flex gap-1">
-                    {p.tags.map((t) => <TagBadge key={t} name={t} variant="primary" />)}
+      {/* Quick Access Menu Section */}
+      <div className="mt-10">
+        <SectionHeader title="Quick Access" description="Manage different sections of your business portal." />
+        
+        <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {quickAccessItems.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <Link
+                  to={item.href}
+                  className={`flex h-full flex-col justify-between rounded-2xl border border-border p-6 bg-card transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer group ${item.hoverColor}`}
+                >
+                  <div>
+                    <div className={`inline-flex items-center justify-center rounded-xl p-3 border ${item.color} mb-4`}>
+                      <Icon className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-display text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {item.description}
+                    </p>
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="card-surface p-5">
-          <SectionHeader title="Recent subscribers" />
-          <ul className="divide-y divide-border">
-            {placeholderSubscribers.map((s) => (
-              <li key={s.id} className="flex items-center justify-between py-3 text-sm">
-                <div>
-                  <p className="font-medium">{s.email}</p>
-                  <p className="text-xs text-muted-foreground">Joined {s.joined}</p>
-                </div>
-                <TagBadge name={s.source} variant="gold" />
-              </li>
-            ))}
-          </ul>
+                  <div className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:underline">
+                    Get Started
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </PageContainer>

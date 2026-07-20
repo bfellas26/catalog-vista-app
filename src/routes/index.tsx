@@ -84,19 +84,13 @@ function LandingPage() {
 
           <nav className="ml-8 hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
             <a href="#features" className="hover:text-foreground">Features</a>
-            <a href="#portals" className="hover:text-foreground">Portals</a>
             <Link to="/catalog" className="hover:text-foreground">Demo catalog</Link>
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <Link to="/login/business">
-              <Button variant="ghost" className="hidden sm:inline-flex">
-                Business login
-              </Button>
-            </Link>
-            <Link to="/login/admin">
+            <Link to="/login">
               <Button className="bg-primary text-primary-foreground hover:bg-primary-dark">
-                Super Admin
+                Sign In
               </Button>
             </Link>
           </div>
@@ -126,18 +120,13 @@ function LandingPage() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/login/admin">
+              <Link to="/login">
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary-dark">
-                  Super Admin login <ArrowRight className="ml-1.5 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/login/business">
-                <Button size="lg" variant="outline">
-                  Business Admin login
+                  Sign In <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Button>
               </Link>
               <Link to="/catalog">
-                <Button size="lg" variant="ghost">
+                <Button size="lg" variant="outline">
                   View a demo catalog
                 </Button>
               </Link>
@@ -181,44 +170,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Portals */}
-      <section id="portals" className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Three portals. One platform.
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Choose where you're headed.
-            </p>
-          </div>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            <PortalCard
-              icon={ShieldCheck}
-              title="Super Admin"
-              body="Manage every brand on the platform — clients, plans and platform activity."
-              cta="Sign in as Super Admin"
-              to="/login/admin"
-            />
-            <PortalCard
-              icon={Store}
-              title="Business Admin"
-              body="Run your own catalog — products, categories, tags, subscribers and enquiries."
-              cta="Sign in as Business"
-              to="/login/business"
-            />
-            <PortalCard
-              icon={ShoppingBag}
-              title="Customer Catalog"
-              body="A polished, public-facing catalog for your customers to browse and enquire."
-              cta="View demo catalog"
-              to="/catalog"
-              variant="ghost"
-            />
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-border">
