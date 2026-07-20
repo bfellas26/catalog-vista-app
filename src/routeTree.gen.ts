@@ -30,6 +30,7 @@ import { Route as AdminClientsRouteImport } from './routes/admin.clients'
 import { Route as CustomerContactRouteImport } from './routes/_customer.contact'
 import { Route as CustomerCatalogRouteImport } from './routes/_customer.catalog'
 import { Route as CustomerCartRouteImport } from './routes/_customer.cart'
+import { Route as AdminClientsIndexRouteImport } from './routes/admin.clients.index'
 import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
 import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
 import { Route as AdminClientsNewRouteImport } from './routes/admin.clients.new'
@@ -143,6 +144,11 @@ const CustomerCartRoute = CustomerCartRouteImport.update({
   path: '/cart',
   getParentRoute: () => CustomerRoute,
 } as any)
+const AdminClientsIndexRoute = AdminClientsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminClientsRoute,
+} as any)
 const BusinessProductsNewRoute = BusinessProductsNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/admin/clients/new': typeof AdminClientsNewRoute
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients/': typeof AdminClientsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
@@ -220,7 +227,6 @@ export interface FileRoutesByTo {
   '/cart': typeof CustomerCartRoute
   '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
-  '/admin/clients': typeof AdminClientsRouteWithChildren
   '/admin/dashboard': typeof AdminDashboardRoute
   '/business/categories': typeof BusinessCategoriesRouteWithChildren
   '/business/dashboard': typeof BusinessDashboardRoute
@@ -239,6 +245,7 @@ export interface FileRoutesByTo {
   '/admin/clients/new': typeof AdminClientsNewRoute
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients': typeof AdminClientsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
@@ -271,6 +278,7 @@ export interface FileRoutesById {
   '/admin/clients/new': typeof AdminClientsNewRoute
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
+  '/admin/clients/': typeof AdminClientsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
@@ -303,6 +311,7 @@ export interface FileRouteTypes {
     | '/admin/clients/new'
     | '/business/categories/new'
     | '/business/products/new'
+    | '/admin/clients/'
     | '/admin/clients/edit/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
@@ -312,7 +321,6 @@ export interface FileRouteTypes {
     | '/cart'
     | '/catalog'
     | '/contact'
-    | '/admin/clients'
     | '/admin/dashboard'
     | '/business/categories'
     | '/business/dashboard'
@@ -331,6 +339,7 @@ export interface FileRouteTypes {
     | '/admin/clients/new'
     | '/business/categories/new'
     | '/business/products/new'
+    | '/admin/clients'
     | '/admin/clients/edit/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
@@ -362,6 +371,7 @@ export interface FileRouteTypes {
     | '/admin/clients/new'
     | '/business/categories/new'
     | '/business/products/new'
+    | '/admin/clients/'
     | '/admin/clients/edit/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
@@ -526,6 +536,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerCartRouteImport
       parentRoute: typeof CustomerRoute
     }
+    '/admin/clients/': {
+      id: '/admin/clients/'
+      path: '/'
+      fullPath: '/admin/clients/'
+      preLoaderRoute: typeof AdminClientsIndexRouteImport
+      parentRoute: typeof AdminClientsRoute
+    }
     '/business/products/new': {
       id: '/business/products/new'
       path: '/new'
@@ -607,11 +624,13 @@ const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
 
 interface AdminClientsRouteChildren {
   AdminClientsNewRoute: typeof AdminClientsNewRoute
+  AdminClientsIndexRoute: typeof AdminClientsIndexRoute
   AdminClientsEditIdRoute: typeof AdminClientsEditIdRoute
 }
 
 const AdminClientsRouteChildren: AdminClientsRouteChildren = {
   AdminClientsNewRoute: AdminClientsNewRoute,
+  AdminClientsIndexRoute: AdminClientsIndexRoute,
   AdminClientsEditIdRoute: AdminClientsEditIdRoute,
 }
 
