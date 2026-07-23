@@ -39,12 +39,12 @@ function CategoryPage() {
       <section className="border-b border-border bg-card">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <p className="text-xs font-medium tracking-widest text-gold uppercase">Category</p>
-          <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">{category.name}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{category.products} products</p>
+          <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">{category.categoryName}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{category.description}</p>
           <div className="mt-6 max-w-md">
             <div className="relative">
               <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search in ${category.name}…`} className="pl-9" />
+              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search in ${category.categoryName}…`} className="pl-9" />
             </div>
           </div>
         </div>

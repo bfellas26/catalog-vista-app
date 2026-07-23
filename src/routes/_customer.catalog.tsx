@@ -127,11 +127,11 @@ function CustomerHome() {
                   className="group flex items-center gap-4 rounded-2xl border border-border bg-background p-5 transition hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-primary/10 font-display text-lg font-bold text-primary">
-                    {c.name[0]}
+                    {c.categoryName[0]}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{c.name}</p>
-                    <p className="text-xs text-muted-foreground">{c.products} products</p>
+                    <p className="truncate font-semibold">{c.categoryName}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-1">{c.description}</p>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary" />
                 </Link>
