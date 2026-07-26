@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageContainer, PageHeader } from "@/components/common/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,60 +15,79 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { placeholderClients } from "@/lib/placeholders";
 import { locationData, currencies } from "@/lib/locationData";
+import { accountsApi, UpdateAccountPayload, Account } from "@/services/accountsApi";
+import { Loader2, RefreshCw, CheckCircle2, XCircle } from "lucide-react";
+import { StatusBadge } from "@/components/common/Badges";
 
 export const Route = createFileRoute("/admin/clients/edit/$id")({
   component: EditClientPage,
 });
 
-interface ClientForm {
-  accountId: string;
-  accountStatus: string;
-  businessName: string;
-  businessType: string;
-  ownerName: string;
-  email: string;
-  phone: string;
-  address: string;
-  country: string;
-  state: string;
-  city: string;
-  currency: string;
-  status: boolean;
-}
+interface ClientEditForm extends UpdateAccountPayload {}
 
 function EditClientPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
 
-  // Find existing client from mockup collection
-  const existingClient = placeholderClients.find((c) => c.id === id);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [account, setAccount] = useState<Account | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    reset,
     control,
     formState: { errors },
-  } = useForm<ClientForm>({
+  } = useForm<ClientEditForm>({
     defaultValues: {
-      accountId: id || "",
-      accountStatus: existingClient?.status || "Active",
-      businessName: existingClient?.name || "Aurora Studio",
-      businessType: "Consumer Goods",
-      ownerName: "Sarah Connor",
-      email: existingClient?.email || "hello@company.com",
-      phone: "+1 (555) 304-4903",
-      address: "88 Skyline Boulevard, Building B",
-      country: "United States",
-      state: "California",
-      city: "Los Angeles",
+      businessName: "",
+      ownerName: "",
+      businessType: "",
+      phone: "",
+      email: "",
+      address: "",
+      country: "",
+      state: "",
+      city: "",
       currency: "USD",
-      status: existingClient ? existingClient.status !== "Suspended" : true,
     },
   });
+
+  const fetchAccount = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await accountsApi.getAccountById(id);
+      if (res.success && res.data) {
+        setAccount(res.data);
+        reset({
+          businessName: res.data.businessName || "",
+          ownerName: res.data.ownerName || "",
+          businessType: res.data.businessType || "",
+          phone: res.data.phone || "",
+          email: res.data.email || "",
+          address: res.data.address || "",
+          country: res.data.country || "",
+          state: res.data.state || "",
+          city: res.data.city || "",
+          currency: res.data.currency || "USD",
+        });
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to load account details";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, reset]);
+
+  useEffect(() => {
+    fetchAccount();
+  }, [fetchAccount]);
 
   const selectedCountry = watch("country");
   const selectedState = watch("state");
@@ -80,36 +99,65 @@ function EditClientPage() {
       ? locationData[selectedCountry]?.[selectedState] || []
       : [];
 
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  // Safely handle dropdown hierarchy resets without stepping over mount values
-  useEffect(() => {
-    if (isInitialLoad) {
-      return;
+  const onSubmit = async (data: ClientEditForm) => {
+    setSubmitting(true);
+    try {
+      const res = await accountsApi.updateAccount(id, data);
+      if (res.success) {
+        toast.success(res.message || "Account updated successfully");
+        navigate({ to: "/admin/clients" });
+      } else {
+        toast.error(res.message || "Failed to update account");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error updating account";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
     }
-    setValue("state", "");
-    setValue("city", "");
-  }, [selectedCountry, setValue]);
-
-  useEffect(() => {
-    if (isInitialLoad) {
-      setIsInitialLoad(false);
-      return;
-    }
-    setValue("city", "");
-  }, [selectedState, setValue]);
-
-  const onSubmit = (data: ClientForm) => {
-    console.log("Saved Client Form Values:", data);
-    toast.success("Client account settings saved successfully!");
-    navigate({ to: "/admin/clients" });
   };
+
+  const handleToggleStatus = async () => {
+    if (!account) return;
+    const isCurrentlyEnabled = account.status === "ENABLED" || account.status === "Active";
+    const nextStatus = isCurrentlyEnabled ? "DISABLED" : "ENABLED";
+    
+    setUpdatingStatus(true);
+    try {
+      const res = await accountsApi.updateAccountStatus(id, nextStatus);
+      if (res.success) {
+        toast.success(res.message || `Account status updated to ${nextStatus}`);
+        setAccount({ ...account, status: nextStatus });
+      } else {
+        toast.error(res.message || "Failed to update status");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error updating status";
+      toast.error(msg);
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <PageHeader title="Edit Account" description={`Loading account ${id}...`} />
+        <div className="card-surface p-12 text-center text-muted-foreground">
+          <RefreshCw className="mx-auto mb-3 h-8 w-8 animate-spin text-primary" />
+          <p>Fetching account details from backend API...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  const isEnabled = account?.status === "ENABLED" || account?.status === "Active";
 
   return (
     <PageContainer>
       <PageHeader
-        title="Edit Client"
-        description={`Update client configuration and settings for: ${existingClient?.name || id}`}
+        title={`Edit Account: ${account?.businessName || id}`}
+        description={`Update account details (PUT /accounts/update/${id})`}
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-3">
@@ -126,17 +174,13 @@ function EditClientPage() {
                 <Input
                   id="accountId"
                   disabled
-                  placeholder="e.g. aurora-textiles"
-                  {...register("accountId", { required: "Account ID is required" })}
-                  className="bg-accent/40 cursor-not-allowed opacity-80"
+                  value={id}
+                  className="bg-accent/40 cursor-not-allowed opacity-80 font-mono"
                 />
-                {errors.accountId && (
-                  <p className="text-xs text-destructive">{errors.accountId.message}</p>
-                )}
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="businessName">Business Name</Label>
+                <Label htmlFor="businessName">Business Name *</Label>
                 <Input
                   id="businessName"
                   placeholder="e.g. Aurora Textiles Co."
@@ -148,7 +192,7 @@ function EditClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="businessType">Business Type</Label>
+                <Label htmlFor="businessType">Business Type *</Label>
                 <Input
                   id="businessType"
                   placeholder="e.g. Fashion, Food & Beverage"
@@ -160,7 +204,7 @@ function EditClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="ownerName">Owner Name</Label>
+                <Label htmlFor="ownerName">Owner Name *</Label>
                 <Input
                   id="ownerName"
                   placeholder="e.g. Johnathan Smith"
@@ -180,7 +224,7 @@ function EditClientPage() {
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -193,7 +237,7 @@ function EditClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -206,7 +250,7 @@ function EditClientPage() {
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">Address *</Label>
                 <Textarea
                   id="address"
                   placeholder="Street name, suite no, zipcode"
@@ -228,7 +272,7 @@ function EditClientPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               {/* Country Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">Country *</Label>
                 <Controller
                   control={control}
                   name="country"
@@ -255,7 +299,7 @@ function EditClientPage() {
 
               {/* State Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="state">State / Province</Label>
+                <Label htmlFor="state">State / Province *</Label>
                 <Controller
                   control={control}
                   name="state"
@@ -286,7 +330,7 @@ function EditClientPage() {
 
               {/* City Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City *</Label>
                 <Controller
                   control={control}
                   name="city"
@@ -317,7 +361,7 @@ function EditClientPage() {
 
               {/* Currency Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="currency">Default Currency</Label>
+                <Label htmlFor="currency">Currency *</Label>
                 <Controller
                   control={control}
                   name="currency"
@@ -345,63 +389,42 @@ function EditClientPage() {
           </div>
         </div>
 
-        {/* Status Actions Sidebar Column */}
+        {/* Sidebar Status Control */}
         <div className="space-y-6">
           <div className="card-surface p-6 space-y-6">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Account Control
+              Account Status (PATCH)
             </h3>
 
-            {/* Account Status Select */}
-            <div className="space-y-1.5">
-              <Label htmlFor="accountStatus">System Status</Label>
-              <Controller
-                control={control}
-                name="accountStatus"
-                rules={{ required: "Account status is required" }}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="accountStatus">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Active">Active</SelectItem>
-                      <SelectItem value="Trial">Trial</SelectItem>
-                      <SelectItem value="Suspended">Suspended</SelectItem>
-                      <SelectItem value="Closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
+            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-accent/20">
+              <div className="space-y-0.5">
+                <Label className="font-semibold text-sm">Status: {account?.status || "ENABLED"}</Label>
+                <p className="text-xs text-muted-foreground">
+                  Toggle account access via PATCH /accounts/status/{id}
+                </p>
+              </div>
+              <Switch
+                checked={isEnabled}
+                disabled={updatingStatus}
+                onCheckedChange={handleToggleStatus}
               />
             </div>
 
-            {/* Boolean Status Switch */}
-            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-accent/20">
-              <div className="space-y-0.5">
-                <Label htmlFor="status" className="font-semibold text-sm">
-                  Active Member
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Allow client accessing portals & services.
-                </p>
-              </div>
-              <Controller
-                control={control}
-                name="status"
-                render={({ field }) => (
-                  <Switch
-                    id="status"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
+            <div className="flex items-center gap-2 text-xs">
+              <StatusBadge status={account?.status || "ENABLED"} />
+              {updatingStatus && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
             </div>
 
             {/* Actions Buttons */}
-            <div className="flex flex-col gap-2 pt-4">
-              <Button type="submit" className="w-full bg-primary hover:bg-primary-dark">
-                Save Client Settings
+            <div className="flex flex-col gap-2 pt-4 border-t border-border">
+              <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary-dark">
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving Changes...
+                  </>
+                ) : (
+                  "Update Account (PUT)"
+                )}
               </Button>
               <Button
                 type="button"

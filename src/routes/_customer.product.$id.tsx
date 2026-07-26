@@ -74,10 +74,10 @@ function ProductDetailsPage() {
         {/* Details */}
         <div>
           <div className="flex flex-wrap gap-1">
-            {product.tags.map((t) => <TagBadge key={t} name={t} variant="gold" />)}
+            {((product as any).tags || product.tagIds || []).map((t: string) => <TagBadge key={t} name={t} variant="gold" />)}
           </div>
-          <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{product.name}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{product.category}</p>
+          <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{product.productName || (product as any).name}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{(product as any).category || product.categoryId}</p>
           <p className="mt-6 text-3xl font-bold text-primary">${product.price}</p>
 
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
@@ -99,7 +99,7 @@ function ProductDetailsPage() {
             <Button
               className="flex-1 bg-primary hover:bg-primary-dark"
               onClick={() => {
-                add({ id: product.id, name: product.name, price: product.price, qty });
+                add({ id: product.id, name: product.productName || (product as any).name, price: product.price, qty });
                 toast.success("Added to cart");
               }}
             >

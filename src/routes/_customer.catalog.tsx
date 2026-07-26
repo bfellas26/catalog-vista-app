@@ -94,9 +94,9 @@ function CustomerHome() {
                 <div className="aspect-square overflow-hidden rounded-2xl bg-accent transition group-hover:shadow-md" />
                 <div className="mt-3">
                   <div className="flex items-center gap-2">
-                    {p.tags.slice(0, 1).map((t) => <TagBadge key={t} name={t} variant="gold" />)}
+                    {((p as any).tags || p.tagIds || []).slice(0, 1).map((t: string) => <TagBadge key={t} name={t} variant="gold" />)}
                   </div>
-                  <p className="mt-1.5 font-medium text-foreground">{p.name}</p>
+                  <p className="mt-1.5 font-medium text-foreground">{p.productName || (p as any).name}</p>
                   <p className="text-sm text-muted-foreground">${p.price}</p>
                 </div>
               </Link>

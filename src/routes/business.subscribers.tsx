@@ -39,8 +39,8 @@ function SubscribersPage() {
                     <span className="font-medium">{s.email}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3"><TagBadge name={s.source} variant="gold" /></td>
-                <td className="px-4 py-3 text-muted-foreground">{s.joined}</td>
+                <td className="px-4 py-3"><TagBadge name={(s as any).source || "Website"} variant="gold" /></td>
+                <td className="px-4 py-3 text-muted-foreground">{s.subscribedAt || (s as any).joined}</td>
               </tr>
             ))}
           </tbody>

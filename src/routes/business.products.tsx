@@ -50,7 +50,7 @@ function ProductsPage() {
   const deleteTag = useProductTagStore((s) => s.deleteTag);
 
   const filteredProducts = products.filter((p) =>
-    p.productName.toLowerCase().includes(q.toLowerCase()),
+    (p.productName || (p as any).name || "").toLowerCase().includes(q.toLowerCase()),
   );
 
   const tabsInfo = [

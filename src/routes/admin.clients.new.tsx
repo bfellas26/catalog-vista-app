@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -16,29 +15,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { locationData, currencies } from "@/lib/locationData";
+import { accountsApi, CreateAccountPayload } from "@/services/accountsApi";
+import { Lock, UserCheck, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/clients/new")({
   component: NewClientPage,
 });
 
-interface ClientForm {
-  accountId: string;
-  accountStatus: string;
-  businessName: string;
-  businessType: string;
-  ownerName: string;
-  email: string;
-  phone: string;
-  address: string;
-  country: string;
-  state: string;
-  city: string;
-  currency: string;
-  status: boolean;
-}
+interface ClientForm extends CreateAccountPayload {}
 
 function NewClientPage() {
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -49,18 +38,18 @@ function NewClientPage() {
   } = useForm<ClientForm>({
     defaultValues: {
       accountId: "",
-      accountStatus: "Active",
       businessName: "",
-      businessType: "",
       ownerName: "",
-      email: "",
       phone: "",
+      email: "",
+      username: "",
+      password: "",
+      businessType: "",
       address: "",
       country: "",
       state: "",
       city: "",
       currency: "USD",
-      status: true,
     },
   });
 
@@ -74,27 +63,42 @@ function NewClientPage() {
       ? locationData[selectedCountry]?.[selectedState] || []
       : [];
 
-  // Reset dropdown child options on change
   useEffect(() => {
-    setValue("state", "");
-    setValue("city", "");
+    if (selectedCountry) {
+      setValue("state", "");
+      setValue("city", "");
+    }
   }, [selectedCountry, setValue]);
 
   useEffect(() => {
-    setValue("city", "");
+    if (selectedState) {
+      setValue("city", "");
+    }
   }, [selectedState, setValue]);
 
-  const onSubmit = (data: ClientForm) => {
-    console.log("Client Form Values:", data);
-    toast.success("Client account successfully created!");
-    navigate({ to: "/admin/clients" });
+  const onSubmit = async (data: ClientForm) => {
+    setSubmitting(true);
+    try {
+      const res = await accountsApi.createAccount(data);
+      if (res.success) {
+        toast.success(res.message || "Account Created Successfully");
+        navigate({ to: "/admin/clients" });
+      } else {
+        toast.error(res.message || "Failed to create account");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error creating account";
+      toast.error(msg);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <PageContainer>
       <PageHeader
-        title="Add Client"
-        description="Create a new client brand account and configure setup metadata."
+        title="Create New Account"
+        description="Register a new business account and create login credentials via the Accounts API."
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-3">
@@ -107,10 +111,10 @@ function NewClientPage() {
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="accountId">Account ID</Label>
+                <Label htmlFor="accountId">Account ID *</Label>
                 <Input
                   id="accountId"
-                  placeholder="e.g. aurora-textiles"
+                  placeholder="e.g. ACC123 or aurora-textiles"
                   {...register("accountId", { required: "Account ID is required" })}
                 />
                 {errors.accountId && (
@@ -119,7 +123,7 @@ function NewClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="businessName">Business Name</Label>
+                <Label htmlFor="businessName">Business Name *</Label>
                 <Input
                   id="businessName"
                   placeholder="e.g. Aurora Textiles Co."
@@ -131,10 +135,10 @@ function NewClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="businessType">Business Type</Label>
+                <Label htmlFor="businessType">Business Type *</Label>
                 <Input
                   id="businessType"
-                  placeholder="e.g. Fashion, Food & Beverage"
+                  placeholder="e.g. Retail, Apparel, Food & Beverage"
                   {...register("businessType", { required: "Business type is required" })}
                 />
                 {errors.businessType && (
@@ -143,7 +147,7 @@ function NewClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="ownerName">Owner Name</Label>
+                <Label htmlFor="ownerName">Owner Name *</Label>
                 <Input
                   id="ownerName"
                   placeholder="e.g. Johnathan Smith"
@@ -156,6 +160,45 @@ function NewClientPage() {
             </div>
           </div>
 
+          {/* Login Credentials Section */}
+          <div className="card-surface p-6 space-y-4 border-l-4 border-l-primary">
+            <div className="flex items-center gap-2">
+              <Lock className="h-4 w-4 text-primary" />
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Login Credentials
+              </h3>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              These credentials will be created in the backend system to grant access to the account portal.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="username">Username *</Label>
+                <Input
+                  id="username"
+                  placeholder="e.g. aurora_admin"
+                  {...register("username", { required: "Username is required" })}
+                />
+                {errors.username && (
+                  <p className="text-xs text-destructive">{errors.username.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="password">Password *</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  {...register("password", { required: "Password is required" })}
+                />
+                {errors.password && (
+                  <p className="text-xs text-destructive">{errors.password.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Contact Details */}
           <div className="card-surface p-6 space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
@@ -163,7 +206,7 @@ function NewClientPage() {
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Email Address *</Label>
                 <Input
                   id="email"
                   type="email"
@@ -176,7 +219,7 @@ function NewClientPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -189,7 +232,7 @@ function NewClientPage() {
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">Address *</Label>
                 <Textarea
                   id="address"
                   placeholder="Street name, suite no, zipcode"
@@ -211,7 +254,7 @@ function NewClientPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               {/* Country Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">Country *</Label>
                 <Controller
                   control={control}
                   name="country"
@@ -238,7 +281,7 @@ function NewClientPage() {
 
               {/* State Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="state">State / Province</Label>
+                <Label htmlFor="state">State / Province *</Label>
                 <Controller
                   control={control}
                   name="state"
@@ -269,7 +312,7 @@ function NewClientPage() {
 
               {/* City Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City *</Label>
                 <Controller
                   control={control}
                   name="city"
@@ -300,7 +343,7 @@ function NewClientPage() {
 
               {/* Currency Selection */}
               <div className="space-y-1.5">
-                <Label htmlFor="currency">Default Currency</Label>
+                <Label htmlFor="currency">Currency *</Label>
                 <Controller
                   control={control}
                   name="currency"
@@ -328,63 +371,30 @@ function NewClientPage() {
           </div>
         </div>
 
-        {/* Status Actions Sidebar Column */}
+        {/* Sidebar Actions Column */}
         <div className="space-y-6">
           <div className="card-surface p-6 space-y-6">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Account Control
+              Contract Integration
             </h3>
-
-            {/* Account Status Select */}
-            <div className="space-y-1.5">
-              <Label htmlFor="accountStatus">System Status</Label>
-              <Controller
-                control={control}
-                name="accountStatus"
-                rules={{ required: "Account status is required" }}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="accountStatus">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Active">Active</SelectItem>
-                      <SelectItem value="Trial">Trial</SelectItem>
-                      <SelectItem value="Suspended">Suspended</SelectItem>
-                      <SelectItem value="Closed">Closed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-
-            {/* Boolean Status Switch */}
-            <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-accent/20">
-              <div className="space-y-0.5">
-                <Label htmlFor="status" className="font-semibold text-sm">
-                  Active Member
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Allow client accessing portals & services.
-                </p>
+            <div className="rounded-lg bg-accent/30 p-3 text-xs space-y-2 text-muted-foreground">
+              <div className="flex items-center gap-1.5 font-medium text-foreground">
+                <UserCheck className="h-4 w-4 text-emerald-500" /> API Target
               </div>
-              <Controller
-                control={control}
-                name="status"
-                render={({ field }) => (
-                  <Switch
-                    id="status"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
+              <p className="font-mono text-[11px]">POST /accounts/create</p>
+              <p>Will transmit JSON body containing business info and login credentials to backend API.</p>
             </div>
 
             {/* Actions Buttons */}
             <div className="flex flex-col gap-2 pt-4">
-              <Button type="submit" className="w-full bg-primary hover:bg-primary-dark">
-                Create Client Profile
+              <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary-dark">
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Account...
+                  </>
+                ) : (
+                  "Create Account"
+                )}
               </Button>
               <Button
                 type="button"

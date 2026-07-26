@@ -26,10 +26,10 @@ function CategoryPage() {
   const products = useMemo(() => {
     return placeholderProducts.filter(
       (p) =>
-        p.name.toLowerCase().includes(q.toLowerCase()) &&
+        (p.productName || (p as any).name || "").toLowerCase().includes(q.toLowerCase()) &&
         p.price >= price[0] &&
         p.price <= price[1] &&
-        (activeTags.length === 0 || activeTags.some((t) => p.tags.includes(t))),
+        (activeTags.length === 0 || activeTags.some((t) => ((p as any).tags || p.tagIds || []).includes(t))),
     );
   }, [q, price, activeTags]);
 
@@ -110,9 +110,9 @@ function CategoryPage() {
                   <div className="aspect-square overflow-hidden rounded-2xl bg-accent transition group-hover:shadow-md" />
                   <div className="mt-3">
                     <div className="flex flex-wrap gap-1">
-                      {p.tags.map((t) => <TagBadge key={t} name={t} variant="gold" />)}
+                      {((p as any).tags || p.tagIds || []).map((t: string) => <TagBadge key={t} name={t} variant="gold" />)}
                     </div>
-                    <p className="mt-1.5 font-medium">{p.name}</p>
+                    <p className="mt-1.5 font-medium">{p.productName || (p as any).name}</p>
                     <p className="text-sm text-muted-foreground">${p.price}</p>
                   </div>
                 </Link>
