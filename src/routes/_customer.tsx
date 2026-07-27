@@ -33,25 +33,30 @@ function CustomerLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Sticky header */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <Link to="/catalog" className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <span className="font-display text-sm font-bold">A</span>
+      <header className="sticky top-0 z-40 border-b border-amber-900/10 bg-[#faf6f1]/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+          <Link to="/catalog" className="group flex items-center gap-2.5">
+            <div className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-amber-400/40">
+              <img
+                src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=100&q=80"
+                alt=""
+                className="h-full w-full object-cover"
+              />
             </div>
-            <span className="font-display text-lg font-semibold tracking-tight">
-              Aurora Studio
+            <span className="font-display text-base font-bold tracking-tight text-[#3a1f2d]">
+              Lumière <span className="font-light italic text-amber-700">Jewels</span>
             </span>
           </Link>
 
-          <nav className="ml-6 hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
-            <Link to="/catalog" className="hover:text-foreground" activeProps={{ className: "text-foreground" }}>
-              Home
+          <nav className="ml-8 hidden items-center gap-6 text-sm font-medium text-[#3a1f2d]/70 md:flex">
+            <Link to="/catalog" className="hover:text-[#3a1f2d]" activeProps={{ className: "text-[#3a1f2d]" }}>
+              Collection
             </Link>
-            <Link to="/contact" className="hover:text-foreground">
+            <Link to="/contact" className="hover:text-[#3a1f2d]">
               Contact
             </Link>
           </nav>
+
 
           <div className="ml-auto flex items-center gap-2">
             <div className="relative hidden sm:block">
@@ -121,15 +126,20 @@ function Footer() {
     <footer className="mt-16 border-t border-border bg-card">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-              <span className="font-display text-sm font-bold">A</span>
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-amber-400/40">
+              <img
+                src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=100&q=80"
+                alt=""
+                className="h-full w-full object-cover"
+              />
             </div>
-            <span className="font-display text-lg font-semibold">Aurora Studio</span>
+            <span className="font-display text-lg font-bold text-[#3a1f2d]">Lumière Jewels</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Thoughtfully designed goods for modern living.
+            Hand-crafted fine jewellery. Hallmarked with conscience.
           </p>
+
         </div>
         <div>
           <p className="text-sm font-semibold text-foreground">Shop</p>
@@ -188,7 +198,7 @@ function CartDrawerContent() {
                 <div className="h-16 w-16 shrink-0 rounded-lg bg-accent" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{item.name}</p>
-                  <p className="text-xs text-muted-foreground">${item.price.toFixed(2)}</p>
+                  <p className="text-xs text-muted-foreground">₹{item.price.toLocaleString("en-IN")}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <button
                       onClick={() => setQty(item.id, item.qty - 1)}
@@ -220,7 +230,8 @@ function CartDrawerContent() {
       <div className="border-t border-border pt-4">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Estimated total</span>
-          <span className="text-lg font-bold">${total.toFixed(2)}</span>
+          <span className="text-lg font-bold">₹{total.toLocaleString("en-IN")}</span>
+
         </div>
         <Button className="mt-3 w-full bg-primary hover:bg-primary-dark" disabled={items.length === 0}>
           Continue enquiry

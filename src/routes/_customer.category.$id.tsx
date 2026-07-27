@@ -20,7 +20,7 @@ function CategoryPage() {
   const category = placeholderCategories.find((c) => c.id === id) ?? placeholderCategories[0];
 
   const [q, setQ] = useState("");
-  const [price, setPrice] = useState([0, 200]);
+  const [price, setPrice] = useState([0, 500000]);
   const [activeTags, setActiveTags] = useState<string[]>([]);
 
   const products = useMemo(() => {
@@ -61,9 +61,9 @@ function CategoryPage() {
           <div className="space-y-6">
             <div>
               <p className="mb-3 text-xs font-semibold uppercase text-muted-foreground">Price</p>
-              <Slider value={price} onValueChange={setPrice} max={200} step={5} />
+              <Slider value={price} onValueChange={setPrice} max={500000} step={5000} />
               <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-                <span>${price[0]}</span><span>${price[1]}</span>
+                <span>₹{price[0].toLocaleString("en-IN")}</span><span>₹{price[1].toLocaleString("en-IN")}</span>
               </div>
             </div>
 
@@ -113,7 +113,7 @@ function CategoryPage() {
                       {((p as any).tags || p.tagIds || []).map((t: string) => <TagBadge key={t} name={t} variant="gold" />)}
                     </div>
                     <p className="mt-1.5 font-medium">{p.productName || (p as any).name}</p>
-                    <p className="text-sm text-muted-foreground">${p.price}</p>
+                    <p className="text-sm text-muted-foreground">₹{p.price.toLocaleString("en-IN")}</p>
                   </div>
                 </Link>
               </motion.div>

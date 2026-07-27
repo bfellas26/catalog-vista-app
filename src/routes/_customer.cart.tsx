@@ -34,7 +34,7 @@ function CartPage() {
                 <div className="h-20 w-20 shrink-0 rounded-xl bg-accent" />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">₹{item.price.toLocaleString("en-IN")}</p>
                   <div className="mt-3 flex items-center gap-2">
                     <div className="inline-flex items-center rounded-lg border border-border">
                       <button onClick={() => setQty(item.id, item.qty - 1)} className="p-1.5 hover:bg-accent">
@@ -53,7 +53,7 @@ function CartPage() {
                     </button>
                   </div>
                 </div>
-                <div className="text-right font-semibold">${(item.price * item.qty).toFixed(2)}</div>
+                <div className="text-right font-semibold">₹{(item.price * item.qty).toLocaleString("en-IN")}</div>
               </div>
             ))}
           </div>
@@ -65,7 +65,7 @@ function CartPage() {
                 <dt>Items</dt><dd>{items.reduce((s, i) => s + i.qty, 0)}</dd>
               </div>
               <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
-                <dt>Estimated total</dt><dd>${total.toFixed(2)}</dd>
+                <dt>Estimated total</dt><dd>₹{total.toLocaleString("en-IN")}</dd>
               </div>
             </dl>
             <Button className="mt-4 w-full bg-primary hover:bg-primary-dark">Continue enquiry</Button>
