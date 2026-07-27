@@ -37,13 +37,13 @@ export function ProductModal({ productId, onClose, products }: Props) {
     const handleResize = () => {
       const w = window.innerWidth;
       if (w >= 1024) {
-        setCardWidth(720);
+        setCardWidth(768);
       } else if (w >= 768) {
-        // iPad/Tablet size: fill 86% of viewport width up to 720px
-        setCardWidth(Math.min(w * 0.86, 720));
+        // iPad/Tablet size: fill viewport and peek by 44px
+        setCardWidth(w - 120);
       } else {
-        // Mobile size: fill 88% of viewport width
-        setCardWidth(w * 0.88);
+        // Mobile size: fill viewport and peek by 30px
+        setCardWidth(Math.max(280, w - 92));
       }
     };
     handleResize();
@@ -78,7 +78,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 sm:p-6 overflow-hidden"
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-0 overflow-hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -94,72 +94,81 @@ export function ProductModal({ productId, onClose, products }: Props) {
             </button>
 
             {/* Modal Container: transparent viewport containing the swipe stack */}
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-5xl overflow-hidden h-[90vh] flex flex-col justify-center items-center"
-            >
-              {/* Swipable Card Slider */}
-              <div className="flex-1 overflow-hidden relative w-full h-full flex items-center">
-                <motion.div
-                  drag="x"
-                  dragElastic={0.2}
-                  animate={{
-                    x: (Math.min(window.innerWidth, 1024) - cardWidth) / 2 - current * (cardWidth + 16),
-                  }}
-                  onDragEnd={(event, info) => {
-                    const swipeThreshold = 50;
-                    if (info.offset.x < -swipeThreshold && current < products.length - 1) {
-                      setCurrent(current + 1);
-                    } else if (info.offset.x > swipeThreshold && current > 0) {
-                      setCurrent(current - 1);
-                    }
-                  }}
-                  className="flex gap-4 h-full items-center py-4 select-none cursor-grab active:cursor-grabbing"
-                >
-                  {products.map((p, idx) => (
-                    <SwipeCardContent
-                      key={p.id}
-                      product={p}
-                      active={idx === current}
-                      cardWidth={cardWidth}
-                      onFullscreen={(imgIdx) => setActiveFullscreenImageIdx(imgIdx)}
-                    />
-                  ))}
-                </motion.div>
-              </div>
+            {(() => {
+              const containerWidth = Math.min(window.innerWidth, 1024);
+              const x_0 = (containerWidth - cardWidth) / 2;
+              const x_last = x_0 - (products.length - 1) * (cardWidth + 16);
 
-              {/* Desktop Nav Chevrons (only helper controls showing when multiple products exist) */}
-              {products.length > 1 && (
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 hidden lg:flex justify-between pointer-events-none px-4 z-[95]">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (current > 0) setCurrent(current - 1);
-                    }}
-                    className={cn(
-                      "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
-                      current === 0 && "opacity-20 pointer-events-none"
-                    )}
-                    aria-label="Previous product"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (current < products.length - 1) setCurrent(current + 1);
-                    }}
-                    className={cn(
-                      "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
-                      current === products.length - 1 && "opacity-20 pointer-events-none"
-                    )}
-                    aria-label="Next product"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
+              return (
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative w-full max-w-5xl overflow-hidden h-[85vh] max-h-[580px] sm:max-h-[640px] lg:max-h-[680px] flex flex-col justify-center items-center"
+                >
+                  {/* Swipable Card Slider */}
+                  <div className="flex-1 overflow-hidden relative w-full h-full flex items-center">
+                    <motion.div
+                      drag="x"
+                      dragElastic={0.2}
+                      dragConstraints={{ left: x_last, right: x_0 }}
+                      animate={{
+                        x: x_0 - current * (cardWidth + 16),
+                      }}
+                      onDragEnd={(event, info) => {
+                        const swipeThreshold = 50;
+                        if (info.offset.x < -swipeThreshold && current < products.length - 1) {
+                          setCurrent(current + 1);
+                        } else if (info.offset.x > swipeThreshold && current > 0) {
+                          setCurrent(current - 1);
+                        }
+                      }}
+                      className="flex gap-4 h-full items-center py-4 select-none cursor-grab active:cursor-grabbing"
+                    >
+                      {products.map((p, idx) => (
+                        <SwipeCardContent
+                          key={p.id}
+                          product={p}
+                          active={idx === current}
+                          cardWidth={cardWidth}
+                          onFullscreen={(imgIdx) => setActiveFullscreenImageIdx(imgIdx)}
+                        />
+                      ))}
+                    </motion.div>
+                  </div>
+
+                  {/* Desktop Nav Chevrons (only helper controls showing when multiple products exist) */}
+                  {products.length > 1 && (
+                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 hidden lg:flex justify-between pointer-events-none px-4 z-[95]">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (current > 0) setCurrent(current - 1);
+                        }}
+                        className={cn(
+                          "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
+                          current === 0 && "opacity-20 pointer-events-none"
+                        )}
+                        aria-label="Previous product"
+                      >
+                        <ChevronLeft className="h-6 w-6" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (current < products.length - 1) setCurrent(current + 1);
+                        }}
+                        className={cn(
+                          "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
+                          current === products.length - 1 && "opacity-20 pointer-events-none"
+                        )}
+                        aria-label="Next product"
+                      >
+                        <ChevronRight className="h-6 w-6" />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
           </motion.div>
         )}
       </AnimatePresence>
@@ -306,17 +315,17 @@ function SwipeCardContent({
     <div
       style={{ width: cardWidth }}
       className={cn(
-        "shrink-0 bg-white rounded-3xl shadow-2xl border border-[#3a1f2d]/5 flex flex-col lg:flex-row h-full overflow-hidden transition-all duration-300 relative",
+        "shrink-0 bg-white rounded-3xl shadow-2xl border border-[#3a1f2d]/5 flex flex-col sm:flex-row h-full overflow-hidden transition-all duration-300 relative",
         active ? "scale-100 opacity-100" : "scale-95 opacity-40 pointer-events-none"
       )}
     >
       {/* Image Gallery Column */}
-      <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-5 lg:p-8 bg-[#faf6f1] justify-center items-center border-b lg:border-b-0 lg:border-r border-[#3a1f2d]/5 overflow-y-auto lg:overflow-y-visible">
+      <div className="w-full sm:w-1/2 flex flex-col p-4 sm:p-6 lg:p-8 bg-[#faf6f1] justify-center items-center border-b sm:border-b-0 sm:border-r border-[#3a1f2d]/5 overflow-y-auto sm:overflow-y-visible">
         {/* Main image - Aspect square */}
         <div
           onClick={() => active && onFullscreen(activeImgIdx)}
           className={cn(
-            "relative aspect-square w-full max-w-[190px] sm:max-w-[260px] lg:max-w-[340px] overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 shadow-sm group",
+            "relative aspect-square w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[340px] overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 shadow-sm group",
             active && "cursor-zoom-in"
           )}
         >
@@ -330,7 +339,7 @@ function SwipeCardContent({
 
         {/* Thumbnails */}
         {product.images.length > 1 && (
-          <div className="flex justify-center gap-2 mt-3 lg:mt-4 overflow-x-auto w-full max-w-[260px] lg:max-w-[340px] py-1 select-none">
+          <div className="flex justify-center gap-2 mt-3 lg:mt-4 overflow-x-auto w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[340px] py-1 select-none">
             {product.images.map((src, idx) => (
               <button
                 key={src + idx}
@@ -351,8 +360,8 @@ function SwipeCardContent({
       </div>
 
       {/* Details Column */}
-      <div className="w-full lg:w-1/2 p-4 sm:p-5 lg:p-8 flex flex-col justify-between overflow-y-auto overflow-x-hidden max-h-[50vh] lg:max-h-full">
-        <div className="space-y-3 lg:space-y-5">
+      <div className="w-full sm:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-between overflow-y-auto overflow-x-hidden max-h-[50vh] sm:max-h-full">
+        <div className="space-y-3 sm:space-y-4 lg:space-y-5">
           <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight">
             {product.name}
           </h2>
@@ -362,30 +371,30 @@ function SwipeCardContent({
           </div>
 
           <div className="border-t border-[#3a1f2d]/5 pt-3 lg:pt-4">
-            <p className="text-xs lg:text-sm font-light leading-relaxed text-[#3a1f2d]/80 whitespace-pre-line">
+            <p className="text-xs sm:text-sm font-light leading-relaxed text-[#3a1f2d]/80 whitespace-pre-line">
               {product.description}
             </p>
           </div>
         </div>
 
         {/* Quantity and Add buttons */}
-        <div className="mt-4 lg:mt-8 border-t border-[#3a1f2d]/5 pt-4 lg:pt-6 space-y-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div className="flex items-center rounded-lg border border-[#3a1f2d]/15 bg-white shrink-0 h-10 w-full sm:w-auto">
+        <div className="mt-4 sm:mt-6 lg:mt-8 border-t border-[#3a1f2d]/5 pt-4 lg:pt-6 space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="flex items-center rounded-lg border border-[#3a1f2d]/15 bg-white shrink-0 h-10 w-28">
               <button
                 onClick={() => active && setQty((q) => Math.max(1, q - 1))}
-                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-l-lg flex-1 sm:flex-initial flex items-center justify-center"
+                className="w-9 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-l-lg flex items-center justify-center"
                 disabled={!active}
               >
-                <Minus className="h-4 w-4 mx-auto" />
+                <Minus className="h-4 w-4" />
               </button>
-              <span className="w-12 text-center text-sm font-semibold select-none">{qty}</span>
+              <span className="w-10 text-center text-sm font-semibold select-none">{qty}</span>
               <button
                 onClick={() => active && setQty((q) => q + 1)}
-                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-r-lg flex-1 sm:flex-initial flex items-center justify-center"
+                className="w-9 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-r-lg flex items-center justify-center"
                 disabled={!active}
               >
-                <Plus className="h-4 w-4 mx-auto" />
+                <Plus className="h-4 w-4" />
               </button>
             </div>
 
