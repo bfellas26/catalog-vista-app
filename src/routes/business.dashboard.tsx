@@ -61,8 +61,11 @@ function BusinessDashboard() {
 
       {/* Quick Access Menu Section */}
       <div className="mt-10">
-        <SectionHeader title="Quick Access" description="Manage different sections of your business portal." />
-        
+        <SectionHeader
+          title="Quick Access"
+          description="Manage different sections of your business portal."
+        />
+
         <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {quickAccessItems.map((item, index) => {
             const Icon = item.icon;
@@ -78,7 +81,9 @@ function BusinessDashboard() {
                   className={`flex h-full flex-col justify-between rounded-2xl border border-border p-6 bg-card transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer group ${item.hoverColor}`}
                 >
                   <div>
-                    <div className={`inline-flex items-center justify-center rounded-xl p-3 border ${item.color} mb-4`}>
+                    <div
+                      className={`inline-flex items-center justify-center rounded-xl p-3 border ${item.color} mb-4`}
+                    >
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="font-display text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">

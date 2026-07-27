@@ -24,7 +24,9 @@ export const Route = createFileRoute("/business/enquiries")({
 
 function EnquiriesPage() {
   const [enquiriesList, setEnquiriesList] = useState(placeholderEnquiries);
-  const [selectedEnquiry, setSelectedEnquiry] = useState<(typeof placeholderEnquiries)[0] | null>(null);
+  const [selectedEnquiry, setSelectedEnquiry] = useState<(typeof placeholderEnquiries)[0] | null>(
+    null,
+  );
 
   const handleStatusChange = (newStatus: string) => {
     if (!selectedEnquiry) return;
@@ -34,7 +36,10 @@ function EnquiriesPage() {
           ? {
               ...item,
               status: newStatus,
-              updatedAt: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }),
+              updatedAt: new Date().toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
             }
           : item,
       ),
@@ -66,7 +71,10 @@ function EnquiriesPage() {
             </thead>
             <tbody>
               {enquiriesList.map((e) => (
-                <tr key={e.id} className="border-b border-border last:border-0 hover:bg-accent/30 transition">
+                <tr
+                  key={e.id}
+                  className="border-b border-border last:border-0 hover:bg-accent/30 transition"
+                >
                   <td className="px-4 py-3">
                     <p className="font-semibold text-foreground">{e.customerName}</p>
                     <p className="text-xs text-muted-foreground font-mono">By: {e.createdBy}</p>
@@ -75,18 +83,14 @@ function EnquiriesPage() {
                     <p className="text-foreground">{e.email}</p>
                     <p className="text-xs text-muted-foreground">{e.phone}</p>
                   </td>
-                  <td className="px-4 py-3 max-w-xs truncate text-muted-foreground">
-                    {e.message}
-                  </td>
+                  <td className="px-4 py-3 max-w-xs truncate text-muted-foreground">{e.message}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {e.accountId}
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={e.status} />
                   </td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {e.createdAt}
-                  </td>
+                  <td className="px-4 py-3 text-xs text-muted-foreground">{e.createdAt}</td>
                   <td className="px-4 py-3 text-right">
                     <Button size="sm" variant="outline" onClick={() => setSelectedEnquiry(e)}>
                       <Eye className="mr-1 h-3.5 w-3.5" /> View

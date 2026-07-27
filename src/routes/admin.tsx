@@ -1,8 +1,5 @@
 import { Outlet, createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Users,
-  UserPlus,
-} from "lucide-react";
+import { Users, UserPlus } from "lucide-react";
 import { AdminShell, type NavItem } from "@/components/layouts/AdminShell";
 
 const nav: NavItem[] = [

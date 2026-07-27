@@ -34,14 +34,34 @@ function EditProductPage() {
         className="card-surface space-y-4 p-6"
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-1.5"><Label>Name</Label><Input {...register("name")} /></div>
-          <div className="space-y-1.5"><Label>Price</Label><Input type="number" {...register("price")} /></div>
-          <div className="space-y-1.5 sm:col-span-2"><Label>Category</Label><Input {...register("category")} /></div>
+          <div className="space-y-1.5">
+            <Label>Name</Label>
+            <Input {...register("name")} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Price</Label>
+            <Input type="number" {...register("price")} />
+          </div>
+          <div className="space-y-1.5 sm:col-span-2">
+            <Label>Category</Label>
+            <Input {...register("category")} />
+          </div>
         </div>
-        <div className="space-y-1.5"><Label>Description</Label><Textarea rows={5} {...register("description")} /></div>
+        <div className="space-y-1.5">
+          <Label>Description</Label>
+          <Textarea rows={5} {...register("description")} />
+        </div>
         <div className="flex justify-end gap-2">
-          <Button type="button" variant="outline" onClick={() => navigate({ to: "/business/products" })}>Cancel</Button>
-          <Button type="submit" className="bg-primary hover:bg-primary-dark">Save</Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate({ to: "/business/products" })}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" className="bg-primary hover:bg-primary-dark">
+            Save
+          </Button>
         </div>
       </form>
     </PageContainer>

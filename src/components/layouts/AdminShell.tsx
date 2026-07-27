@@ -166,9 +166,7 @@ function SidebarInner({
         <div className="border-t border-border p-3">
           <div className="rounded-xl bg-accent/60 p-3">
             <p className="text-xs font-semibold text-foreground">Need help?</p>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Check docs or contact support.
-            </p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Check docs or contact support.</p>
           </div>
         </div>
       )}

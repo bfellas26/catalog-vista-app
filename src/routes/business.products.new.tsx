@@ -55,10 +55,16 @@ function NewProductPage() {
             <Input placeholder="New, Bestseller" {...register("tags")} />
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={() => navigate({ to: "/business/products" })}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate({ to: "/business/products" })}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="bg-primary hover:bg-primary-dark">Create product</Button>
+            <Button type="submit" className="bg-primary hover:bg-primary-dark">
+              Create product
+            </Button>
           </div>
         </div>
 

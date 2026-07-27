@@ -57,15 +57,35 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Catalogo — Digital Catalog SaaS for modern brands" },
-      { name: "description", content: "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard." },
+      {
+        name: "description",
+        content:
+          "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
+      },
       { property: "og:title", content: "Catalogo — Digital Catalog SaaS for modern brands" },
-      { property: "og:description", content: "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard." },
+      {
+        property: "og:description",
+        content:
+          "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Catalogo — Digital Catalog SaaS for modern brands" },
-      { name: "twitter:description", content: "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c87a68a-3028-4e07-b2f6-4e4659537ccb/id-preview-6e6097b1--7c179dd1-5ee7-48b1-b0c0-c58a127f3659.lovable.app-1785129811981.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c87a68a-3028-4e07-b2f6-4e4659537ccb/id-preview-6e6097b1--7c179dd1-5ee7-48b1-b0c0-c58a127f3659.lovable.app-1785129811981.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c87a68a-3028-4e07-b2f6-4e4659537ccb/id-preview-6e6097b1--7c179dd1-5ee7-48b1-b0c0-c58a127f3659.lovable.app-1785129811981.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/7c87a68a-3028-4e07-b2f6-4e4659537ccb/id-preview-6e6097b1--7c179dd1-5ee7-48b1-b0c0-c58a127f3659.lovable.app-1785129811981.png",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

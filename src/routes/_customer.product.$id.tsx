@@ -74,20 +74,31 @@ function ProductDetailsPage() {
         {/* Details */}
         <div>
           <div className="flex flex-wrap gap-1">
-            {((product as any).tags || product.tagIds || []).map((t: string) => <TagBadge key={t} name={t} variant="gold" />)}
+            {((product as any).tags || product.tagIds || []).map((t: string) => (
+              <TagBadge key={t} name={t} variant="gold" />
+            ))}
           </div>
-          <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{product.productName || (product as any).name}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{(product as any).category || product.categoryId}</p>
-          <p className="mt-6 text-3xl font-bold text-primary">₹{product.price.toLocaleString("en-IN")}</p>
+          <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+            {product.productName || (product as any).name}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {(product as any).category || product.categoryId}
+          </p>
+          <p className="mt-6 text-3xl font-bold text-primary">
+            ₹{product.price.toLocaleString("en-IN")}
+          </p>
 
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            Crafted with a considered choice of materials and finished by hand.
-            Designed to become a quiet favourite in your everyday.
+            Crafted with a considered choice of materials and finished by hand. Designed to become a
+            quiet favourite in your everyday.
           </p>
 
           <div className="mt-8 flex items-center gap-4">
             <div className="inline-flex items-center rounded-lg border border-border">
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="p-2 hover:bg-accent">
+              <button
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                className="p-2 hover:bg-accent"
+              >
                 <Minus className="h-4 w-4" />
               </button>
               <span className="w-10 text-center text-sm font-medium">{qty}</span>
@@ -99,7 +110,12 @@ function ProductDetailsPage() {
             <Button
               className="flex-1 bg-primary hover:bg-primary-dark"
               onClick={() => {
-                add({ id: product.id, name: product.productName || (product as any).name, price: product.price, qty });
+                add({
+                  id: product.id,
+                  name: product.productName || (product as any).name,
+                  price: product.price,
+                  qty,
+                });
                 toast.success("Added to cart");
               }}
             >
@@ -107,7 +123,11 @@ function ProductDetailsPage() {
             </Button>
           </div>
 
-          <Button variant="outline" className="mt-3 w-full" onClick={() => navigate({ to: "/cart" })}>
+          <Button
+            variant="outline"
+            className="mt-3 w-full"
+            onClick={() => navigate({ to: "/cart" })}
+          >
             View cart
           </Button>
         </div>

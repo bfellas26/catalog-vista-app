@@ -80,7 +80,9 @@ function EditCategoryPage() {
           <div className="grid gap-4 sm:grid-cols-2 pt-2">
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
               <div className="space-y-0.5">
-                <Label htmlFor="isActive" className="text-sm font-medium">Is Active</Label>
+                <Label htmlFor="isActive" className="text-sm font-medium">
+                  Is Active
+                </Label>
                 <p className="text-xs text-muted-foreground">Storefront visibility (isActive)</p>
               </div>
               <Switch
@@ -92,7 +94,9 @@ function EditCategoryPage() {
 
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
               <div className="space-y-0.5">
-                <Label htmlFor="isDeleted" className="text-sm font-medium">Is Deleted</Label>
+                <Label htmlFor="isDeleted" className="text-sm font-medium">
+                  Is Deleted
+                </Label>
                 <p className="text-xs text-muted-foreground">Soft deletion status (isDeleted)</p>
               </div>
               <Switch
@@ -110,7 +114,12 @@ function EditCategoryPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="createdAt">Created At</Label>
-              <Input id="createdAt" {...register("createdAt")} readOnly className="bg-muted text-muted-foreground" />
+              <Input
+                id="createdAt"
+                {...register("createdAt")}
+                readOnly
+                className="bg-muted text-muted-foreground"
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="updatedBy">Updated By</Label>
@@ -118,15 +127,26 @@ function EditCategoryPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="updatedAt">Updated At</Label>
-              <Input id="updatedAt" {...register("updatedAt")} readOnly className="bg-muted text-muted-foreground" />
+              <Input
+                id="updatedAt"
+                {...register("updatedAt")}
+                readOnly
+                className="bg-muted text-muted-foreground"
+              />
             </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4 border-t border-border">
-            <Button type="button" variant="outline" onClick={() => navigate({ to: "/business/categories" })}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate({ to: "/business/categories" })}
+            >
               Cancel
             </Button>
-            <Button type="submit" className="bg-primary hover:bg-primary-dark">Save changes</Button>
+            <Button type="submit" className="bg-primary hover:bg-primary-dark">
+              Save changes
+            </Button>
           </div>
         </div>
 
@@ -134,7 +154,11 @@ function EditCategoryPage() {
           <p className="text-sm font-semibold">Image Preview</p>
           <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted border border-border">
             {watch("imageUrl") ? (
-              <img src={watch("imageUrl")} alt="Category Preview" className="h-full w-full object-cover" />
+              <img
+                src={watch("imageUrl")}
+                alt="Category Preview"
+                className="h-full w-full object-cover"
+              />
             ) : (
               <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
                 No Image URL provided

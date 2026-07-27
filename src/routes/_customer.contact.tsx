@@ -32,12 +32,15 @@ function ContactPage() {
     <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="grid gap-12 lg:grid-cols-2">
         <div>
-          <p className="text-xs font-medium tracking-widest text-gold uppercase">Contact & Enquiry</p>
+          <p className="text-xs font-medium tracking-widest text-gold uppercase">
+            Contact & Enquiry
+          </p>
           <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
             Let's start a conversation.
           </h1>
           <p className="mt-4 text-sm text-muted-foreground">
-            Have questions about custom orders, products or volume pricing? Submit an enquiry and our team will get back to you shortly.
+            Have questions about custom orders, products or volume pricing? Submit an enquiry and
+            our team will get back to you shortly.
           </p>
 
           <ul className="mt-10 space-y-4 text-sm">
@@ -74,13 +77,24 @@ function ContactPage() {
 
           <div className="space-y-1.5">
             <Label htmlFor="customerName">Your Name</Label>
-            <Input id="customerName" placeholder="Jane Doe" {...register("customerName")} required />
+            <Input
+              id="customerName"
+              placeholder="Jane Doe"
+              {...register("customerName")}
+              required
+            />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" placeholder="jane@example.com" {...register("email")} required />
+              <Input
+                id="email"
+                type="email"
+                placeholder="jane@example.com"
+                {...register("email")}
+                required
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="phone">Phone Number</Label>
@@ -90,7 +104,13 @@ function ContactPage() {
 
           <div className="space-y-1.5">
             <Label htmlFor="message">Enquiry Message</Label>
-            <Textarea id="message" rows={5} placeholder="Tell us how we can help..." {...register("message")} required />
+            <Textarea
+              id="message"
+              rows={5}
+              placeholder="Tell us how we can help..."
+              {...register("message")}
+              required
+            />
           </div>
 
           <Button type="submit" className="w-full bg-primary hover:bg-primary-dark">

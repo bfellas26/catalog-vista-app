@@ -31,7 +31,12 @@ function SuperAdminDashboard() {
   }, []);
 
   const stats = [
-    { label: "Total Accounts", value: accounts.length ? String(accounts.length) : placeholderStats[0].value, delta: "+12%", trend: "up" as const },
+    {
+      label: "Total Accounts",
+      value: accounts.length ? String(accounts.length) : placeholderStats[0].value,
+      delta: "+12%",
+      trend: "up" as const,
+    },
     placeholderStats[1],
     placeholderStats[2],
     placeholderStats[3],
@@ -39,7 +44,10 @@ function SuperAdminDashboard() {
 
   return (
     <PageContainer>
-      <PageHeader title="Dashboard" description="Overview of your platform activity & connected accounts." />
+      <PageHeader
+        title="Dashboard"
+        description="Overview of your platform activity & connected accounts."
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => {
@@ -69,7 +77,12 @@ function SuperAdminDashboard() {
         >
           <SectionHeader title="Recent activity" />
           <ul className="space-y-3">
-            {["New account created", "Account status updated", "Catalog published", "Payment received"].map((t, i) => (
+            {[
+              "New account created",
+              "Account status updated",
+              "Catalog published",
+              "Payment received",
+            ].map((t, i) => (
               <li key={i} className="flex items-start gap-3 text-sm">
                 <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-gold" />
                 <div className="min-w-0">
@@ -83,7 +96,10 @@ function SuperAdminDashboard() {
       </div>
 
       <div className="mt-8">
-        <SectionHeader title="Recent Accounts" description="Live business accounts fetched from backend Accounts API" />
+        <SectionHeader
+          title="Recent Accounts"
+          description="Live business accounts fetched from backend Accounts API"
+        />
         <div className="card-surface overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -110,9 +126,14 @@ function SuperAdminDashboard() {
                   </tr>
                 ) : (
                   accounts.slice(0, 5).map((c) => (
-                    <tr key={c.accountId || c.documentId} className="border-b border-border last:border-0 hover:bg-accent/30">
+                    <tr
+                      key={c.accountId || c.documentId}
+                      className="border-b border-border last:border-0 hover:bg-accent/30"
+                    >
                       <td className="px-4 py-3">
-                        <p className="font-medium text-foreground">{c.businessName || "Unnamed Business"}</p>
+                        <p className="font-medium text-foreground">
+                          {c.businessName || "Unnamed Business"}
+                        </p>
                         <p className="font-mono text-xs text-muted-foreground">{c.accountId}</p>
                       </td>
                       <td className="px-4 py-3">{c.ownerName || c.email || "N/A"}</td>

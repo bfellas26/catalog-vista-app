@@ -67,7 +67,7 @@ class AccountsApiService {
 
   private async request<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     try {
       const response = await fetch(url, {
         headers: {
@@ -101,11 +101,16 @@ class AccountsApiService {
    * 1. Create Account
    * POST /accounts/create
    */
-  async createAccount(payload: CreateAccountPayload): Promise<ApiResponse<{ documentId: string; accountId: string }>> {
-    return this.request<{ documentId: string; accountId: string }>(API_CONFIG.endpoints.accounts.create, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+  async createAccount(
+    payload: CreateAccountPayload,
+  ): Promise<ApiResponse<{ documentId: string; accountId: string }>> {
+    return this.request<{ documentId: string; accountId: string }>(
+      API_CONFIG.endpoints.accounts.create,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
   }
 
   /**
@@ -132,7 +137,10 @@ class AccountsApiService {
    * 4. Update Account
    * PUT /accounts/update/:accountId
    */
-  async updateAccount(accountId: string, payload: UpdateAccountPayload): Promise<ApiResponse<null>> {
+  async updateAccount(
+    accountId: string,
+    payload: UpdateAccountPayload,
+  ): Promise<ApiResponse<null>> {
     return this.request<null>(API_CONFIG.endpoints.accounts.update(accountId), {
       method: "PUT",
       body: JSON.stringify(payload),

@@ -26,9 +26,7 @@ export function StatCard({
     >
       <div className="flex items-start justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
-        {icon ? (
-          <div className="rounded-lg bg-accent/60 p-2 text-primary">{icon}</div>
-        ) : null}
+        {icon ? <div className="rounded-lg bg-accent/60 p-2 text-primary">{icon}</div> : null}
       </div>
       <div className="mt-3 flex items-baseline gap-2">
         <span className="text-2xl font-bold tracking-tight text-foreground">{value}</span>
@@ -36,9 +34,7 @@ export function StatCard({
           <span
             className={cn(
               "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-medium",
-              trend === "up"
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive",
+              trend === "up" ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive",
             )}
           >
             {trend === "up" ? (

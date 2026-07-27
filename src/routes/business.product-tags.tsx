@@ -84,7 +84,10 @@ function ProductTagsPage() {
         title="Product Tags"
         description="Manage product label tags matching your productTags table schema."
         actions={
-          <Button onClick={openNewDialog} className="bg-primary hover:bg-primary-dark cursor-pointer">
+          <Button
+            onClick={openNewDialog}
+            className="bg-primary hover:bg-primary-dark cursor-pointer"
+          >
             <Plus className="mr-1.5 h-4 w-4" /> Add tag
           </Button>
         }
@@ -105,7 +108,10 @@ function ProductTagsPage() {
             </thead>
             <tbody>
               {tags.map((t) => (
-                <tr key={t.id} className="border-b border-border last:border-0 hover:bg-accent/30 transition">
+                <tr
+                  key={t.id}
+                  className="border-b border-border last:border-0 hover:bg-accent/30 transition"
+                >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <span
@@ -115,9 +121,7 @@ function ProductTagsPage() {
                       <span className="font-semibold text-foreground">{t.tagName}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                    {t.color}
-                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{t.color}</td>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {t.accountId}
                   </td>
@@ -125,7 +129,9 @@ function ProductTagsPage() {
                     {t.isDeleted ? (
                       <Badge variant="destructive">True</Badge>
                     ) : (
-                      <Badge variant="outline" className="text-emerald-600 border-emerald-300">False</Badge>
+                      <Badge variant="outline" className="text-emerald-600 border-emerald-300">
+                        False
+                      </Badge>
                     )}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground font-mono">
@@ -181,7 +187,12 @@ function ProductTagsPage() {
             <div className="space-y-1.5">
               <Label htmlFor="color">Tag Color</Label>
               <div className="flex items-center gap-3">
-                <Input id="color" type="color" className="h-10 w-16 p-1 cursor-pointer" {...register("color")} />
+                <Input
+                  id="color"
+                  type="color"
+                  className="h-10 w-16 p-1 cursor-pointer"
+                  {...register("color")}
+                />
                 <Input
                   type="text"
                   className="font-mono"
@@ -193,7 +204,9 @@ function ProductTagsPage() {
 
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
               <div className="space-y-0.5">
-                <Label htmlFor="isDeleted" className="text-sm font-medium">Is Deleted</Label>
+                <Label htmlFor="isDeleted" className="text-sm font-medium">
+                  Is Deleted
+                </Label>
                 <p className="text-xs text-muted-foreground">Soft deletion status (isDeleted)</p>
               </div>
               <Switch

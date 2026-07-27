@@ -19,8 +19,7 @@ function LoginIndexPage() {
           <div
             className="h-full w-full"
             style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
               backgroundSize: "24px 24px",
             }}
           />
@@ -38,7 +37,8 @@ function LoginIndexPage() {
               Welcome to the Catalogo portal.
             </h1>
             <p className="mt-4 text-primary-foreground/80 leading-relaxed text-sm">
-              Whether you are managing your store's catalogues or overseeing the entire SaaS platform, choose your gateway to sign in.
+              Whether you are managing your store's catalogues or overseeing the entire SaaS
+              platform, choose your gateway to sign in.
             </p>
           </div>
 
@@ -92,7 +92,8 @@ function LoginIndexPage() {
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </h3>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                    Access your digital product catalog, configure categories, products, enquiries, and manage subscribers list.
+                    Access your digital product catalog, configure categories, products, enquiries,
+                    and manage subscribers list.
                   </p>
                 </div>
               </Link>
@@ -117,7 +118,8 @@ function LoginIndexPage() {
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </h3>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                    Access SaaS platform configuration, oversee registered clients list, plans structure, settings and activity analytics.
+                    Access SaaS platform configuration, oversee registered clients list, plans
+                    structure, settings and activity analytics.
                   </p>
                 </div>
               </Link>

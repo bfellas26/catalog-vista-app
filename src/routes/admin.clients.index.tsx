@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
-import { Filter, Plus, MoreHorizontal, Pencil, RefreshCw, CheckCircle2, XCircle, Building2, User } from "lucide-react";
+import {
+  Filter,
+  Plus,
+  MoreHorizontal,
+  Pencil,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  Building2,
+  User,
+} from "lucide-react";
 import { toast } from "sonner";
 import { PageContainer, PageHeader } from "@/components/common/PageContainer";
 import { SearchBar } from "@/components/common/SearchBar";
@@ -37,7 +47,8 @@ function ClientsPage() {
         setAccounts([]);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to load accounts from backend server";
+      const msg =
+        err instanceof Error ? err.message : "Failed to load accounts from backend server";
       setError(msg);
       toast.error(msg);
     } finally {
@@ -50,13 +61,14 @@ function ClientsPage() {
   }, [loadAccounts]);
 
   const handleToggleStatus = async (accountId: string, currentStatus?: string) => {
-    const nextStatus = currentStatus === "ENABLED" || currentStatus === "Active" ? "DISABLED" : "ENABLED";
+    const nextStatus =
+      currentStatus === "ENABLED" || currentStatus === "Active" ? "DISABLED" : "ENABLED";
     setUpdatingId(accountId);
     try {
       await accountsApi.updateAccountStatus(accountId, nextStatus);
       toast.success(`Account ${accountId} status set to ${nextStatus}`);
       setAccounts((prev) =>
-        prev.map((acc) => (acc.accountId === accountId ? { ...acc, status: nextStatus } : acc))
+        prev.map((acc) => (acc.accountId === accountId ? { ...acc, status: nextStatus } : acc)),
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to update status";
@@ -99,7 +111,11 @@ function ClientsPage() {
 
       <div className="card-surface">
         <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
-          <SearchBar placeholder="Search accounts by name, ID, owner, email..." value={q} onChange={setQ} />
+          <SearchBar
+            placeholder="Search accounts by name, ID, owner, email..."
+            value={q}
+            onChange={setQ}
+          />
           <Button variant="outline" size="sm">
             <Filter className="mr-1.5 h-4 w-4" /> Filters
           </Button>
@@ -141,20 +157,29 @@ function ClientsPage() {
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
-                    {error ? "Unable to load accounts from backend server." : "No business accounts found."}
+                    {error
+                      ? "Unable to load accounts from backend server."
+                      : "No business accounts found."}
                   </td>
                 </tr>
               ) : (
                 filtered.map((c) => {
                   const isEnabled = c.status === "ENABLED" || c.status === "Active";
                   return (
-                    <tr key={c.accountId || c.documentId} className="border-b border-border last:border-0 hover:bg-accent/30">
+                    <tr
+                      key={c.accountId || c.documentId}
+                      className="border-b border-border last:border-0 hover:bg-accent/30"
+                    >
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <Building2 className="h-4 w-4 text-primary shrink-0" />
                           <div>
-                            <p className="font-medium text-foreground">{c.businessName || "Unnamed Business"}</p>
-                            <p className="font-mono text-xs text-muted-foreground">ID: {c.accountId}</p>
+                            <p className="font-medium text-foreground">
+                              {c.businessName || "Unnamed Business"}
+                            </p>
+                            <p className="font-mono text-xs text-muted-foreground">
+                              ID: {c.accountId}
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -163,10 +188,14 @@ function ClientsPage() {
                           <User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                           <span>{c.ownerName || "N/A"}</span>
                         </div>
-                        <p className="text-xs text-muted-foreground">{c.email || c.phone || "No email"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {c.email || c.phone || "No email"}
+                        </p>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-xs font-medium text-foreground">{c.businessType || "N/A"}</p>
+                        <p className="text-xs font-medium text-foreground">
+                          {c.businessType || "N/A"}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {[c.city, c.state, c.country].filter(Boolean).join(", ") || "N/A"}
                         </p>
@@ -220,7 +249,9 @@ function ClientsPage() {
         </div>
 
         <div className="flex items-center justify-between border-t border-border px-4 py-3 text-xs text-muted-foreground">
-          <span>Showing {filtered.length} of {accounts.length} accounts from backend</span>
+          <span>
+            Showing {filtered.length} of {accounts.length} accounts from backend
+          </span>
         </div>
       </div>
     </PageContainer>

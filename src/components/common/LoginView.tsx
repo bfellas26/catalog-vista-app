@@ -20,15 +20,13 @@ export interface LoginViewProps {
   altHref: "/login/admin" | "/login/business";
 }
 
-export function LoginView({
-  role,
-  tagline,
-  redirectTo,
-  altLabel,
-  altHref,
-}: LoginViewProps) {
+export function LoginView({ role, tagline, redirectTo, altLabel, altHref }: LoginViewProps) {
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>();
 
   const onSubmit = (data: LoginForm) => {
     toast.success(`Welcome back, ${data.username}`);
@@ -43,8 +41,7 @@ export function LoginView({
           <div
             className="h-full w-full"
             style={{
-              backgroundImage:
-                "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+              backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
               backgroundSize: "24px 24px",
             }}
           />
@@ -67,9 +64,7 @@ export function LoginView({
               <Sparkles className="h-3 w-3 text-gold" />
               {role} Portal
             </div>
-            <h1 className="mt-6 font-display text-4xl leading-tight font-bold">
-              {tagline}
-            </h1>
+            <h1 className="mt-6 font-display text-4xl leading-tight font-bold">{tagline}</h1>
           </motion.div>
 
           <Link
@@ -89,9 +84,7 @@ export function LoginView({
           className="w-full max-w-sm"
         >
           <div className="mb-8">
-            <p className="text-xs font-medium tracking-widest text-primary uppercase">
-              {role}
-            </p>
+            <p className="text-xs font-medium tracking-widest text-primary uppercase">{role}</p>
             <h2 className="mt-1 font-display text-2xl font-bold tracking-tight">
               Sign in to your account
             </h2>

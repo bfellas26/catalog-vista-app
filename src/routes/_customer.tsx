@@ -1,7 +1,6 @@
 import { Outlet, Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search,
   ShoppingBag,
   Instagram,
   Twitter,
@@ -19,6 +18,7 @@ import { useState } from "react";
 import { useCartStore, useUIStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { jewelleryProducts } from "@/lib/jewellery-data";
 
 export const Route = createFileRoute("/_customer")({
   component: CustomerLayout,
@@ -31,49 +31,41 @@ function CustomerLayout() {
   const { cartOpen, setCartOpen } = useUIStore();
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-[#faf6f1] text-[#3a1f2d] font-sans antialiased">
       {/* Sticky header */}
-      <header className="sticky top-0 z-40 border-b border-amber-900/10 bg-[#faf6f1]/85 backdrop-blur-xl">
-        <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <Link to="/catalog" className="group flex items-center gap-2.5">
-            <div className="relative h-7 w-7 overflow-hidden rounded-full ring-2 ring-amber-400/40">
+      <header className="sticky top-0 z-40 border-b border-[#3a1f2d]/5 bg-[#faf6f1]/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
+          <Link to="/catalog" className="group flex items-center gap-3">
+            <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-[#3a1f2d]/10">
               <img
                 src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=100&q=80"
                 alt=""
                 className="h-full w-full object-cover"
               />
             </div>
-            <span className="font-display text-base font-bold tracking-tight text-[#3a1f2d]">
-              Lumière <span className="font-light italic text-amber-700">Jewels</span>
+            <span className="font-display text-lg font-semibold tracking-tight text-[#3a1f2d]">
+              Lumière <span className="font-light italic text-[#3a1f2d]/85">Jewels</span>
             </span>
           </Link>
 
-          <nav className="ml-8 hidden items-center gap-6 text-sm font-medium text-[#3a1f2d]/70 md:flex">
-            <Link to="/catalog" className="hover:text-[#3a1f2d]" activeProps={{ className: "text-[#3a1f2d]" }}>
+          <nav className="ml-8 hidden items-center gap-6 text-sm font-light text-[#3a1f2d]/70 md:flex">
+            <Link
+              to="/catalog"
+              className="hover:text-[#3a1f2d] transition"
+              activeProps={{ className: "text-[#3a1f2d] font-medium" }}
+            >
               Collection
-            </Link>
-            <Link to="/contact" className="hover:text-[#3a1f2d]">
-              Contact
             </Link>
           </nav>
 
-
           <div className="ml-auto flex items-center gap-2">
-            <div className="relative hidden sm:block">
-              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                className="w-64 rounded-lg border border-border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
-                placeholder="Search catalog…"
-              />
-            </div>
-
             <Sheet open={cartOpen} onOpenChange={setCartOpen}>
               <SheetTrigger asChild>
-                <button className="relative rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground">
+                <button className="relative rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] transition">
                   <ShoppingBag className="h-5 w-5" />
                   {cartItems.length > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 grid h-4 w-4 place-items-center rounded-full bg-gold text-[10px] font-bold text-gold-foreground">
-                      {cartItems.length}
+                    <span className="absolute top-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-[#3a1f2d] text-[9px] font-bold text-white">
+                      {cartItems.reduce((count, item) => count + item.qty, 0)}
                     </span>
                   )}
                 </button>
@@ -82,7 +74,7 @@ function CustomerLayout() {
             </Sheet>
 
             <button
-              className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
+              className="rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] md:hidden transition"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Menu"
             >
@@ -92,21 +84,23 @@ function CustomerLayout() {
         </div>
 
         {mobileOpen && (
-          <div className="border-t border-border bg-card px-4 py-3 md:hidden">
-            <Link to="/catalog" className="block py-2 text-sm">
-              Home
-            </Link>
-            <Link to="/contact" className="block py-2 text-sm">
-              Contact
+          <div className="border-t border-[#3a1f2d]/5 bg-white px-6 py-4 md:hidden space-y-3">
+            <Link
+              to="/catalog"
+              onClick={() => setMobileOpen(false)}
+              className="block text-sm font-medium hover:text-[#3a1f2d]"
+            >
+              Collection
             </Link>
           </div>
         )}
       </header>
 
+      {/* Main View Transition wrapper */}
       <AnimatePresence mode="wait">
         <motion.main
           key={pathname}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
@@ -123,52 +117,66 @@ function CustomerLayout() {
 
 function Footer() {
   return (
-    <footer className="mt-16 border-t border-border bg-card">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
+    <footer className="mt-20 border-t border-[#3a1f2d]/5 bg-white text-[#3a1f2d]">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-amber-400/40">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-[#3a1f2d]/10">
               <img
                 src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=100&q=80"
                 alt=""
                 className="h-full w-full object-cover"
               />
             </div>
-            <span className="font-display text-lg font-bold text-[#3a1f2d]">Lumière Jewels</span>
+            <span className="font-display text-lg font-semibold text-[#3a1f2d]">
+              Lumière Jewels
+            </span>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Hand-crafted fine jewellery. Hallmarked with conscience.
+          <p className="mt-4 text-xs text-[#3a1f2d]/60 font-light leading-relaxed">
+            Hand-crafted fine jewellery. Crafting beautiful designs since 1996.
           </p>
-
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">Shop</p>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/catalog" className="hover:text-foreground">Catalog</Link></li>
-            <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#3a1f2d]/80">Shop</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-[#3a1f2d]/70 font-light">
+            <li>
+              <Link to="/catalog" className="hover:text-[#3a1f2d] transition">
+                Catalog
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">Contact</p>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> hello@aurora.studio</li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> +1 (555) 010-0199</li>
-            <li className="flex items-center gap-2"><MapPin className="h-4 w-4" /> Lisbon, PT</li>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#3a1f2d]/80">Contact</p>
+          <ul className="mt-4 space-y-2.5 text-xs text-[#3a1f2d]/70 font-light">
+            <li className="flex items-center gap-2">
+              <Mail className="h-4 w-4 opacity-50" /> concierge@lumierejewels.com
+            </li>
+            <li className="flex items-center gap-2">
+              <Phone className="h-4 w-4 opacity-50" /> +351 21 000 0000
+            </li>
+            <li className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 opacity-50" /> Lisbon, PT
+            </li>
           </ul>
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">Follow</p>
-          <div className="mt-3 flex gap-2">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#3a1f2d]/80">Follow</p>
+          <div className="mt-4 flex gap-2">
             {[Instagram, Twitter, Facebook].map((Icon, i) => (
-              <a key={i} href="#" className="rounded-lg border border-border p-2 text-muted-foreground transition hover:border-primary/40 hover:text-primary">
+              <a
+                key={i}
+                href="#"
+                className="rounded-full border border-[#3a1f2d]/10 p-2 text-[#3a1f2d]/60 transition hover:border-[#3a1f2d]/40 hover:text-[#3a1f2d] hover:bg-[#faf6f1]/50"
+              >
                 <Icon className="h-4 w-4" />
               </a>
             ))}
           </div>
         </div>
       </div>
-      <div className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground sm:px-6 lg:px-8">
-        © 2025 Aurora Studio. Powered by Catalogo.
+      <div className="border-t border-[#3a1f2d]/5 px-4 py-6 text-center text-[10px] uppercase tracking-wider text-[#3a1f2d]/40 sm:px-6 lg:px-8">
+        © 2026 Lumière Jewels. All rights reserved.
       </div>
     </footer>
   );
@@ -178,63 +186,116 @@ function CartDrawerContent() {
   const { items, setQty, remove } = useCartStore();
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
+  const getProductImage = (id: string) => {
+    return jewelleryProducts.find((p) => p.id === id)?.images[0] || "";
+  };
+
+  const handleWhatsappEnquiry = () => {
+    if (items.length === 0) return;
+
+    const formattedItems = items
+      .map(
+        (item) =>
+          `• ${item.name}\n  Qty: ${item.qty}\n  Price: ₹${item.price.toLocaleString("en-IN")} each\n  Subtotal: ₹${(
+            item.price * item.qty
+          ).toLocaleString("en-IN")}`,
+      )
+      .join("\n\n");
+
+    const message = `Hi! I would like to make an enquiry regarding the following items in my catalogue cart:\n\n${formattedItems}\n\nEstimated Total: ₹${total.toLocaleString(
+      "en-IN",
+    )}\n\nThank you!`;
+
+    const url = `https://wa.me/917904561269?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
   return (
-    <SheetContent className="flex w-full flex-col sm:max-w-md">
-      <SheetHeader>
-        <SheetTitle className="font-display">Your cart</SheetTitle>
+    <SheetContent className="flex w-full flex-col bg-white text-[#3a1f2d] border-[#3a1f2d]/5 sm:max-w-md">
+      <SheetHeader className="pb-4 border-b border-[#3a1f2d]/5">
+        <SheetTitle className="font-display text-xl font-semibold">Your Enquiry Cart</SheetTitle>
       </SheetHeader>
 
       <div className="flex-1 overflow-y-auto py-4">
         {items.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <ShoppingBag className="h-8 w-8 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">Your cart is empty</p>
-            <p className="text-xs text-muted-foreground">Browse the catalog to add items.</p>
+          <div className="flex h-full flex-col items-center justify-center text-center px-4">
+            <ShoppingBag className="h-10 w-10 text-[#3a1f2d]/20" />
+            <p className="mt-4 text-base font-medium">Your cart is empty</p>
+            <p className="text-xs text-[#3a1f2d]/50 font-light mt-1">
+              Browse the collections to add items for enquiry.
+            </p>
           </div>
         ) : (
-          <ul className="space-y-3">
-            {items.map((item) => (
-              <li key={item.id} className="flex gap-3 rounded-xl border border-border p-3">
-                <div className="h-16 w-16 shrink-0 rounded-lg bg-accent" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{item.name}</p>
-                  <p className="text-xs text-muted-foreground">₹{item.price.toLocaleString("en-IN")}</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <button
-                      onClick={() => setQty(item.id, item.qty - 1)}
-                      className="rounded border border-border p-1 hover:bg-accent"
-                    >
-                      <Minus className="h-3 w-3" />
-                    </button>
-                    <span className="text-sm">{item.qty}</span>
-                    <button
-                      onClick={() => setQty(item.id, item.qty + 1)}
-                      className="rounded border border-border p-1 hover:bg-accent"
-                    >
-                      <Plus className="h-3 w-3" />
-                    </button>
-                    <button
-                      onClick={() => remove(item.id)}
-                      className="ml-auto text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+          <ul className="space-y-4">
+            {items.map((item) => {
+              const img = getProductImage(item.id);
+              return (
+                <li
+                  key={item.id}
+                  className="flex gap-4 rounded-2xl border border-[#3a1f2d]/5 bg-[#faf6f1]/30 p-4 shadow-sm"
+                >
+                  {img ? (
+                    <img
+                      src={img}
+                      alt=""
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover border border-[#3a1f2d]/5"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 shrink-0 rounded-xl bg-[#faf6f1] border border-[#3a1f2d]/5" />
+                  )}
+                  <div className="min-w-0 flex-1 flex flex-col justify-between">
+                    <div>
+                      <p className="truncate text-sm font-medium">{item.name}</p>
+                      <p className="text-xs font-semibold text-[#3a1f2d]/70 mt-0.5">
+                        ₹{item.price.toLocaleString("en-IN")}
+                      </p>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="flex items-center rounded-lg border border-[#3a1f2d]/15 bg-white scale-90 -ml-1">
+                        <button
+                          onClick={() => setQty(item.id, item.qty - 1)}
+                          className="p-1 px-2.5 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-7 rounded-l-lg border-none"
+                        >
+                          <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="w-6 text-center text-xs font-semibold">{item.qty}</span>
+                        <button
+                          onClick={() => setQty(item.id, item.qty + 1)}
+                          className="p-1 px-2.5 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-7 rounded-r-lg border-none"
+                        >
+                          <Plus className="h-3 w-3" />
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => remove(item.id)}
+                        className="text-[#3a1f2d]/45 hover:text-red-500 rounded p-1 hover:bg-red-50 transition"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
 
-      <div className="border-t border-border pt-4">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Estimated total</span>
-          <span className="text-lg font-bold">₹{total.toLocaleString("en-IN")}</span>
-
+      <div className="border-t border-[#3a1f2d]/5 pt-4 mt-auto">
+        <div className="flex items-end justify-between">
+          <span className="text-xs font-semibold uppercase tracking-wider text-[#3a1f2d]/60">
+            Total Estimated Price
+          </span>
+          <span className="text-xl font-bold font-display text-[#3a1f2d]">
+            ₹{total.toLocaleString("en-IN")}
+          </span>
         </div>
-        <Button className="mt-3 w-full bg-primary hover:bg-primary-dark" disabled={items.length === 0}>
-          Continue enquiry
+        <Button
+          onClick={handleWhatsappEnquiry}
+          className="mt-4 w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-xl h-11 border-none font-medium text-sm"
+          disabled={items.length === 0}
+        >
+          Continue Enquiry on WhatsApp
         </Button>
       </div>
     </SheetContent>

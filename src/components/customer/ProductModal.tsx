@@ -1,72 +1,64 @@
-import { useCallback, useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  Maximize2,
-  Minimize2,
-  ChevronLeft,
-  ChevronRight,
-  ShoppingBag,
-  Heart,
-  Sparkles,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import { X, ShoppingBag, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TagBadge } from "@/components/common/Badges";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
-import { formatINR, jewelleryProducts, type Jewel } from "@/lib/jewellery-data";
+import { formatINR, type Jewel } from "@/lib/jewellery-data";
 import { cn } from "@/lib/utils";
 
 type Props = {
   productId: string | null;
   onClose: () => void;
-  products?: Jewel[];
+  products: Jewel[];
 };
 
-export function ProductModal({ productId, onClose, products = jewelleryProducts }: Props) {
-  const [fullscreen, setFullscreen] = useState(false);
-  const [thumbIdx, setThumbIdx] = useState(0);
-  const startIndex = Math.max(0, products.findIndex((p) => p.id === productId));
-
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
-    startIndex: startIndex < 0 ? 0 : startIndex,
-    duration: 28,
-  });
-
+export function ProductModal({ productId, onClose, products }: Props) {
+  const startIndex = Math.max(
+    0,
+    products.findIndex((p) => p.id === productId),
+  );
   const [current, setCurrent] = useState(startIndex);
+  const [activeFullscreenImageIdx, setActiveFullscreenImageIdx] = useState<number | null>(null);
+  const [cardWidth, setCardWidth] = useState(720);
 
+  // Sync index when productId shifts from outside
   useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => {
-      setCurrent(emblaApi.selectedScrollSnap());
-      setThumbIdx(0);
-    };
-    emblaApi.on("select", onSelect);
-    onSelect();
-    return () => {
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (productId && emblaApi) {
+    if (productId) {
       const idx = products.findIndex((p) => p.id === productId);
-      if (idx >= 0) emblaApi.scrollTo(idx, true);
+      if (idx >= 0) {
+        setCurrent(idx);
+      }
     }
-  }, [productId, emblaApi, products]);
+  }, [productId, products]);
 
+  // Handle window resizing to calculate responsive cardWidth size in pixels
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w >= 1024) {
+        setCardWidth(720);
+      } else if (w >= 768) {
+        // iPad/Tablet size: fill 86% of viewport width up to 720px
+        setCardWidth(Math.min(w * 0.86, 720));
+      } else {
+        // Mobile size: fill 88% of viewport width
+        setCardWidth(w * 0.88);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle keyboard events (escape key to close)
   useEffect(() => {
     if (!productId) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (fullscreen) setFullscreen(false);
+        if (activeFullscreenImageIdx !== null) setActiveFullscreenImageIdx(null);
         else onClose();
       }
-      if (e.key === "ArrowRight") emblaApi?.scrollNext();
-      if (e.key === "ArrowLeft") emblaApi?.scrollPrev();
-      if (e.key.toLowerCase() === "f") setFullscreen((v) => !v);
     };
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -74,246 +66,338 @@ export function ProductModal({ productId, onClose, products = jewelleryProducts 
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [productId, emblaApi, fullscreen, onClose]);
+  }, [productId, activeFullscreenImageIdx, onClose]);
 
-  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-  const add = useCartStore((s) => s.add);
   const open = productId !== null;
+  if (!open || products.length === 0) return null;
+
+  const product = products[Math.min(current, products.length - 1)] || products[0];
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 backdrop-blur-md p-2 sm:p-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        >
+    <>
+      <AnimatePresence>
+        {open && (
           <motion.div
-            initial={{ scale: 0.96, opacity: 0, y: 8 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.98, opacity: 0 }}
-            transition={{ type: "spring", damping: 26, stiffness: 260 }}
-            onClick={(e) => e.stopPropagation()}
-            className={cn(
-              "relative overflow-hidden bg-gradient-to-br from-[#1a0f1c] via-[#2a1930] to-[#1a0f1c] text-white shadow-2xl",
-              fullscreen
-                ? "h-full w-full rounded-none"
-                : "max-h-[92vh] w-full max-w-6xl rounded-3xl",
-            )}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 sm:p-6 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
           >
-            {/* Toolbar */}
-            <div className="absolute top-3 right-3 z-30 flex items-center gap-2">
-              <button
-                onClick={() => setFullscreen((v) => !v)}
-                className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
-                aria-label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
-              >
-                {fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-              </button>
-              <button
-                onClick={onClose}
-                className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {/* Prev/Next buttons — always visible, larger in fullscreen */}
+            {/* Close Button placed on the dark backdrop boundary */}
             <button
-              onClick={scrollPrev}
-              className={cn(
-                "absolute top-1/2 z-20 grid -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/25",
-                fullscreen ? "left-6 h-14 w-14" : "left-3 h-11 w-11 sm:left-5",
-              )}
-              aria-label="Previous product"
+              onClick={onClose}
+              className="absolute top-6 right-6 z-[99] grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white shadow-md transition cursor-pointer"
+              aria-label="Close"
             >
-              <ChevronLeft className={fullscreen ? "h-6 w-6" : "h-5 w-5"} />
-            </button>
-            <button
-              onClick={scrollNext}
-              className={cn(
-                "absolute top-1/2 z-20 grid -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/25",
-                fullscreen ? "right-6 h-14 w-14" : "right-3 h-11 w-11 sm:right-5",
-              )}
-              aria-label="Next product"
-            >
-              <ChevronRight className={fullscreen ? "h-6 w-6" : "h-5 w-5"} />
+              <X className="h-5 w-5" />
             </button>
 
-            {/* Embla viewport (swipe left/right through products) */}
-            <div ref={emblaRef} className="h-full overflow-hidden">
-              <div className="flex h-full">
-                {products.map((p, i) => (
-                  <div
-                    key={p.id}
-                    className="relative min-w-0 flex-[0_0_100%]"
-                  >
-                    <ProductSlide
+            {/* Modal Container: transparent viewport containing the swipe stack */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-5xl overflow-hidden h-[90vh] flex flex-col justify-center items-center"
+            >
+              {/* Swipable Card Slider */}
+              <div className="flex-1 overflow-hidden relative w-full h-full flex items-center">
+                <motion.div
+                  drag="x"
+                  dragElastic={0.2}
+                  animate={{
+                    x: (Math.min(window.innerWidth, 1024) - cardWidth) / 2 - current * (cardWidth + 16),
+                  }}
+                  onDragEnd={(event, info) => {
+                    const swipeThreshold = 50;
+                    if (info.offset.x < -swipeThreshold && current < products.length - 1) {
+                      setCurrent(current + 1);
+                    } else if (info.offset.x > swipeThreshold && current > 0) {
+                      setCurrent(current - 1);
+                    }
+                  }}
+                  className="flex gap-4 h-full items-center py-4 select-none cursor-grab active:cursor-grabbing"
+                >
+                  {products.map((p, idx) => (
+                    <SwipeCardContent
+                      key={p.id}
                       product={p}
-                      active={i === current}
-                      fullscreen={fullscreen}
-                      thumbIdx={thumbIdx}
-                      setThumbIdx={setThumbIdx}
-                      onAdd={() => {
-                        add({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                        toast.success(`${p.name} added to cart`);
-                      }}
+                      active={idx === current}
+                      cardWidth={cardWidth}
+                      onFullscreen={(imgIdx) => setActiveFullscreenImageIdx(imgIdx)}
                     />
-                  </div>
-                ))}
+                  ))}
+                </motion.div>
               </div>
-            </div>
 
-            {/* Bottom pagination pills */}
-            <div className="pointer-events-none absolute bottom-3 left-1/2 z-20 -translate-x-1/2">
-              <div className="rounded-full bg-black/40 px-3 py-1.5 text-xs font-medium text-white/80 backdrop-blur">
-                {current + 1} / {products.length} • swipe or use arrow keys
-              </div>
+              {/* Desktop Nav Chevrons (only helper controls showing when multiple products exist) */}
+              {products.length > 1 && (
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 hidden lg:flex justify-between pointer-events-none px-4 z-[95]">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (current > 0) setCurrent(current - 1);
+                    }}
+                    className={cn(
+                      "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
+                      current === 0 && "opacity-20 pointer-events-none"
+                    )}
+                    aria-label="Previous product"
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (current < products.length - 1) setCurrent(current + 1);
+                    }}
+                    className={cn(
+                      "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
+                      current === products.length - 1 && "opacity-20 pointer-events-none"
+                    )}
+                    aria-label="Next product"
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </div>
+              )}
             </div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+
+      {/* Fullscreen Image Overlay */}
+      <AnimatePresence>
+        {activeFullscreenImageIdx !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] bg-black/95 flex flex-col items-center justify-center p-4 select-none"
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setActiveFullscreenImageIdx(null)}
+              className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition z-[90] cursor-pointer"
+              aria-label="Close fullscreen view"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Left Chevron Button */}
+            {product.images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveFullscreenImageIdx((prev) =>
+                    prev !== null
+                      ? (prev - 1 + product.images.length) % product.images.length
+                      : null,
+                  );
+                }}
+                className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition z-[90] cursor-pointer"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+            )}
+
+            {/* Right Chevron Button */}
+            {product.images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveFullscreenImageIdx((prev) =>
+                    prev !== null ? (prev + 1) % product.images.length : null,
+                  );
+                }}
+                className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition z-[90] cursor-pointer"
+                aria-label="Next image"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            )}
+
+            {/* Main Image Slider Container */}
+            <div className="relative w-full max-w-3xl aspect-square sm:aspect-[4/3] flex items-center justify-center overflow-hidden">
+              <AnimatePresence mode="popLayout" custom={activeFullscreenImageIdx}>
+                <motion.img
+                  key={activeFullscreenImageIdx}
+                  src={product.images[activeFullscreenImageIdx]}
+                  alt={`${product.name} zoom`}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.6}
+                  onDragEnd={(event, info) => {
+                    if (info.offset.x < -60) {
+                      setActiveFullscreenImageIdx((prev) =>
+                        prev !== null ? (prev + 1) % product.images.length : null,
+                      );
+                    } else if (info.offset.x > 60) {
+                      setActiveFullscreenImageIdx((prev) =>
+                        prev !== null
+                          ? (prev - 1 + product.images.length) % product.images.length
+                          : null,
+                      );
+                    }
+                  }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl cursor-grab active:cursor-grabbing select-none"
+                />
+              </AnimatePresence>
+            </div>
+
+            {/* Pagination Dots */}
+            {product.images.length > 1 && (
+              <div className="absolute bottom-8 flex gap-2 z-[90]">
+                {product.images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveFullscreenImageIdx(idx)}
+                    className={cn(
+                      "h-2 w-2 rounded-full transition-all duration-300 cursor-pointer",
+                      idx === activeFullscreenImageIdx
+                        ? "bg-white w-6"
+                        : "bg-white/40 hover:bg-white/70",
+                    )}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
-function ProductSlide({
+function SwipeCardContent({
   product,
+  onFullscreen,
   active,
-  fullscreen,
-  thumbIdx,
-  setThumbIdx,
-  onAdd,
+  cardWidth,
 }: {
   product: Jewel;
+  onFullscreen: (idx: number) => void;
   active: boolean;
-  fullscreen: boolean;
-  thumbIdx: number;
-  setThumbIdx: (i: number) => void;
-  onAdd: () => void;
+  cardWidth: number;
 }) {
-  const img = product.images[Math.min(thumbIdx, product.images.length - 1)];
+  const [activeImgIdx, setActiveImgIdx] = useState(0);
+  const [qty, setQty] = useState(1);
+  const addToCart = useCartStore((s) => s.add);
+
+  // Reset indices when product changes
+  useEffect(() => {
+    setActiveImgIdx(0);
+    setQty(1);
+  }, [product]);
+
+  const activeImage =
+    product.images[Math.min(activeImgIdx, product.images.length - 1)] || product.images[0];
+
+  const handleAdd = () => {
+    addToCart({ id: product.id, name: product.name, price: product.price, qty });
+    toast.success(`${qty}x ${product.name} added to cart`, { duration: 1500 });
+  };
 
   return (
     <div
+      style={{ width: cardWidth }}
       className={cn(
-        "grid h-full w-full gap-0",
-        fullscreen ? "lg:grid-cols-[1.3fr_1fr]" : "md:grid-cols-2",
+        "shrink-0 bg-white rounded-3xl shadow-2xl border border-[#3a1f2d]/5 flex flex-col lg:flex-row h-full overflow-hidden transition-all duration-300 relative",
+        active ? "scale-100 opacity-100" : "scale-95 opacity-40 pointer-events-none"
       )}
     >
-      {/* Image side */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-amber-950/40 via-rose-950/30 to-black">
-        <motion.img
-          key={img}
-          src={img}
-          alt={product.name}
-          initial={{ scale: 1.05, opacity: 0 }}
-          animate={{ scale: active ? 1 : 1.05, opacity: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+      {/* Image Gallery Column */}
+      <div className="w-full lg:w-1/2 flex flex-col p-4 sm:p-5 lg:p-8 bg-[#faf6f1] justify-center items-center border-b lg:border-b-0 lg:border-r border-[#3a1f2d]/5 overflow-y-auto lg:overflow-y-visible">
+        {/* Main image - Aspect square */}
+        <div
+          onClick={() => active && onFullscreen(activeImgIdx)}
           className={cn(
-            "h-full w-full select-none object-cover",
-            fullscreen ? "min-h-[60vh]" : "min-h-[320px] md:min-h-[520px]",
+            "relative aspect-square w-full max-w-[190px] sm:max-w-[260px] lg:max-w-[340px] overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 shadow-sm group",
+            active && "cursor-zoom-in"
           )}
-          draggable={false}
-        />
-        {/* soft vignette */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-
-        {/* Thumbs */}
-        <div className="absolute bottom-4 left-4 z-10 flex gap-2">
-          {product.images.map((src, i) => (
-            <button
-              key={src + i}
-              onClick={() => setThumbIdx(i)}
-              className={cn(
-                "h-12 w-12 overflow-hidden rounded-lg border-2 transition",
-                i === thumbIdx ? "border-amber-400 shadow-lg" : "border-white/20 opacity-70 hover:opacity-100",
-              )}
-            >
-              <img src={src} alt="" className="h-full w-full object-cover" />
-            </button>
-          ))}
+        >
+          <img
+            src={activeImage}
+            alt={product.name}
+            draggable={false}
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-102"
+          />
         </div>
+
+        {/* Thumbnails */}
+        {product.images.length > 1 && (
+          <div className="flex justify-center gap-2 mt-3 lg:mt-4 overflow-x-auto w-full max-w-[260px] lg:max-w-[340px] py-1 select-none">
+            {product.images.map((src, idx) => (
+              <button
+                key={src + idx}
+                onClick={() => active && setActiveImgIdx(idx)}
+                className={cn(
+                  "box-border h-9 w-9 lg:h-11 lg:w-11 shrink-0 rounded-lg overflow-hidden border-2 bg-white transition",
+                  idx === activeImgIdx
+                    ? "border-[#3a1f2d]"
+                    : "border-transparent opacity-60 hover:opacity-100",
+                )}
+                disabled={!active}
+              >
+                <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Details side */}
-      <div className={cn(
-        "relative flex flex-col overflow-y-auto p-6 sm:p-8",
-        fullscreen ? "lg:p-12" : "",
-      )}>
-        <div className="flex flex-wrap gap-1.5">
-          {product.tags.map((t) => (
-            <TagBadge key={t} name={t} variant="gold" />
-          ))}
-        </div>
+      {/* Details Column */}
+      <div className="w-full lg:w-1/2 p-4 sm:p-5 lg:p-8 flex flex-col justify-between overflow-y-auto overflow-x-hidden max-h-[50vh] lg:max-h-full">
+        <div className="space-y-3 lg:space-y-5">
+          <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight">
+            {product.name}
+          </h2>
 
-        <h2 className="mt-4 font-display text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl">
-          {product.name}
-        </h2>
-        <p className="mt-2 text-sm text-white/60">
-          {product.metal} • {product.weight} • {product.purity}
-        </p>
-
-        <div className="mt-6 flex items-end gap-3">
-          <span className="font-display text-3xl font-bold text-amber-300 sm:text-4xl">
+          <div className="font-display text-xl lg:text-2xl font-bold text-[#3a1f2d]">
             {formatINR(product.price)}
-          </span>
-          {product.originalPrice && (
-            <span className="pb-1 text-sm text-white/40 line-through">
-              {formatINR(product.originalPrice)}
-            </span>
-          )}
+          </div>
+
+          <div className="border-t border-[#3a1f2d]/5 pt-3 lg:pt-4">
+            <p className="text-xs lg:text-sm font-light leading-relaxed text-[#3a1f2d]/80 whitespace-pre-line">
+              {product.description}
+            </p>
+          </div>
         </div>
 
-        <p className="mt-6 text-sm leading-relaxed text-white/70">
-          {product.description}
-        </p>
-
-        <dl className="mt-6 grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-xs">
-          <div>
-            <dt className="text-white/50">Metal</dt>
-            <dd className="mt-0.5 font-medium">{product.metal}</dd>
-          </div>
-          <div>
-            <dt className="text-white/50">Weight</dt>
-            <dd className="mt-0.5 font-medium">{product.weight}</dd>
-          </div>
-          <div>
-            <dt className="text-white/50">Purity</dt>
-            <dd className="mt-0.5 font-medium">{product.purity}</dd>
-          </div>
-          {product.stones && (
-            <div>
-              <dt className="text-white/50">Stones</dt>
-              <dd className="mt-0.5 font-medium">{product.stones}</dd>
+        {/* Quantity and Add buttons */}
+        <div className="mt-4 lg:mt-8 border-t border-[#3a1f2d]/5 pt-4 lg:pt-6 space-y-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex items-center rounded-lg border border-[#3a1f2d]/15 bg-white shrink-0 h-10 w-full sm:w-auto">
+              <button
+                onClick={() => active && setQty((q) => Math.max(1, q - 1))}
+                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-l-lg flex-1 sm:flex-initial flex items-center justify-center"
+                disabled={!active}
+              >
+                <Minus className="h-4 w-4 mx-auto" />
+              </button>
+              <span className="w-12 text-center text-sm font-semibold select-none">{qty}</span>
+              <button
+                onClick={() => active && setQty((q) => q + 1)}
+                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-r-lg flex-1 sm:flex-initial flex items-center justify-center"
+                disabled={!active}
+              >
+                <Plus className="h-4 w-4 mx-auto" />
+              </button>
             </div>
-          )}
-        </dl>
 
-        <div className="mt-auto flex flex-col gap-2 pt-8 sm:flex-row">
-          <Button
-            onClick={onAdd}
-            className="flex-1 bg-gradient-to-r from-amber-400 to-amber-600 text-black hover:from-amber-300 hover:to-amber-500"
-          >
-            <ShoppingBag className="mr-2 h-4 w-4" /> Add to enquiry
-          </Button>
-          <Button
-            variant="outline"
-            className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
-          >
-            <Heart className="mr-2 h-4 w-4" /> Save
-          </Button>
+            <Button
+              onClick={() => active && handleAdd()}
+              className="w-full sm:flex-grow bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-lg h-10 text-sm font-medium border-none flex-grow"
+              disabled={!active}
+            >
+              <ShoppingBag className="mr-1.5 h-4 w-4 inline" /> Add to Enquiry
+            </Button>
+          </div>
         </div>
-
-        <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-white/50">
-          <Sparkles className="h-3 w-3 text-amber-300" />
-          Hallmarked • BIS certified • Lifetime buyback
-        </p>
       </div>
     </div>
   );

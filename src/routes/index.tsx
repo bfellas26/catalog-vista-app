@@ -25,7 +25,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Catalogo — Digital Catalog SaaS for modern brands" },
       {
         property: "og:description",
-        content: "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
+        content:
+          "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -77,14 +78,16 @@ function LandingPage() {
             <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
               <span className="font-display text-sm font-bold">C</span>
             </div>
-            <span className="font-display text-lg font-semibold tracking-tight">
-              Catalogo
-            </span>
+            <span className="font-display text-lg font-semibold tracking-tight">Catalogo</span>
           </Link>
 
           <nav className="ml-8 hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
-            <a href="#features" className="hover:text-foreground">Features</a>
-            <Link to="/catalog" className="hover:text-foreground">Demo catalog</Link>
+            <a href="#features" className="hover:text-foreground">
+              Features
+            </a>
+            <Link to="/catalog" className="hover:text-foreground">
+              Demo catalog
+            </Link>
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
@@ -114,14 +117,16 @@ function LandingPage() {
               <span className="text-primary">effortlessly shared.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
-              Catalogo is a multi-tenant SaaS that helps modern brands manage
-              products, categories, subscribers and customer enquiries — all
-              from one calm, thoughtful dashboard.
+              Catalogo is a multi-tenant SaaS that helps modern brands manage products, categories,
+              subscribers and customer enquiries — all from one calm, thoughtful dashboard.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <Link to="/login">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary-dark">
+                <Button
+                  size="lg"
+                  className="bg-primary text-primary-foreground hover:bg-primary-dark"
+                >
                   Sign In <ArrowRight className="ml-1.5 h-4 w-4" />
                 </Button>
               </Link>
@@ -142,8 +147,8 @@ function LandingPage() {
             Everything you need to run a modern catalog
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Built for brands that care about how their products are presented —
-            and for platforms that want to host many of them at once.
+            Built for brands that care about how their products are presented — and for platforms
+            that want to host many of them at once.
           </p>
         </div>
 
@@ -169,8 +174,6 @@ function LandingPage() {
           })}
         </div>
       </section>
-
-
 
       {/* Footer */}
       <footer className="border-t border-border">

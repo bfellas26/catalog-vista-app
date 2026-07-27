@@ -47,9 +47,7 @@ export const useCartStore = create<CartState>((set) => ({
       const existing = s.items.find((i) => i.id === item.id);
       if (existing) {
         return {
-          items: s.items.map((i) =>
-            i.id === item.id ? { ...i, qty: i.qty + item.qty } : i,
-          ),
+          items: s.items.map((i) => (i.id === item.id ? { ...i, qty: i.qty + item.qty } : i)),
         };
       }
       return { items: [...s.items, item] };
@@ -104,7 +102,10 @@ export const useCategoryStore = create<CategoryState>((set) => ({
           ? {
               ...c,
               ...updatedFields,
-              updatedAt: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }),
+              updatedAt: new Date().toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
             }
           : c,
       ),
@@ -154,7 +155,10 @@ export const useProductTagStore = create<ProductTagState>((set) => ({
           ? {
               ...t,
               ...updatedFields,
-              updatedAt: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }),
+              updatedAt: new Date().toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
             }
           : t,
       ),
@@ -212,7 +216,10 @@ export const useProductStore = create<ProductState>((set) => ({
           ? {
               ...p,
               ...updatedFields,
-              updatedAt: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }),
+              updatedAt: new Date().toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }),
             }
           : p,
       ),

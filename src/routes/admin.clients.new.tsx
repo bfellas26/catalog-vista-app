@@ -59,9 +59,7 @@ function NewClientPage() {
   const countries = Object.keys(locationData);
   const states = selectedCountry ? Object.keys(locationData[selectedCountry] || {}) : [];
   const cities =
-    selectedCountry && selectedState
-      ? locationData[selectedCountry]?.[selectedState] || []
-      : [];
+    selectedCountry && selectedState ? locationData[selectedCountry]?.[selectedState] || [] : [];
 
   useEffect(() => {
     if (selectedCountry) {
@@ -169,7 +167,8 @@ function NewClientPage() {
               </h3>
             </div>
             <p className="text-xs text-muted-foreground">
-              These credentials will be created in the backend system to grant access to the account portal.
+              These credentials will be created in the backend system to grant access to the account
+              portal.
             </p>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
@@ -213,9 +212,7 @@ function NewClientPage() {
                   placeholder="e.g. info@company.com"
                   {...register("email", { required: "Email is required" })}
                 />
-                {errors.email && (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
-                )}
+                {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
               </div>
 
               <div className="space-y-1.5">
@@ -226,9 +223,7 @@ function NewClientPage() {
                   placeholder="e.g. +1 (555) 019-2834"
                   {...register("phone", { required: "Phone number is required" })}
                 />
-                {errors.phone && (
-                  <p className="text-xs text-destructive">{errors.phone.message}</p>
-                )}
+                {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
               </div>
 
               <div className="space-y-1.5 sm:col-span-2">
@@ -293,7 +288,9 @@ function NewClientPage() {
                       disabled={!selectedCountry}
                     >
                       <SelectTrigger id="state">
-                        <SelectValue placeholder={selectedCountry ? "Select state" : "Choose country first"} />
+                        <SelectValue
+                          placeholder={selectedCountry ? "Select state" : "Choose country first"}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {states.map((s) => (
@@ -305,9 +302,7 @@ function NewClientPage() {
                     </Select>
                   )}
                 />
-                {errors.state && (
-                  <p className="text-xs text-destructive">{errors.state.message}</p>
-                )}
+                {errors.state && <p className="text-xs text-destructive">{errors.state.message}</p>}
               </div>
 
               {/* City Selection */}
@@ -324,7 +319,9 @@ function NewClientPage() {
                       disabled={!selectedState}
                     >
                       <SelectTrigger id="city">
-                        <SelectValue placeholder={selectedState ? "Select city" : "Choose state first"} />
+                        <SelectValue
+                          placeholder={selectedState ? "Select city" : "Choose state first"}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {cities.map((city) => (
@@ -336,9 +333,7 @@ function NewClientPage() {
                     </Select>
                   )}
                 />
-                {errors.city && (
-                  <p className="text-xs text-destructive">{errors.city.message}</p>
-                )}
+                {errors.city && <p className="text-xs text-destructive">{errors.city.message}</p>}
               </div>
 
               {/* Currency Selection */}
@@ -382,12 +377,19 @@ function NewClientPage() {
                 <UserCheck className="h-4 w-4 text-emerald-500" /> API Target
               </div>
               <p className="font-mono text-[11px]">POST /accounts/create</p>
-              <p>Will transmit JSON body containing business info and login credentials to backend API.</p>
+              <p>
+                Will transmit JSON body containing business info and login credentials to backend
+                API.
+              </p>
             </div>
 
             {/* Actions Buttons */}
             <div className="flex flex-col gap-2 pt-4">
-              <Button type="submit" disabled={submitting} className="w-full bg-primary hover:bg-primary-dark">
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-primary hover:bg-primary-dark"
+              >
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating Account...

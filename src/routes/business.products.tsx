@@ -85,9 +85,24 @@ function ProductsPage() {
   const onProductSubmit = (data: any) => {
     addProduct({
       ...data,
-      imageUrls: data.imageUrls ? data.imageUrls.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
-      tagIds: data.tagIds ? data.tagIds.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
-      searchKeywords: data.searchKeywords ? data.searchKeywords.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
+      imageUrls: data.imageUrls
+        ? data.imageUrls
+            .split(",")
+            .map((s: string) => s.trim())
+            .filter(Boolean)
+        : [],
+      tagIds: data.tagIds
+        ? data.tagIds
+            .split(",")
+            .map((s: string) => s.trim())
+            .filter(Boolean)
+        : [],
+      searchKeywords: data.searchKeywords
+        ? data.searchKeywords
+            .split(",")
+            .map((s: string) => s.trim())
+            .filter(Boolean)
+        : [],
       price: Number(data.price),
       sortOrder: Number(data.sortOrder),
     });
@@ -180,7 +195,10 @@ function ProductsPage() {
           return (
             <button
               key={t.id}
-              onClick={() => { setTab(t.id); setQ(""); }}
+              onClick={() => {
+                setTab(t.id);
+                setQ("");
+              }}
               className={`flex items-center gap-2 px-5 py-3 border-b-2 text-sm font-semibold transition-all cursor-pointer ${
                 active
                   ? "border-primary text-primary"
@@ -225,9 +243,14 @@ function ProductsPage() {
                   </thead>
                   <tbody>
                     {filteredProducts.map((p) => (
-                      <tr key={p.id} className="border-b border-border last:border-0 hover:bg-accent/30">
+                      <tr
+                        key={p.id}
+                        className="border-b border-border last:border-0 hover:bg-accent/30"
+                      >
                         <td className="px-4 py-3 font-semibold text-foreground">{p.productName}</td>
-                        <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{p.categoryId}</td>
+                        <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                          {p.categoryId}
+                        </td>
                         <td className="px-4 py-3 font-medium">${p.price.toFixed(2)}</td>
                         <td className="px-4 py-3 text-muted-foreground">{p.sortOrder}</td>
                         <td className="px-4 py-3">
@@ -244,7 +267,10 @@ function ProductsPage() {
                               size="sm"
                               variant="outline"
                               className="text-destructive hover:text-destructive"
-                              onClick={() => { deleteProduct(p.id); toast.success("Product deleted"); }}
+                              onClick={() => {
+                                deleteProduct(p.id);
+                                toast.success("Product deleted");
+                              }}
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
@@ -296,7 +322,10 @@ function ProductsPage() {
                     size="sm"
                     variant="outline"
                     className="text-destructive hover:text-destructive"
-                    onClick={() => { deleteCategory(c.id); toast.success("Category deleted"); }}
+                    onClick={() => {
+                      deleteCategory(c.id);
+                      toast.success("Category deleted");
+                    }}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </Button>
@@ -327,21 +356,34 @@ function ProductsPage() {
                 </thead>
                 <tbody>
                   {tags.map((t) => (
-                    <tr key={t.id} className="border-b border-border last:border-0 hover:bg-accent/30">
+                    <tr
+                      key={t.id}
+                      className="border-b border-border last:border-0 hover:bg-accent/30"
+                    >
                       <td className="px-4 py-3 font-medium">
                         <div className="flex items-center gap-2">
-                          <span className="h-3.5 w-3.5 rounded-full border border-border" style={{ backgroundColor: t.color }} />
+                          <span
+                            className="h-3.5 w-3.5 rounded-full border border-border"
+                            style={{ backgroundColor: t.color }}
+                          />
                           {t.tagName}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{t.accountId}</td>
-                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{t.color}</td>
+                      <td className="px-4 py-3 text-muted-foreground font-mono text-xs">
+                        {t.accountId}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                        {t.color}
+                      </td>
                       <td className="px-4 py-3 text-right">
                         <Button
                           size="sm"
                           variant="outline"
                           className="text-destructive hover:text-destructive"
-                          onClick={() => { deleteTag(t.id); toast.success("Tag deleted"); }}
+                          onClick={() => {
+                            deleteTag(t.id);
+                            toast.success("Tag deleted");
+                          }}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -360,45 +402,80 @@ function ProductsPage() {
         <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add Product</DialogTitle>
-            <DialogDescription>Fields match the products database collection schema.</DialogDescription>
+            <DialogDescription>
+              Fields match the products database collection schema.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={productForm.handleSubmit(onProductSubmit)} className="space-y-4 pt-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="p-accountId">Account ID</Label>
-                <Input id="p-accountId" {...productForm.register("accountId")} placeholder="ACC-8832" />
+                <Input
+                  id="p-accountId"
+                  {...productForm.register("accountId")}
+                  placeholder="ACC-8832"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="p-productName">Product Name</Label>
-                <Input id="p-productName" {...productForm.register("productName")} placeholder="Linen Shirt" required />
+                <Input
+                  id="p-productName"
+                  {...productForm.register("productName")}
+                  placeholder="Linen Shirt"
+                  required
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="p-categoryId">Category ID</Label>
-                <Input id="p-categoryId" {...productForm.register("categoryId")} placeholder="cat-1" />
+                <Input
+                  id="p-categoryId"
+                  {...productForm.register("categoryId")}
+                  placeholder="cat-1"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="p-price">Price</Label>
-                <Input id="p-price" type="number" step="0.01" {...productForm.register("price")} placeholder="0" />
+                <Input
+                  id="p-price"
+                  type="number"
+                  step="0.01"
+                  {...productForm.register("price")}
+                  placeholder="0"
+                />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="p-description">Description</Label>
-              <Textarea id="p-description" rows={3} {...productForm.register("description")} placeholder="Product description..." />
+              <Textarea
+                id="p-description"
+                rows={3}
+                {...productForm.register("description")}
+                placeholder="Product description..."
+              />
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="p-imageUrls">Image URLs (comma separated)</Label>
-              <Input id="p-imageUrls" {...productForm.register("imageUrls")} placeholder="https://..., https://..." />
+              <Input
+                id="p-imageUrls"
+                {...productForm.register("imageUrls")}
+                placeholder="https://..., https://..."
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="p-sortOrder">Sort Order</Label>
-                <Input id="p-sortOrder" type="number" {...productForm.register("sortOrder")} placeholder="1" />
+                <Input
+                  id="p-sortOrder"
+                  type="number"
+                  {...productForm.register("sortOrder")}
+                  placeholder="1"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="p-tagIds">Tag IDs (comma separated)</Label>
@@ -408,21 +485,34 @@ function ProductsPage() {
 
             <div className="space-y-1.5">
               <Label htmlFor="p-searchKeywords">Search Keywords (comma separated)</Label>
-              <Input id="p-searchKeywords" {...productForm.register("searchKeywords")} placeholder="aurora, studio" />
+              <Input
+                id="p-searchKeywords"
+                {...productForm.register("searchKeywords")}
+                placeholder="aurora, studio"
+              />
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <Label className="text-xs font-medium">isActive</Label>
-                <Switch checked={isProductActive} onCheckedChange={(v) => productForm.setValue("isActive", v)} />
+                <Switch
+                  checked={isProductActive}
+                  onCheckedChange={(v) => productForm.setValue("isActive", v)}
+                />
               </div>
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <Label className="text-xs font-medium">isDeleted</Label>
-                <Switch checked={isProductDeleted} onCheckedChange={(v) => productForm.setValue("isDeleted", v)} />
+                <Switch
+                  checked={isProductDeleted}
+                  onCheckedChange={(v) => productForm.setValue("isDeleted", v)}
+                />
               </div>
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <Label className="text-xs font-medium">isStandalone</Label>
-                <Switch checked={isProductStandalone} onCheckedChange={(v) => productForm.setValue("isStandalone", v)} />
+                <Switch
+                  checked={isProductStandalone}
+                  onCheckedChange={(v) => productForm.setValue("isStandalone", v)}
+                />
               </div>
             </div>
 
@@ -438,8 +528,12 @@ function ProductsPage() {
             </div>
 
             <div className="flex justify-end gap-2 pt-3 border-t border-border">
-              <Button type="button" variant="outline" onClick={() => setIsProductDialogOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-dark">Create product</Button>
+              <Button type="button" variant="outline" onClick={() => setIsProductDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-dark">
+                Create product
+              </Button>
             </div>
           </form>
         </DialogContent>
@@ -450,44 +544,74 @@ function ProductsPage() {
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add Category</DialogTitle>
-            <DialogDescription>Fields match the categories database collection schema.</DialogDescription>
+            <DialogDescription>
+              Fields match the categories database collection schema.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={categoryForm.handleSubmit(onCategorySubmit)} className="space-y-4 pt-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="c-accountId">Account ID</Label>
-                <Input id="c-accountId" {...categoryForm.register("accountId")} placeholder="ACC-8832" />
+                <Input
+                  id="c-accountId"
+                  {...categoryForm.register("accountId")}
+                  placeholder="ACC-8832"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="c-categoryName">Category Name</Label>
-                <Input id="c-categoryName" {...categoryForm.register("categoryName")} placeholder="Apparel" required />
+                <Input
+                  id="c-categoryName"
+                  {...categoryForm.register("categoryName")}
+                  placeholder="Apparel"
+                  required
+                />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="c-description">Description</Label>
-              <Textarea id="c-description" rows={3} {...categoryForm.register("description")} placeholder="Describe this category..." />
+              <Textarea
+                id="c-description"
+                rows={3}
+                {...categoryForm.register("description")}
+                placeholder="Describe this category..."
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="c-displayOrder">Display Order</Label>
-                <Input id="c-displayOrder" {...categoryForm.register("displayOrder")} placeholder="1" />
+                <Input
+                  id="c-displayOrder"
+                  {...categoryForm.register("displayOrder")}
+                  placeholder="1"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="c-imageUrl">Image URL</Label>
-                <Input id="c-imageUrl" {...categoryForm.register("imageUrl")} placeholder="https://..." />
+                <Input
+                  id="c-imageUrl"
+                  {...categoryForm.register("imageUrl")}
+                  placeholder="https://..."
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <Label className="text-xs font-medium">isActive</Label>
-                <Switch checked={isCategoryActive} onCheckedChange={(v) => categoryForm.setValue("isActive", v)} />
+                <Switch
+                  checked={isCategoryActive}
+                  onCheckedChange={(v) => categoryForm.setValue("isActive", v)}
+                />
               </div>
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <Label className="text-xs font-medium">isDeleted</Label>
-                <Switch checked={isCategoryDeleted} onCheckedChange={(v) => categoryForm.setValue("isDeleted", v)} />
+                <Switch
+                  checked={isCategoryDeleted}
+                  onCheckedChange={(v) => categoryForm.setValue("isDeleted", v)}
+                />
               </div>
             </div>
 
@@ -503,8 +627,16 @@ function ProductsPage() {
             </div>
 
             <div className="flex justify-end gap-2 pt-3 border-t border-border">
-              <Button type="button" variant="outline" onClick={() => setIsCategoryDialogOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-dark">Create category</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCategoryDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-dark">
+                Create category
+              </Button>
             </div>
           </form>
         </DialogContent>
@@ -515,22 +647,44 @@ function ProductsPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add Product Tag</DialogTitle>
-            <DialogDescription>Fields match the productTags database collection schema.</DialogDescription>
+            <DialogDescription>
+              Fields match the productTags database collection schema.
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={tagForm.handleSubmit(onTagSubmit)} className="space-y-4 pt-2">
             <div className="space-y-1.5">
               <Label htmlFor="t-accountId">Account ID</Label>
-              <Input id="t-accountId" {...tagForm.register("accountId")} placeholder="ACC-8832" required />
+              <Input
+                id="t-accountId"
+                {...tagForm.register("accountId")}
+                placeholder="ACC-8832"
+                required
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="t-tagName">Tag Name</Label>
-              <Input id="t-tagName" placeholder="e.g. New" {...tagForm.register("tagName")} required />
+              <Input
+                id="t-tagName"
+                placeholder="e.g. New"
+                {...tagForm.register("tagName")}
+                required
+              />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="t-color">Tag Color</Label>
               <div className="flex items-center gap-3">
-                <Input id="t-color" type="color" className="h-10 w-16 p-1 cursor-pointer" {...tagForm.register("color")} />
-                <Input type="text" className="font-mono" value={currentColor} onChange={(e) => tagForm.setValue("color", e.target.value)} />
+                <Input
+                  id="t-color"
+                  type="color"
+                  className="h-10 w-16 p-1 cursor-pointer"
+                  {...tagForm.register("color")}
+                />
+                <Input
+                  type="text"
+                  className="font-mono"
+                  value={currentColor}
+                  onChange={(e) => tagForm.setValue("color", e.target.value)}
+                />
               </div>
             </div>
             <div className="flex items-center justify-between rounded-lg border border-border p-3">
@@ -538,7 +692,10 @@ function ProductsPage() {
                 <Label className="text-sm font-medium">Is Deleted</Label>
                 <p className="text-xs text-muted-foreground">Soft deletion status (isDeleted)</p>
               </div>
-              <Switch checked={isTagDeleted} onCheckedChange={(v) => tagForm.setValue("isDeleted", v)} />
+              <Switch
+                checked={isTagDeleted}
+                onCheckedChange={(v) => tagForm.setValue("isDeleted", v)}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
@@ -551,8 +708,12 @@ function ProductsPage() {
               </div>
             </div>
             <div className="flex justify-end gap-2 pt-3 border-t border-border">
-              <Button type="button" variant="outline" onClick={() => setIsTagDialogOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary hover:bg-primary-dark">Create tag</Button>
+              <Button type="button" variant="outline" onClick={() => setIsTagDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-primary hover:bg-primary-dark">
+                Create tag
+              </Button>
             </div>
           </form>
         </DialogContent>

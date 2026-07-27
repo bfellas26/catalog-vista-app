@@ -34,7 +34,10 @@ function BusinessSettingsPage() {
         <div className="space-y-6 lg:col-span-2">
           {/* General & Account Settings */}
           <div className="card-surface p-6">
-            <SectionHeader title="Business Identity" description="Core account and brand configuration." />
+            <SectionHeader
+              title="Business Identity"
+              description="Core account and brand configuration."
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="accountId">Account ID</Label>
@@ -46,18 +49,30 @@ function BusinessSettingsPage() {
               </div>
               <div className="space-y-1.5 sm:col-span-2">
                 <Label htmlFor="emailAddress">Email Address</Label>
-                <Input id="emailAddress" type="email" {...register("emailAddress")} placeholder="contact@aurorastudio.com" />
+                <Input
+                  id="emailAddress"
+                  type="email"
+                  {...register("emailAddress")}
+                  placeholder="contact@aurorastudio.com"
+                />
               </div>
             </div>
           </div>
 
           {/* Location & Address */}
           <div className="card-surface p-6">
-            <SectionHeader title="Location & Address" description="Physical business address details." />
+            <SectionHeader
+              title="Location & Address"
+              description="Physical business address details."
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5 sm:col-span-2">
                 <Label htmlFor="address">Address</Label>
-                <Input id="address" {...register("address")} placeholder="123 Design Quarter, Ave 4" />
+                <Input
+                  id="address"
+                  {...register("address")}
+                  placeholder="123 Design Quarter, Ave 4"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="city">City</Label>
@@ -72,7 +87,10 @@ function BusinessSettingsPage() {
 
           {/* Social Links & Banner */}
           <div className="card-surface p-6">
-            <SectionHeader title="Media & Social Links" description="Banner and official social profile links." />
+            <SectionHeader
+              title="Media & Social Links"
+              description="Banner and official social profile links."
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5 sm:col-span-2">
                 <Label htmlFor="bannerUrl">Banner URL</Label>
@@ -82,25 +100,40 @@ function BusinessSettingsPage() {
                 <Label htmlFor="facebookLink" className="flex items-center gap-2">
                   <Facebook className="h-4 w-4 text-blue-600" /> Facebook Link
                 </Label>
-                <Input id="facebookLink" {...register("facebookLink")} placeholder="https://facebook.com/..." />
+                <Input
+                  id="facebookLink"
+                  {...register("facebookLink")}
+                  placeholder="https://facebook.com/..."
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="instagramLink" className="flex items-center gap-2">
                   <Instagram className="h-4 w-4 text-pink-600" /> Instagram Link
                 </Label>
-                <Input id="instagramLink" {...register("instagramLink")} placeholder="https://instagram.com/..." />
+                <Input
+                  id="instagramLink"
+                  {...register("instagramLink")}
+                  placeholder="https://instagram.com/..."
+                />
               </div>
             </div>
           </div>
 
           {/* Notification & Audit */}
           <div className="card-surface p-6">
-            <SectionHeader title="Email Preferences & Audit" description="Email toggles and creation audit trail." />
+            <SectionHeader
+              title="Email Preferences & Audit"
+              description="Email toggles and creation audit trail."
+            />
             <div className="space-y-4">
               <div className="flex items-center justify-between rounded-lg border border-border p-4">
                 <div className="space-y-0.5">
-                  <Label htmlFor="isEmailEnabled" className="text-base font-medium">Enable Email Notifications</Label>
-                  <p className="text-xs text-muted-foreground">Receive system and enquiry notification emails (isEmailEnabled)</p>
+                  <Label htmlFor="isEmailEnabled" className="text-base font-medium">
+                    Enable Email Notifications
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Receive system and enquiry notification emails (isEmailEnabled)
+                  </p>
                 </div>
                 <Switch
                   id="isEmailEnabled"
@@ -116,14 +149,21 @@ function BusinessSettingsPage() {
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="createdAt">Created At</Label>
-                  <Input id="createdAt" {...register("createdAt")} readOnly className="bg-muted text-muted-foreground" />
+                  <Input
+                    id="createdAt"
+                    {...register("createdAt")}
+                    readOnly
+                    className="bg-muted text-muted-foreground"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" className="bg-primary hover:bg-primary-dark">Save changes</Button>
+            <Button type="submit" className="bg-primary hover:bg-primary-dark">
+              Save changes
+            </Button>
           </div>
         </div>
 
@@ -133,9 +173,15 @@ function BusinessSettingsPage() {
             <SectionHeader title="Banner Preview" />
             <div className="relative h-32 w-full overflow-hidden rounded-lg bg-muted border border-border">
               {watch("bannerUrl") ? (
-                <img src={watch("bannerUrl")} alt="Banner Preview" className="h-full w-full object-cover" />
+                <img
+                  src={watch("bannerUrl")}
+                  alt="Banner Preview"
+                  className="h-full w-full object-cover"
+                />
               ) : (
-                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">No Banner URL</div>
+                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                  No Banner URL
+                </div>
               )}
             </div>
           </div>

@@ -64,37 +64,37 @@
   --radius: 0.75rem;
 
   /* Brand palette (converted from user hex → oklch) */
-  --background: oklch(0.985 0 0);            /* #FAFAFA */
-  --foreground: oklch(0.267 0.026 264);      /* #1F2937 */
+  --background: oklch(0.985 0 0); /* #FAFAFA */
+  --foreground: oklch(0.267 0.026 264); /* #1F2937 */
 
-  --card: oklch(1 0 0);                      /* #FFFFFF */
+  --card: oklch(1 0 0); /* #FFFFFF */
   --card-foreground: oklch(0.267 0.026 264);
 
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.267 0.026 264);
 
-  --primary: oklch(0.34 0.09 315);           /* #4D2D63 */
+  --primary: oklch(0.34 0.09 315); /* #4D2D63 */
   --primary-foreground: oklch(0.99 0 0);
-  --primary-dark: oklch(0.27 0.08 315);      /* #3A214A */
+  --primary-dark: oklch(0.27 0.08 315); /* #3A214A */
 
   --secondary: oklch(0.968 0.003 260);
   --secondary-foreground: oklch(0.267 0.026 264);
 
   --muted: oklch(0.968 0.003 260);
-  --muted-foreground: oklch(0.55 0.02 260);  /* #6B7280 */
+  --muted-foreground: oklch(0.55 0.02 260); /* #6B7280 */
 
   --accent: oklch(0.968 0.003 260);
   --accent-foreground: oklch(0.34 0.09 315);
 
-  --gold: oklch(0.735 0.13 78);              /* #C89B3C */
+  --gold: oklch(0.735 0.13 78); /* #C89B3C */
   --gold-foreground: oklch(0.99 0 0);
 
-  --destructive: oklch(0.63 0.22 25);        /* #EF4444 */
+  --destructive: oklch(0.63 0.22 25); /* #EF4444 */
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.7 0.18 148);            /* #22C55E */
-  --warning: oklch(0.78 0.16 75);            /* #F59E0B */
+  --success: oklch(0.7 0.18 148); /* #22C55E */
+  --warning: oklch(0.78 0.16 75); /* #F59E0B */
 
-  --border: oklch(0.923 0.002 260);          /* #EAEAEA */
+  --border: oklch(0.923 0.002 260); /* #EAEAEA */
   --input: oklch(0.923 0.002 260);
   --ring: oklch(0.34 0.09 315);
 
@@ -156,7 +156,8 @@
   html {
     scroll-behavior: smooth;
   }
-  html, body {
+  html,
+  body {
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
@@ -165,12 +166,15 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
-  h1, h2, h3, h4, h5 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
     font-family: var(--font-display);
     letter-spacing: -0.01em;
   }
 }
-
 
 @utility card-surface {
   background-color: var(--color-card);

@@ -41,7 +41,11 @@ function CategoriesPage() {
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="h-16 w-16 overflow-hidden rounded-xl bg-muted border border-border shrink-0">
                   {c.imageUrl ? (
-                    <img src={c.imageUrl} alt={c.categoryName} className="h-full w-full object-cover" />
+                    <img
+                      src={c.imageUrl}
+                      alt={c.categoryName}
+                      className="h-full w-full object-cover"
+                    />
                   ) : (
                     <div className="grid h-full w-full place-items-center text-primary bg-primary/10">
                       <FolderTree className="h-6 w-6" />
