@@ -22,10 +22,10 @@ export const Route = createFileRoute("/")({
         content:
           "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
       },
-      { property: "og:title", content: "Catalogo — Digital Catalog SaaS" },
+      { property: "og:title", content: "Catalogo — Digital Catalog SaaS for modern brands" },
       {
         property: "og:description",
-        content: "A multi-tenant digital catalog platform for modern brands.",
+        content: "Catalogo is a multi-tenant digital catalog platform. Manage products, categories, subscribers and enquiries — all from one beautiful dashboard.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
