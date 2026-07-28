@@ -103,7 +103,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
             {/* Close button — absolute top-right */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-[99] grid h-10 w-10 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
+              className="absolute top-4 right-4 z-[99] grid h-10 w-10 place-items-center rounded-full bg-black/60 border border-white/30 hover:bg-black/80 text-white transition shadow-lg"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
@@ -154,9 +154,9 @@ export function ProductModal({ productId, onClose, products }: Props) {
               </div>
             </div>
 
-            {/* Cards viewport — uses dvh for accurate mobile height, uniform across all cards */}
+            {/* Cards viewport — uniform height, gap at bottom so cards don't touch screen edge */}
             <div
-              className="flex-1 relative overflow-hidden flex items-stretch pb-4"
+              className="flex-1 relative overflow-hidden flex items-stretch px-0 pb-6"
               onClick={(e) => e.stopPropagation()}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
