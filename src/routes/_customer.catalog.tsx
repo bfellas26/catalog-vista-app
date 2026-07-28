@@ -124,7 +124,7 @@ function CatalogPage() {
         <section className="mx-auto max-w-7xl px-4 pt-14 pb-10 sm:px-6 lg:px-8">
           <div className="mb-8 text-center">
             <p className="text-xs font-semibold tracking-[0.2em] text-[#3a1f2d]/60 uppercase">
-              Signature releases
+              Featured releases
             </p>
             <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold">Featured Products</h2>
           </div>

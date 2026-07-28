@@ -275,9 +275,9 @@ function ProductCardContent({
   useEffect(() => setImgIdx(0), [product.id]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 h-full max-h-full overflow-hidden">
+    <div className="grid grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-2 md:grid-rows-none h-full max-h-full overflow-hidden">
       {/* Image */}
-      <div className="bg-[#faf6f1] p-4 sm:p-6 flex flex-col gap-3 overflow-y-auto">
+      <div className="bg-[#faf6f1] p-3 sm:p-4 flex flex-col gap-2 overflow-y-auto">
         <button
           onClick={() => onFullscreen(imgIdx)}
           className="relative aspect-square w-full overflow-hidden rounded-xl bg-white border border-[#3a1f2d]/5 group"
@@ -313,13 +313,10 @@ function ProductCardContent({
       </div>
 
       {/* Details */}
-      <div className="p-5 sm:p-6 md:p-8 flex flex-col overflow-y-auto">
+      <div className="p-4 sm:p-5 md:p-6 flex flex-col overflow-y-auto">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold tracking-[0.25em] text-amber-700 uppercase">
-              Signature
-            </p>
-            <h2 className="mt-1.5 font-display text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight text-[#3a1f2d]">
+            <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight text-[#3a1f2d]">
               {product.name}
             </h2>
           </div>

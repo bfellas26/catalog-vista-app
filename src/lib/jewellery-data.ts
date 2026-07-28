@@ -419,7 +419,7 @@ export const jewelleryProducts: Jewel[] = [
       U("photo-1599643478518-a784e5dc4c8f"),
       U("photo-1506630448388-4e683c67ddb0"),
     ],
-    tags: ["Signature", "Collector"],
+    tags: ["Collector"],
   },
   {
     id: "j-20",
@@ -437,7 +437,7 @@ export const jewelleryProducts: Jewel[] = [
       U("photo-1601121141461-9d6647bca1ed"),
       U("photo-1602752250015-52934bc45613"),
     ],
-    tags: ["Signature", "Bespoke"],
+    tags: ["Bespoke"],
   },
 ];
 

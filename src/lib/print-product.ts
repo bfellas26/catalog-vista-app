@@ -73,7 +73,7 @@ export function printProduct(product: Jewel) {
     <div class="hero">
       <div class="imgwrap main"><img src="${product.images[0]}" alt="${escape(product.name)}"/></div>
       <div class="details">
-        <div class="eyebrow">Signature Collection</div>
+        <div class="eyebrow">Exclusive Collection</div>
         <h2>${escape(product.name)}</h2>
         <div class="price">${formatINR(product.price)}</div>
         <div class="divider"></div>
