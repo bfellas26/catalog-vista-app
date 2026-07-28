@@ -94,7 +94,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col"
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -152,9 +152,10 @@ export function ProductModal({ productId, onClose, products }: Props) {
               <div className="lg:hidden w-9" />
             </div>
 
-            {/* Cards viewport — fills remaining height */}
+            {/* Cards viewport */}
             <div
-              className="flex-1 relative overflow-hidden flex items-center pb-4"
+              className="w-full relative overflow-hidden flex items-start pb-4"
+              style={{ maxHeight: "calc(100vh - 80px)" }}
               onClick={(e) => e.stopPropagation()}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -162,7 +163,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
             >
               {/* Sliding track: all cards laid out horizontally */}
               <motion.div
-                className="flex h-full items-stretch"
+                className="flex items-start"
                 style={{ gap: GAP }}
                 animate={{
                   x: -(current * (window.innerWidth - PEEK * 2 + GAP)) + PEEK,
@@ -174,11 +175,11 @@ export function ProductModal({ productId, onClose, products }: Props) {
                     key={p.id}
                     style={{ width: window.innerWidth - PEEK * 2, flexShrink: 0 }}
                     className={cn(
-                      "h-full transition-opacity duration-300",
+                      "transition-opacity duration-300",
                       idx === current ? "opacity-100" : "opacity-50 pointer-events-none"
                     )}
                   >
-                    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden h-full">
+                    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden">
                       <ProductCardContent
                         product={p}
                         onFullscreen={(i) => setFullscreenImg(i)}

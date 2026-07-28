@@ -336,7 +336,7 @@ function CatalogPage() {
       <ProductModal
         productId={openId ?? null}
         onClose={() => setOpenId(null)}
-        products={q ? standaloneProducts : jewelleryProducts}
+        products={standaloneProducts}
       />
     </div>
   );
