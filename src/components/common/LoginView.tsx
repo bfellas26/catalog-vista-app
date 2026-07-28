@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+﻿import { Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowLeft } from "lucide-react";
@@ -6,10 +6,12 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/store";
 
 interface LoginForm {
   username: string;
   password: string;
+  accountId?: string;
 }
 
 export interface LoginViewProps {
@@ -22,6 +24,7 @@ export interface LoginViewProps {
 
 export function LoginView({ role, tagline, redirectTo, altLabel, altHref }: LoginViewProps) {
   const navigate = useNavigate();
+  const setUser = useAuthStore((s) => s.setUser);
   const {
     register,
     handleSubmit,
@@ -29,6 +32,7 @@ export function LoginView({ role, tagline, redirectTo, altLabel, altHref }: Logi
   } = useForm<LoginForm>();
 
   const onSubmit = (data: LoginForm) => {
+    setUser({ username: data.username, accountId: data.accountId?.trim() || undefined });
     toast.success(`Welcome back, ${data.username}`);
     navigate({ to: redirectTo });
   };
@@ -94,6 +98,20 @@ export function LoginView({ role, tagline, redirectTo, altLabel, altHref }: Logi
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {role === "Business Admin" && (
+              <div className="space-y-1.5">
+                <Label htmlFor="accountId">Account ID</Label>
+                <Input
+                  id="accountId"
+                  placeholder="ACC-8832"
+                  {...register("accountId", { required: "Account ID is required" })}
+                />
+                {errors.accountId && (
+                  <p className="text-xs text-destructive">{errors.accountId.message}</p>
+                )}
+              </div>
+            )}
+
             <div className="space-y-1.5">
               <Label htmlFor="username">Username</Label>
               <Input

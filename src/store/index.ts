@@ -4,8 +4,8 @@ import { placeholderCategories, placeholderProducts, placeholderTags } from "@/l
 // Placeholder stores. No business logic — wire up when backend is added.
 
 interface AuthState {
-  user: { username: string } | null;
-  setUser: (u: { username: string } | null) => void;
+  user: { username: string; accountId?: string } | null;
+  setUser: (u: { username: string; accountId?: string } | null) => void;
 }
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,

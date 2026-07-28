@@ -1,10 +1,17 @@
 import { cn } from "@/lib/utils";
 
 const statusMap: Record<string, string> = {
+  // Account statuses
   Active: "bg-success/10 text-success",
   Trial: "bg-gold/15 text-gold",
+  // Legacy enquiry statuses (kept for backwards compat)
   Open: "bg-primary/10 text-primary",
   Responded: "bg-warning/15 text-warning",
+  // API enquiry statuses
+  NEW: "bg-primary/10 text-primary",
+  CONTACTED: "bg-warning/15 text-warning",
+  CLOSED: "bg-muted text-muted-foreground",
+  // Stock statuses
   Closed: "bg-muted text-muted-foreground",
   "In stock": "bg-success/10 text-success",
   "Out of stock": "bg-destructive/10 text-destructive",

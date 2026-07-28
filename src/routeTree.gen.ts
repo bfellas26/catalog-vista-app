@@ -9,40 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as BusinessRouteImport } from './routes/business'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as CustomerRouteImport } from './routes/_customer'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LoginIndexRouteImport } from './routes/login.index'
-import { Route as BusinessIndexRouteImport } from './routes/business.index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as LoginBusinessRouteImport } from './routes/login.business'
-import { Route as LoginAdminRouteImport } from './routes/login.admin'
-import { Route as BusinessSubscribersRouteImport } from './routes/business.subscribers'
-import { Route as BusinessSettingsRouteImport } from './routes/business.settings'
-import { Route as BusinessProductsRouteImport } from './routes/business.products'
-import { Route as BusinessProductTagsRouteImport } from './routes/business.product-tags'
-import { Route as BusinessEnquiriesRouteImport } from './routes/business.enquiries'
-import { Route as BusinessDashboardRouteImport } from './routes/business.dashboard'
-import { Route as BusinessCategoriesRouteImport } from './routes/business.categories'
-import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
-import { Route as AdminClientsRouteImport } from './routes/admin.clients'
-import { Route as CustomerContactRouteImport } from './routes/_customer.contact'
-import { Route as CustomerCatalogRouteImport } from './routes/_customer.catalog'
+import { Route as CustomerRouteImport } from './routes/_customer'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CustomerCartRouteImport } from './routes/_customer.cart'
-import { Route as AdminClientsIndexRouteImport } from './routes/admin.clients.index'
-import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
-import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
-import { Route as AdminClientsNewRouteImport } from './routes/admin.clients.new'
-import { Route as CustomerProductIdRouteImport } from './routes/_customer.product.$id'
+import { Route as CustomerCatalogRouteImport } from './routes/_customer.catalog'
+import { Route as CustomerContactRouteImport } from './routes/_customer.contact'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminClientsRouteImport } from './routes/admin.clients'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as BusinessIndexRouteImport } from './routes/business.index'
+import { Route as BusinessCategoriesRouteImport } from './routes/business.categories'
+import { Route as BusinessDashboardRouteImport } from './routes/business.dashboard'
+import { Route as BusinessEnquiriesRouteImport } from './routes/business.enquiries'
+import { Route as BusinessProductTagsRouteImport } from './routes/business.product-tags'
+import { Route as BusinessProductsRouteImport } from './routes/business.products'
+import { Route as BusinessSettingsRouteImport } from './routes/business.settings'
+import { Route as BusinessSubscribersRouteImport } from './routes/business.subscribers'
+import { Route as LoginIndexRouteImport } from './routes/login.index'
+import { Route as LoginAdminRouteImport } from './routes/login.admin'
+import { Route as LoginBusinessRouteImport } from './routes/login.business'
 import { Route as CustomerCategoryIdRouteImport } from './routes/_customer.category.$id'
-import { Route as BusinessProductsEditIdRouteImport } from './routes/business.products.edit.$id'
-import { Route as BusinessCategoriesEditIdRouteImport } from './routes/business.categories.edit.$id'
+import { Route as CustomerProductIdRouteImport } from './routes/_customer.product.$id'
+import { Route as AdminClientsIndexRouteImport } from './routes/admin.clients.index'
+import { Route as AdminClientsNewRouteImport } from './routes/admin.clients.new'
+import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
+import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
 import { Route as AdminClientsEditIdRouteImport } from './routes/admin.clients.edit.$id'
+import { Route as BusinessCategoriesEditIdRouteImport } from './routes/business.categories.edit.$id'
+import { Route as BusinessProductsEditIdRouteImport } from './routes/business.products.edit.$id'
 
-const BusinessRoute = BusinessRouteImport.update({
-  id: '/business',
-  path: '/business',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerRoute = CustomerRouteImport.update({
+  id: '/_customer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -50,88 +54,14 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CustomerRoute = CustomerRouteImport.update({
-  id: '/_customer',
+const BusinessRoute = BusinessRouteImport.update({
+  id: '/business',
+  path: '/business',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginIndexRoute = LoginIndexRouteImport.update({
-  id: '/login/',
-  path: '/login/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessIndexRoute = BusinessIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const LoginBusinessRoute = LoginBusinessRouteImport.update({
-  id: '/login/business',
-  path: '/login/business',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginAdminRoute = LoginAdminRouteImport.update({
-  id: '/login/admin',
-  path: '/login/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessSubscribersRoute = BusinessSubscribersRouteImport.update({
-  id: '/subscribers',
-  path: '/subscribers',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessSettingsRoute = BusinessSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessProductsRoute = BusinessProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessProductTagsRoute = BusinessProductTagsRouteImport.update({
-  id: '/product-tags',
-  path: '/product-tags',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessEnquiriesRoute = BusinessEnquiriesRouteImport.update({
-  id: '/enquiries',
-  path: '/enquiries',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessDashboardRoute = BusinessDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const BusinessCategoriesRoute = BusinessCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => BusinessRoute,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminClientsRoute = AdminClientsRouteImport.update({
-  id: '/clients',
-  path: '/clients',
-  getParentRoute: () => AdminRoute,
-} as any)
-const CustomerContactRoute = CustomerContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const CustomerCartRoute = CustomerCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => CustomerRoute,
 } as any)
 const CustomerCatalogRoute = CustomerCatalogRouteImport.update({
@@ -139,9 +69,89 @@ const CustomerCatalogRoute = CustomerCatalogRouteImport.update({
   path: '/catalog',
   getParentRoute: () => CustomerRoute,
 } as any)
-const CustomerCartRoute = CustomerCartRouteImport.update({
-  id: '/cart',
-  path: '/cart',
+const CustomerContactRoute = CustomerContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientsRoute = AdminClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const BusinessIndexRoute = BusinessIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessCategoriesRoute = BusinessCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessDashboardRoute = BusinessDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessEnquiriesRoute = BusinessEnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessProductTagsRoute = BusinessProductTagsRouteImport.update({
+  id: '/product-tags',
+  path: '/product-tags',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessProductsRoute = BusinessProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessSettingsRoute = BusinessSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const BusinessSubscribersRoute = BusinessSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => BusinessRoute,
+} as any)
+const LoginIndexRoute = LoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginAdminRoute = LoginAdminRouteImport.update({
+  id: '/login/admin',
+  path: '/login/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginBusinessRoute = LoginBusinessRouteImport.update({
+  id: '/login/business',
+  path: '/login/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomerCategoryIdRoute = CustomerCategoryIdRouteImport.update({
+  id: '/category/$id',
+  path: '/category/$id',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerProductIdRoute = CustomerProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
   getParentRoute: () => CustomerRoute,
 } as any)
 const AdminClientsIndexRoute = AdminClientsIndexRouteImport.update({
@@ -149,35 +159,25 @@ const AdminClientsIndexRoute = AdminClientsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminClientsRoute,
 } as any)
-const BusinessProductsNewRoute = BusinessProductsNewRouteImport.update({
+const AdminClientsNewRoute = AdminClientsNewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => BusinessProductsRoute,
+  getParentRoute: () => AdminClientsRoute,
 } as any)
 const BusinessCategoriesNewRoute = BusinessCategoriesNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => BusinessCategoriesRoute,
 } as any)
-const AdminClientsNewRoute = AdminClientsNewRouteImport.update({
+const BusinessProductsNewRoute = BusinessProductsNewRouteImport.update({
   id: '/new',
   path: '/new',
-  getParentRoute: () => AdminClientsRoute,
+  getParentRoute: () => BusinessProductsRoute,
 } as any)
-const CustomerProductIdRoute = CustomerProductIdRouteImport.update({
-  id: '/product/$id',
-  path: '/product/$id',
-  getParentRoute: () => CustomerRoute,
-} as any)
-const CustomerCategoryIdRoute = CustomerCategoryIdRouteImport.update({
-  id: '/category/$id',
-  path: '/category/$id',
-  getParentRoute: () => CustomerRoute,
-} as any)
-const BusinessProductsEditIdRoute = BusinessProductsEditIdRouteImport.update({
+const AdminClientsEditIdRoute = AdminClientsEditIdRouteImport.update({
   id: '/edit/$id',
   path: '/edit/$id',
-  getParentRoute: () => BusinessProductsRoute,
+  getParentRoute: () => AdminClientsRoute,
 } as any)
 const BusinessCategoriesEditIdRoute =
   BusinessCategoriesEditIdRouteImport.update({
@@ -185,10 +185,10 @@ const BusinessCategoriesEditIdRoute =
     path: '/edit/$id',
     getParentRoute: () => BusinessCategoriesRoute,
   } as any)
-const AdminClientsEditIdRoute = AdminClientsEditIdRouteImport.update({
+const BusinessProductsEditIdRoute = BusinessProductsEditIdRouteImport.update({
   id: '/edit/$id',
   path: '/edit/$id',
-  getParentRoute: () => AdminClientsRoute,
+  getParentRoute: () => BusinessProductsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -389,18 +389,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/business': {
-      id: '/business'
-      path: '/business'
-      fullPath: '/business'
-      preLoaderRoute: typeof BusinessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_customer': {
@@ -410,116 +403,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login/': {
-      id: '/login/'
-      path: '/login'
-      fullPath: '/login/'
-      preLoaderRoute: typeof LoginIndexRouteImport
+    '/business': {
+      id: '/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof BusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/business/': {
-      id: '/business/'
-      path: '/'
-      fullPath: '/business/'
-      preLoaderRoute: typeof BusinessIndexRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/login/business': {
-      id: '/login/business'
-      path: '/login/business'
-      fullPath: '/login/business'
-      preLoaderRoute: typeof LoginBusinessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login/admin': {
-      id: '/login/admin'
-      path: '/login/admin'
-      fullPath: '/login/admin'
-      preLoaderRoute: typeof LoginAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business/subscribers': {
-      id: '/business/subscribers'
-      path: '/subscribers'
-      fullPath: '/business/subscribers'
-      preLoaderRoute: typeof BusinessSubscribersRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/settings': {
-      id: '/business/settings'
-      path: '/settings'
-      fullPath: '/business/settings'
-      preLoaderRoute: typeof BusinessSettingsRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/products': {
-      id: '/business/products'
-      path: '/products'
-      fullPath: '/business/products'
-      preLoaderRoute: typeof BusinessProductsRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/product-tags': {
-      id: '/business/product-tags'
-      path: '/product-tags'
-      fullPath: '/business/product-tags'
-      preLoaderRoute: typeof BusinessProductTagsRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/enquiries': {
-      id: '/business/enquiries'
-      path: '/enquiries'
-      fullPath: '/business/enquiries'
-      preLoaderRoute: typeof BusinessEnquiriesRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/dashboard': {
-      id: '/business/dashboard'
-      path: '/dashboard'
-      fullPath: '/business/dashboard'
-      preLoaderRoute: typeof BusinessDashboardRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/business/categories': {
-      id: '/business/categories'
-      path: '/categories'
-      fullPath: '/business/categories'
-      preLoaderRoute: typeof BusinessCategoriesRouteImport
-      parentRoute: typeof BusinessRoute
-    }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/clients': {
-      id: '/admin/clients'
-      path: '/clients'
-      fullPath: '/admin/clients'
-      preLoaderRoute: typeof AdminClientsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/_customer/contact': {
-      id: '/_customer/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof CustomerContactRouteImport
+    '/_customer/cart': {
+      id: '/_customer/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CustomerCartRouteImport
       parentRoute: typeof CustomerRoute
     }
     '/_customer/catalog': {
@@ -529,11 +431,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CustomerCatalogRouteImport
       parentRoute: typeof CustomerRoute
     }
-    '/_customer/cart': {
-      id: '/_customer/cart'
-      path: '/cart'
-      fullPath: '/cart'
-      preLoaderRoute: typeof CustomerCartRouteImport
+    '/_customer/contact': {
+      id: '/_customer/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof CustomerContactRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/clients': {
+      id: '/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/business/': {
+      id: '/business/'
+      path: '/'
+      fullPath: '/business/'
+      preLoaderRoute: typeof BusinessIndexRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/categories': {
+      id: '/business/categories'
+      path: '/categories'
+      fullPath: '/business/categories'
+      preLoaderRoute: typeof BusinessCategoriesRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/dashboard': {
+      id: '/business/dashboard'
+      path: '/dashboard'
+      fullPath: '/business/dashboard'
+      preLoaderRoute: typeof BusinessDashboardRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/enquiries': {
+      id: '/business/enquiries'
+      path: '/enquiries'
+      fullPath: '/business/enquiries'
+      preLoaderRoute: typeof BusinessEnquiriesRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/product-tags': {
+      id: '/business/product-tags'
+      path: '/product-tags'
+      fullPath: '/business/product-tags'
+      preLoaderRoute: typeof BusinessProductTagsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/products': {
+      id: '/business/products'
+      path: '/products'
+      fullPath: '/business/products'
+      preLoaderRoute: typeof BusinessProductsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/settings': {
+      id: '/business/settings'
+      path: '/settings'
+      fullPath: '/business/settings'
+      preLoaderRoute: typeof BusinessSettingsRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/business/subscribers': {
+      id: '/business/subscribers'
+      path: '/subscribers'
+      fullPath: '/business/subscribers'
+      preLoaderRoute: typeof BusinessSubscribersRouteImport
+      parentRoute: typeof BusinessRoute
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login/'
+      preLoaderRoute: typeof LoginIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/admin': {
+      id: '/login/admin'
+      path: '/login/admin'
+      fullPath: '/login/admin'
+      preLoaderRoute: typeof LoginAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/business': {
+      id: '/login/business'
+      path: '/login/business'
+      fullPath: '/login/business'
+      preLoaderRoute: typeof LoginBusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_customer/category/$id': {
+      id: '/_customer/category/$id'
+      path: '/category/$id'
+      fullPath: '/category/$id'
+      preLoaderRoute: typeof CustomerCategoryIdRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/_customer/product/$id': {
+      id: '/_customer/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof CustomerProductIdRouteImport
       parentRoute: typeof CustomerRoute
     }
     '/admin/clients/': {
@@ -543,12 +557,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClientsIndexRouteImport
       parentRoute: typeof AdminClientsRoute
     }
-    '/business/products/new': {
-      id: '/business/products/new'
+    '/admin/clients/new': {
+      id: '/admin/clients/new'
       path: '/new'
-      fullPath: '/business/products/new'
-      preLoaderRoute: typeof BusinessProductsNewRouteImport
-      parentRoute: typeof BusinessProductsRoute
+      fullPath: '/admin/clients/new'
+      preLoaderRoute: typeof AdminClientsNewRouteImport
+      parentRoute: typeof AdminClientsRoute
     }
     '/business/categories/new': {
       id: '/business/categories/new'
@@ -557,33 +571,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessCategoriesNewRouteImport
       parentRoute: typeof BusinessCategoriesRoute
     }
-    '/admin/clients/new': {
-      id: '/admin/clients/new'
+    '/business/products/new': {
+      id: '/business/products/new'
       path: '/new'
-      fullPath: '/admin/clients/new'
-      preLoaderRoute: typeof AdminClientsNewRouteImport
-      parentRoute: typeof AdminClientsRoute
-    }
-    '/_customer/product/$id': {
-      id: '/_customer/product/$id'
-      path: '/product/$id'
-      fullPath: '/product/$id'
-      preLoaderRoute: typeof CustomerProductIdRouteImport
-      parentRoute: typeof CustomerRoute
-    }
-    '/_customer/category/$id': {
-      id: '/_customer/category/$id'
-      path: '/category/$id'
-      fullPath: '/category/$id'
-      preLoaderRoute: typeof CustomerCategoryIdRouteImport
-      parentRoute: typeof CustomerRoute
-    }
-    '/business/products/edit/$id': {
-      id: '/business/products/edit/$id'
-      path: '/edit/$id'
-      fullPath: '/business/products/edit/$id'
-      preLoaderRoute: typeof BusinessProductsEditIdRouteImport
+      fullPath: '/business/products/new'
+      preLoaderRoute: typeof BusinessProductsNewRouteImport
       parentRoute: typeof BusinessProductsRoute
+    }
+    '/admin/clients/edit/$id': {
+      id: '/admin/clients/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/admin/clients/edit/$id'
+      preLoaderRoute: typeof AdminClientsEditIdRouteImport
+      parentRoute: typeof AdminClientsRoute
     }
     '/business/categories/edit/$id': {
       id: '/business/categories/edit/$id'
@@ -592,12 +592,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessCategoriesEditIdRouteImport
       parentRoute: typeof BusinessCategoriesRoute
     }
-    '/admin/clients/edit/$id': {
-      id: '/admin/clients/edit/$id'
+    '/business/products/edit/$id': {
+      id: '/business/products/edit/$id'
       path: '/edit/$id'
-      fullPath: '/admin/clients/edit/$id'
-      preLoaderRoute: typeof AdminClientsEditIdRouteImport
-      parentRoute: typeof AdminClientsRoute
+      fullPath: '/business/products/edit/$id'
+      preLoaderRoute: typeof BusinessProductsEditIdRouteImport
+      parentRoute: typeof BusinessProductsRoute
     }
   }
 }
