@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
-import { X, ShoppingBag, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Minus, Plus, ChevronLeft, ChevronRight, Maximize2, Printer } from "lucide-react";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
 import { formatINR, type Jewel } from "@/lib/jewellery-data";
 import { cn } from "@/lib/utils";
+import { printProduct } from "@/lib/print-product";
 
 type Props = {
   productId: string | null;
@@ -19,45 +19,25 @@ export function ProductModal({ productId, onClose, products }: Props) {
     products.findIndex((p) => p.id === productId),
   );
   const [current, setCurrent] = useState(startIndex);
-  const [activeFullscreenImageIdx, setActiveFullscreenImageIdx] = useState<number | null>(null);
-  const [cardWidth, setCardWidth] = useState(720);
+  const [fullscreenImg, setFullscreenImg] = useState<number | null>(null);
 
-  // Sync index when productId shifts from outside
   useEffect(() => {
     if (productId) {
       const idx = products.findIndex((p) => p.id === productId);
-      if (idx >= 0) {
-        setCurrent(idx);
-      }
+      if (idx >= 0) setCurrent(idx);
     }
   }, [productId, products]);
 
-  // Handle window resizing to calculate responsive cardWidth size in pixels
-  useEffect(() => {
-    const handleResize = () => {
-      const w = window.innerWidth;
-      if (w >= 1024) {
-        setCardWidth(768);
-      } else if (w >= 768) {
-        // iPad/Tablet size: fill viewport and peek by 44px
-        setCardWidth(w - 120);
-      } else {
-        // Mobile size: fill viewport and peek by 30px
-        setCardWidth(Math.max(280, w - 92));
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Handle keyboard events (escape key to close)
   useEffect(() => {
     if (!productId) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (activeFullscreenImageIdx !== null) setActiveFullscreenImageIdx(null);
+        if (fullscreenImg !== null) setFullscreenImg(null);
         else onClose();
+      } else if (e.key === "ArrowRight" && fullscreenImg === null) {
+        setCurrent((c) => Math.min(products.length - 1, c + 1));
+      } else if (e.key === "ArrowLeft" && fullscreenImg === null) {
+        setCurrent((c) => Math.max(0, c - 1));
       }
     };
     window.addEventListener("keydown", onKey);
@@ -66,215 +46,158 @@ export function ProductModal({ productId, onClose, products }: Props) {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [productId, activeFullscreenImageIdx, onClose]);
+  }, [productId, fullscreenImg, onClose, products.length]);
 
   const open = productId !== null;
   if (!open || products.length === 0) return null;
 
   const product = products[Math.min(current, products.length - 1)] || products[0];
 
+  const goNext = () => setCurrent((c) => Math.min(products.length - 1, c + 1));
+  const goPrev = () => setCurrent((c) => Math.max(0, c - 1));
+
   return (
     <>
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-0 overflow-hidden"
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           >
-            {/* Close Button placed on the dark backdrop boundary */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 z-[99] grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white shadow-md transition cursor-pointer"
+              className="absolute top-3 right-3 sm:top-5 sm:right-5 z-[99] grid h-10 w-10 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
               aria-label="Close"
             >
               <X className="h-5 w-5" />
             </button>
 
-            {/* Modal Container: transparent viewport containing the swipe stack */}
-            {(() => {
-              const containerWidth = Math.min(window.innerWidth, 1024);
-              const x_0 = (containerWidth - cardWidth) / 2;
-              const x_last = x_0 - (products.length - 1) * (cardWidth + 16);
-
-              return (
-                <div
-                  onClick={(e) => e.stopPropagation()}
-                  className="relative w-full max-w-5xl overflow-hidden h-[85vh] max-h-[580px] sm:max-h-[640px] lg:max-h-[680px] flex flex-col justify-center items-center"
+            {/* Nav chevrons */}
+            {products.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goPrev();
+                  }}
+                  disabled={current === 0}
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[95] grid h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
+                  aria-label="Previous product"
                 >
-                  {/* Swipable Card Slider */}
-                  <div className="flex-1 overflow-hidden relative w-full h-full flex items-center">
-                    <motion.div
-                      drag="x"
-                      dragElastic={0.2}
-                      dragConstraints={{ left: x_last, right: x_0 }}
-                      animate={{
-                        x: x_0 - current * (cardWidth + 16),
-                      }}
-                      onDragEnd={(event, info) => {
-                        const swipeThreshold = 50;
-                        if (info.offset.x < -swipeThreshold && current < products.length - 1) {
-                          setCurrent(current + 1);
-                        } else if (info.offset.x > swipeThreshold && current > 0) {
-                          setCurrent(current - 1);
-                        }
-                      }}
-                      className="flex gap-4 h-full items-center py-4 select-none cursor-grab active:cursor-grabbing"
-                    >
-                      {products.map((p, idx) => (
-                        <SwipeCardContent
-                          key={p.id}
-                          product={p}
-                          active={idx === current}
-                          cardWidth={cardWidth}
-                          onFullscreen={(imgIdx) => setActiveFullscreenImageIdx(imgIdx)}
-                        />
-                      ))}
-                    </motion.div>
-                  </div>
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goNext();
+                  }}
+                  disabled={current === products.length - 1}
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-[95] grid h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
+                  aria-label="Next product"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
+            )}
 
-                  {/* Desktop Nav Chevrons (only helper controls showing when multiple products exist) */}
-                  {products.length > 1 && (
-                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 hidden lg:flex justify-between pointer-events-none px-4 z-[95]">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (current > 0) setCurrent(current - 1);
-                        }}
-                        className={cn(
-                          "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
-                          current === 0 && "opacity-20 pointer-events-none"
-                        )}
-                        aria-label="Previous product"
-                      >
-                        <ChevronLeft className="h-6 w-6" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (current < products.length - 1) setCurrent(current + 1);
-                        }}
-                        className={cn(
-                          "grid h-12 w-12 place-items-center rounded-full bg-black/30 hover:bg-black/50 text-white transition pointer-events-auto",
-                          current === products.length - 1 && "opacity-20 pointer-events-none"
-                        )}
-                        aria-label="Next product"
-                      >
-                        <ChevronRight className="h-6 w-6" />
-                      </button>
-                    </div>
-                  )}
+            {/* Card with swipe */}
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-4xl"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ duration: 0.25 }}
+                  drag="x"
+                  dragElastic={0.15}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  onDragEnd={(_e, info) => {
+                    if (info.offset.x < -60 || info.velocity.x < -400) goNext();
+                    else if (info.offset.x > 60 || info.velocity.x > 400) goPrev();
+                  }}
+                  style={{ touchAction: "pan-y" }}
+                  className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden cursor-grab active:cursor-grabbing"
+                >
+                  <ProductCardContent
+                    product={product}
+                    onFullscreen={(i) => setFullscreenImg(i)}
+                  />
+                </motion.div>
+              </AnimatePresence>
+
+              {products.length > 1 && (
+                <div className="mt-3 text-center text-xs text-white/60 select-none">
+                  {current + 1} / {products.length}
                 </div>
-              );
-            })()}
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Fullscreen Image Overlay */}
+      {/* Fullscreen image */}
       <AnimatePresence>
-        {activeFullscreenImageIdx !== null && (
+        {fullscreenImg !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] bg-black/95 flex flex-col items-center justify-center p-4 select-none"
+            className="fixed inset-0 z-[80] bg-black/95 flex items-center justify-center p-4"
+            onClick={() => setFullscreenImg(null)}
           >
-            {/* Close Button */}
             <button
-              onClick={() => setActiveFullscreenImageIdx(null)}
-              className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition z-[90] cursor-pointer"
-              aria-label="Close fullscreen view"
+              onClick={() => setFullscreenImg(null)}
+              className="absolute top-5 right-5 grid h-10 w-10 place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white z-[90]"
+              aria-label="Close"
             >
               <X className="h-5 w-5" />
             </button>
-
-            {/* Left Chevron Button */}
             {product.images.length > 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveFullscreenImageIdx((prev) =>
-                    prev !== null
-                      ? (prev - 1 + product.images.length) % product.images.length
-                      : null,
-                  );
-                }}
-                className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition z-[90] cursor-pointer"
-                aria-label="Previous image"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-            )}
-
-            {/* Right Chevron Button */}
-            {product.images.length > 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveFullscreenImageIdx((prev) =>
-                    prev !== null ? (prev + 1) % product.images.length : null,
-                  );
-                }}
-                className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full transition z-[90] cursor-pointer"
-                aria-label="Next image"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-            )}
-
-            {/* Main Image Slider Container */}
-            <div className="relative w-full max-w-3xl aspect-square sm:aspect-[4/3] flex items-center justify-center overflow-hidden">
-              <AnimatePresence mode="popLayout" custom={activeFullscreenImageIdx}>
-                <motion.img
-                  key={activeFullscreenImageIdx}
-                  src={product.images[activeFullscreenImageIdx]}
-                  alt={`${product.name} zoom`}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.6}
-                  onDragEnd={(event, info) => {
-                    if (info.offset.x < -60) {
-                      setActiveFullscreenImageIdx((prev) =>
-                        prev !== null ? (prev + 1) % product.images.length : null,
-                      );
-                    } else if (info.offset.x > 60) {
-                      setActiveFullscreenImageIdx((prev) =>
-                        prev !== null
-                          ? (prev - 1 + product.images.length) % product.images.length
-                          : null,
-                      );
-                    }
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFullscreenImg((p) =>
+                      p !== null ? (p - 1 + product.images.length) % product.images.length : null,
+                    );
                   }}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl cursor-grab active:cursor-grabbing select-none"
-                />
-              </AnimatePresence>
-            </div>
-
-            {/* Pagination Dots */}
-            {product.images.length > 1 && (
-              <div className="absolute bottom-8 flex gap-2 z-[90]">
-                {product.images.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveFullscreenImageIdx(idx)}
-                    className={cn(
-                      "h-2 w-2 rounded-full transition-all duration-300 cursor-pointer",
-                      idx === activeFullscreenImageIdx
-                        ? "bg-white w-6"
-                        : "bg-white/40 hover:bg-white/70",
-                    )}
-                    aria-label={`Go to slide ${idx + 1}`}
-                  />
-                ))}
-              </div>
+                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white z-[90]"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFullscreenImg((p) =>
+                      p !== null ? (p + 1) % product.images.length : null,
+                    );
+                  }}
+                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/10 hover:bg-white/20 text-white z-[90]"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </>
             )}
+            <motion.img
+              key={fullscreenImg}
+              src={product.images[fullscreenImg]}
+              alt={product.name}
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              className="max-w-full max-h-full object-contain rounded-lg select-none"
+              draggable={false}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -282,75 +205,53 @@ export function ProductModal({ productId, onClose, products }: Props) {
   );
 }
 
-function SwipeCardContent({
+function ProductCardContent({
   product,
   onFullscreen,
-  active,
-  cardWidth,
 }: {
   product: Jewel;
   onFullscreen: (idx: number) => void;
-  active: boolean;
-  cardWidth: number;
 }) {
-  const [activeImgIdx, setActiveImgIdx] = useState(0);
-  const [qty, setQty] = useState(1);
-  const addToCart = useCartStore((s) => s.add);
+  const [imgIdx, setImgIdx] = useState(0);
+  const cartItems = useCartStore((s) => s.items);
+  const add = useCartStore((s) => s.add);
+  const remove = useCartStore((s) => s.remove);
+  const setQty = useCartStore((s) => s.setQty);
+  const cartItem = cartItems.find((i) => i.id === product.id);
+  const qty = cartItem ? cartItem.qty : 0;
 
-  // Reset indices when product changes
-  useEffect(() => {
-    setActiveImgIdx(0);
-    setQty(1);
-  }, [product]);
-
-  const activeImage =
-    product.images[Math.min(activeImgIdx, product.images.length - 1)] || product.images[0];
-
-  const handleAdd = () => {
-    addToCart({ id: product.id, name: product.name, price: product.price, qty });
-    toast.success(`${qty}x ${product.name} added to cart`, { duration: 1500 });
-  };
+  useEffect(() => setImgIdx(0), [product.id]);
 
   return (
-    <div
-      style={{ width: cardWidth }}
-      className={cn(
-        "shrink-0 bg-white rounded-3xl shadow-2xl border border-[#3a1f2d]/5 flex flex-col sm:flex-row h-full overflow-hidden transition-all duration-300 relative",
-        active ? "scale-100 opacity-100" : "scale-95 opacity-40 pointer-events-none"
-      )}
-    >
-      {/* Image Gallery Column */}
-      <div className="w-full sm:w-1/2 flex flex-col p-4 sm:p-6 lg:p-8 bg-[#faf6f1] justify-center items-center border-b sm:border-b-0 sm:border-r border-[#3a1f2d]/5 overflow-y-auto sm:overflow-y-visible">
-        {/* Main image - Aspect square */}
-        <div
-          onClick={() => active && onFullscreen(activeImgIdx)}
-          className={cn(
-            "relative aspect-square w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[340px] overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 shadow-sm group",
-            active && "cursor-zoom-in"
-          )}
+    <div className="grid grid-cols-1 md:grid-cols-2 max-h-[90vh]">
+      {/* Image */}
+      <div className="bg-[#faf6f1] p-4 sm:p-6 md:p-7 flex flex-col gap-3">
+        <button
+          onClick={() => onFullscreen(imgIdx)}
+          className="relative aspect-square w-full overflow-hidden rounded-xl bg-white border border-[#3a1f2d]/5 group"
         >
           <img
-            src={activeImage}
+            src={product.images[imgIdx]}
             alt={product.name}
             draggable={false}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-102"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
-        </div>
-
-        {/* Thumbnails */}
+          <span className="absolute bottom-2 right-2 grid h-8 w-8 place-items-center rounded-full bg-white/85 backdrop-blur text-[#3a1f2d] shadow opacity-0 group-hover:opacity-100 transition">
+            <Maximize2 className="h-4 w-4" />
+          </span>
+        </button>
         {product.images.length > 1 && (
-          <div className="flex justify-center gap-2 mt-3 lg:mt-4 overflow-x-auto w-full max-w-[220px] sm:max-w-[280px] lg:max-w-[340px] py-1 select-none">
+          <div className="flex justify-center gap-2">
             {product.images.map((src, idx) => (
               <button
                 key={src + idx}
-                onClick={() => active && setActiveImgIdx(idx)}
+                onClick={() => setImgIdx(idx)}
                 className={cn(
-                  "box-border h-9 w-9 lg:h-11 lg:w-11 shrink-0 rounded-lg overflow-hidden border-2 bg-white transition",
-                  idx === activeImgIdx
+                  "h-11 w-11 shrink-0 rounded-md overflow-hidden border-2 transition",
+                  idx === imgIdx
                     ? "border-[#3a1f2d]"
                     : "border-transparent opacity-60 hover:opacity-100",
                 )}
-                disabled={!active}
               >
                 <img src={src} alt="" className="h-full w-full object-cover" draggable={false} />
               </button>
@@ -359,53 +260,103 @@ function SwipeCardContent({
         )}
       </div>
 
-      {/* Details Column */}
-      <div className="w-full sm:w-1/2 p-4 sm:p-6 lg:p-8 flex flex-col justify-between overflow-y-auto overflow-x-hidden max-h-[50vh] sm:max-h-full">
-        <div className="space-y-3 sm:space-y-4 lg:space-y-5">
-          <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight leading-tight">
-            {product.name}
-          </h2>
-
-          <div className="font-display text-xl lg:text-2xl font-bold text-[#3a1f2d]">
-            {formatINR(product.price)}
-          </div>
-
-          <div className="border-t border-[#3a1f2d]/5 pt-3 lg:pt-4">
-            <p className="text-xs sm:text-sm font-light leading-relaxed text-[#3a1f2d]/80 whitespace-pre-line">
-              {product.description}
+      {/* Details */}
+      <div className="p-5 sm:p-7 md:p-8 flex flex-col overflow-y-auto">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold tracking-[0.25em] text-amber-700 uppercase">
+              Signature
             </p>
+            <h2 className="mt-1.5 font-display text-2xl sm:text-3xl font-semibold tracking-tight leading-tight text-[#3a1f2d]">
+              {product.name}
+            </h2>
           </div>
+          <button
+            onClick={() => printProduct(product)}
+            className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-[#3a1f2d]/15 text-[#3a1f2d]/70 hover:bg-[#faf6f1] hover:text-[#3a1f2d] transition"
+            aria-label="Print product details"
+            title="Print / Save as PDF"
+          >
+            <Printer className="h-4 w-4" />
+          </button>
         </div>
 
-        {/* Quantity and Add buttons */}
-        <div className="mt-4 sm:mt-6 lg:mt-8 border-t border-[#3a1f2d]/5 pt-4 lg:pt-6 space-y-3">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <div className="flex items-center rounded-lg border border-[#3a1f2d]/15 bg-white shrink-0 h-10 w-28">
+        <p className="mt-3 font-display text-2xl font-bold text-[#3a1f2d]">
+          {formatINR(product.price)}
+        </p>
+
+        {product.tags?.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {product.tags.map((t) => (
+              <span
+                key={t}
+                className="text-[10px] px-2 py-0.5 rounded-full bg-[#3a1f2d]/5 text-[#3a1f2d]/70 uppercase tracking-wider"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-4 border-t border-[#3a1f2d]/10 pt-3 text-sm text-[#3a1f2d]/75 leading-relaxed font-light line-clamp-4">
+          {product.description}
+        </div>
+
+        <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+          {[
+            ["Metal", product.metal],
+            ["Purity", product.purity],
+            ["Weight", product.weight],
+            ["Stones", product.stones],
+          ]
+            .filter(([, v]) => !!v)
+            .map(([k, v]) => (
+              <div key={k as string} className="flex flex-col">
+                <dt className="text-[10px] uppercase tracking-widest text-[#3a1f2d]/50">{k}</dt>
+                <dd className="mt-0.5 font-medium text-[#3a1f2d]">{v}</dd>
+              </div>
+            ))}
+        </dl>
+
+        <div className="mt-auto pt-5 flex justify-end">
+          {qty === 0 ? (
+            <button
+              onClick={() => {
+                add({ id: product.id, name: product.name, price: product.price, qty: 1 });
+                toast.success(`${product.name} added`, { duration: 1500 });
+              }}
+              className="grid h-10 w-10 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition shadow-sm"
+              aria-label="Add to cart"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          ) : (
+            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-10">
               <button
-                onClick={() => active && setQty((q) => Math.max(1, q - 1))}
-                className="w-9 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-l-lg flex items-center justify-center"
-                disabled={!active}
+                onClick={() => {
+                  if (qty === 1) {
+                    remove(product.id);
+                  } else {
+                    setQty(product.id, qty - 1);
+                  }
+                }}
+                className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
+                aria-label="Decrease"
               >
                 <Minus className="h-4 w-4" />
               </button>
-              <span className="w-10 text-center text-sm font-semibold select-none">{qty}</span>
+              <span className="min-w-[1.5rem] text-center text-sm font-semibold text-[#3a1f2d]">
+                {qty}
+              </span>
               <button
-                onClick={() => active && setQty((q) => q + 1)}
-                className="w-9 text-[#3a1f2d]/70 hover:bg-[#faf6f1] transition h-full rounded-r-lg flex items-center justify-center"
-                disabled={!active}
+                onClick={() => setQty(product.id, qty + 1)}
+                className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
+                aria-label="Increase"
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
-
-            <Button
-              onClick={() => active && handleAdd()}
-              className="w-full sm:flex-grow bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-lg h-10 text-sm font-medium border-none flex-grow"
-              disabled={!active}
-            >
-              <ShoppingBag className="mr-1.5 h-4 w-4 inline" /> Add to Enquiry
-            </Button>
-          </div>
+          )}
         </div>
       </div>
     </div>
