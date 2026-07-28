@@ -94,24 +94,37 @@ export function ProductModal({ productId, onClose, products }: Props) {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           >
-            {/* Top bar: close + indicator dots */}
+            {/* Close button — absolute top-right */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-[99] grid h-10 w-10 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Top bar: dots + desktop chevrons */}
             <div
-              className="flex items-center justify-between px-4 pt-safe pt-3 pb-2 z-[99]"
+              className="flex items-center justify-center gap-4 px-4 pt-3 pb-2 z-[95]"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={onClose}
-                className="grid h-9 w-9 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition"
-                aria-label="Close"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              {/* Desktop nav chevrons (shown only on lg+) */}
+              <div className="hidden lg:flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                  disabled={current === 0}
+                  className="grid h-9 w-9 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-30 disabled:pointer-events-none"
+                  aria-label="Previous"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+              </div>
 
               {products.length > 1 && (
                 <div className="flex items-center gap-1.5">
@@ -129,16 +142,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
                 </div>
               )}
 
-              {/* Desktop nav chevrons (shown only on lg+) */}
               <div className="hidden lg:flex items-center gap-2">
-                <button
-                  onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                  disabled={current === 0}
-                  className="grid h-9 w-9 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-30 disabled:pointer-events-none"
-                  aria-label="Previous"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); goNext(); }}
                   disabled={current === products.length - 1}
@@ -148,14 +152,11 @@ export function ProductModal({ productId, onClose, products }: Props) {
                   <ChevronRight className="h-5 w-5" />
                 </button>
               </div>
-              {/* spacer for small screens to balance the layout */}
-              <div className="lg:hidden w-9" />
             </div>
 
-            {/* Cards viewport */}
+            {/* Cards viewport — uses dvh for accurate mobile height, uniform across all cards */}
             <div
-              className="w-full relative overflow-hidden flex items-start pb-4"
-              style={{ maxHeight: "calc(100vh - 80px)" }}
+              className="flex-1 relative overflow-hidden flex items-stretch pb-4"
               onClick={(e) => e.stopPropagation()}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -163,7 +164,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
             >
               {/* Sliding track: all cards laid out horizontally */}
               <motion.div
-                className="flex items-start"
+                className="flex h-full items-stretch"
                 style={{ gap: GAP }}
                 animate={{
                   x: -(current * (window.innerWidth - PEEK * 2 + GAP)) + PEEK,
@@ -175,11 +176,11 @@ export function ProductModal({ productId, onClose, products }: Props) {
                     key={p.id}
                     style={{ width: window.innerWidth - PEEK * 2, flexShrink: 0 }}
                     className={cn(
-                      "transition-opacity duration-300",
+                      "h-full transition-opacity duration-300",
                       idx === current ? "opacity-100" : "opacity-50 pointer-events-none"
                     )}
                   >
-                    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden">
+                    <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden h-full">
                       <ProductCardContent
                         product={p}
                         onFullscreen={(i) => setFullscreenImg(i)}
