@@ -1,17 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, Search, ArrowLeft, ShoppingBag, Minus, Plus } from "lucide-react";
+import { Filter, Search, ArrowLeft, Minus, Plus, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { jewelleryCategories, jewelleryProducts, formatINR } from "@/lib/jewellery-data";
 import { ProductModal } from "@/components/customer/ProductModal";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
+import { printProduct } from "@/lib/print-product";
 
 const categorySearchSchema = z.object({
   product: z.string().optional(),
