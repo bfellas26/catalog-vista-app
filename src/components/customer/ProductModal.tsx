@@ -94,7 +94,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col"
+            className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col justify-center py-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -111,7 +111,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
 
             {/* Top bar: dots + desktop chevrons */}
             <div
-              className="flex items-center justify-center gap-4 px-4 pt-3 pb-2 z-[95]"
+              className="flex items-center justify-center gap-4 px-4 pt-2 pb-2 shrink-0 z-[95]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Desktop nav chevrons (shown only on lg+) */}
@@ -156,7 +156,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
 
             {/* Cards viewport — uniform height, gap at bottom so cards don't touch screen edge */}
             <div
-              className="flex-1 relative overflow-hidden flex items-stretch px-0 pb-6"
+              className="w-full relative overflow-hidden flex items-stretch px-0 max-h-[82vh] md:max-h-[75vh] h-[560px] sm:h-[620px] md:h-[520px] lg:h-[580px] my-auto shrink-0"
               onClick={(e) => e.stopPropagation()}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
@@ -277,7 +277,7 @@ function ProductCardContent({
   return (
     <div className="grid grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-2 md:grid-rows-none h-full max-h-full overflow-hidden">
       {/* Image */}
-      <div className="bg-[#faf6f1] p-3 sm:p-4 flex flex-col gap-2 overflow-y-auto">
+      <div className="bg-[#faf6f1] p-3 sm:p-4 flex flex-col gap-2 overflow-y-auto max-h-[250px] sm:max-h-[300px] md:max-h-none shrink-0">
         <button
           onClick={() => onFullscreen(imgIdx)}
           className="relative aspect-square w-full overflow-hidden rounded-xl bg-white border border-[#3a1f2d]/5 group"

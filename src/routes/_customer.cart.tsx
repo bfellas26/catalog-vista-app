@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store";
 import { EmptyState } from "@/components/common/EmptyState";
@@ -37,6 +37,27 @@ function CartPage() {
     window.open(url, "_blank");
   };
 
+  const handleEmailEnquiry = () => {
+    if (items.length === 0) return;
+
+    const formattedItems = items
+      .map(
+        (item) =>
+          `• ${item.name} (Qty: ${item.qty}, Price: ₹${item.price.toLocaleString("en-IN")} each, Subtotal: ₹${(
+            item.price * item.qty
+          ).toLocaleString("en-IN")})`,
+      )
+      .join("\n");
+
+    const subject = "Catalogue Item Enquiry - Lumière Jewels";
+    const body = `Hi,\n\nI would like to make an enquiry regarding the following items from the catalogue:\n\n${formattedItems}\n\nTotal Estimated Price: ₹${total.toLocaleString(
+      "en-IN",
+    )}\n\nThank you!`;
+
+    const mailtoUrl = `mailto:bfellas26@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoUrl, "_blank");
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 text-[#3a1f2d]">
       <Link
@@ -47,7 +68,7 @@ function CartPage() {
       </Link>
 
       <h1 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight">
-        Your Enquiry Cart
+        Your Cart
       </h1>
       <p className="mt-2 text-sm text-[#3a1f2d]/60 font-light">
         Review items and modify quantities before continuing on WhatsApp.
@@ -158,17 +179,25 @@ function CartPage() {
                 </span>
               </div>
             </div>
-            <div className="pt-2 space-y-3">
+            <div className="pt-2 space-y-2.5">
               <Button
                 onClick={handleWhatsappEnquiry}
-                className="w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-xl h-11 border-none font-medium text-sm"
+                className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl h-11 border-none font-medium text-sm flex items-center justify-center gap-2 shadow-sm"
               >
-                Send Whatsapp Enquiry
+                <MessageSquare className="h-4 w-4 fill-current" />
+                Send WhatsApp Enquiry
+              </Button>
+              <Button
+                onClick={handleEmailEnquiry}
+                className="w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-xl h-11 border-none font-medium text-sm flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Mail className="h-4 w-4" />
+                Send Email Enquiry
               </Button>
               <Button
                 asChild
                 variant="outline"
-                className="w-full border-[#3a1f2d]/10 hover:bg-[#faf6f1] text-[#3a1f2d]/80 rounded-xl h-10 hover:text-[#3a1f2d] text-xs"
+                className="w-full border-[#3a1f2d]/10 hover:bg-[#faf6f1] text-[#3a1f2d]/80 rounded-xl h-10 hover:text-[#3a1f2d] text-xs mt-1"
               >
                 <Link to="/catalog">Continue Shopping</Link>
               </Button>

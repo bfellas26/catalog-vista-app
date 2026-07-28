@@ -268,7 +268,7 @@ function CategoryPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
                 {products.map((p, idx) => {
                   const cartItem = cartItems.find((item) => item.id === p.id);
                   const qty = cartItem ? cartItem.qty : 0;
@@ -293,19 +293,19 @@ function CategoryPage() {
                             e.stopPropagation();
                             printProduct(p);
                           }}
-                          className="absolute top-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+                          className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                           aria-label="Print product"
                           title="Print / Save as PDF"
                         >
                           <Printer className="h-3.5 w-3.5" />
                         </button>
                       </div>
-                      <div className="p-4 flex items-center justify-between gap-3">
+                      <div className="p-3 sm:p-4 flex items-center justify-between gap-2">
                         <div className="min-w-0">
-                          <h3 className="font-display font-medium text-[#3a1f2d] truncate">
+                          <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          <p className="mt-0.5 font-display text-base font-bold text-[#3a1f2d]">
+                          <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
                             {formatINR(p.price)}
                           </p>
                         </div>
@@ -316,32 +316,32 @@ function CategoryPage() {
                                 addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
                                 toast.success(`${p.name} added`, { duration: 1500 });
                               }}
-                              className="grid h-9 w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                              className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
                               aria-label="Add to cart"
                             >
-                              <Plus className="h-4 w-4" />
+                              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             </button>
                           ) : (
-                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-9">
+                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
                               <button
                                 onClick={() => {
                                   if (qty === 1) removeCartItem(p.id);
                                   else setCartQty(p.id, qty - 1);
                                 }}
-                                className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
+                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
                                 aria-label="Decrease"
                               >
-                                <Minus className="h-3.5 w-3.5" />
+                                <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                               </button>
-                              <span className="min-w-[1.25rem] text-center text-xs font-semibold text-[#3a1f2d]">
+                              <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
                                 {qty}
                               </span>
                               <button
                                 onClick={() => setCartQty(p.id, qty + 1)}
-                                className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
+                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
                                 aria-label="Increase"
                               >
-                                <Plus className="h-3.5 w-3.5" />
+                                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                               </button>
                             </div>
                           )}

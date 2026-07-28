@@ -210,10 +210,31 @@ function CartDrawerContent() {
     window.open(url, "_blank");
   };
 
+  const handleEmailEnquiry = () => {
+    if (items.length === 0) return;
+
+    const formattedItems = items
+      .map(
+        (item) =>
+          `• ${item.name} (Qty: ${item.qty}, Price: ₹${item.price.toLocaleString("en-IN")} each, Subtotal: ₹${(
+            item.price * item.qty
+          ).toLocaleString("en-IN")})`,
+      )
+      .join("\n");
+
+    const subject = "Catalogue Item Enquiry - Lumière Jewels";
+    const body = `Hi,\n\nI would like to make an enquiry regarding the following items from the catalogue:\n\n${formattedItems}\n\nTotal Estimated Price: ₹${total.toLocaleString(
+      "en-IN",
+    )}\n\nThank you!`;
+
+    const mailtoUrl = `mailto:bfellas26@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoUrl, "_blank");
+  };
+
   return (
     <SheetContent className="flex w-full flex-col bg-white text-[#3a1f2d] border-[#3a1f2d]/5 sm:max-w-md">
       <SheetHeader className="pb-4 border-b border-[#3a1f2d]/5">
-        <SheetTitle className="font-display text-xl font-semibold">Your Enquiry Cart</SheetTitle>
+        <SheetTitle className="font-display text-xl font-semibold">Your Cart</SheetTitle>
       </SheetHeader>
 
       <div className="flex-1 overflow-y-auto py-4">
@@ -281,7 +302,7 @@ function CartDrawerContent() {
         )}
       </div>
 
-      <div className="border-t border-[#3a1f2d]/5 pt-4 mt-auto">
+      <div className="border-t border-[#3a1f2d]/5 pt-4 mt-auto space-y-3">
         <div className="flex items-end justify-between">
           <span className="text-xs font-semibold uppercase tracking-wider text-[#3a1f2d]/60">
             Total Estimated Price
@@ -290,13 +311,23 @@ function CartDrawerContent() {
             ₹{total.toLocaleString("en-IN")}
           </span>
         </div>
-        <Button
-          onClick={handleWhatsappEnquiry}
-          className="mt-4 w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-xl h-11 border-none font-medium text-sm"
-          disabled={items.length === 0}
-        >
-          Continue Enquiry on WhatsApp
-        </Button>
+        <div className="space-y-2">
+          <Button
+            onClick={handleWhatsappEnquiry}
+            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl h-10 border-none font-medium text-xs flex items-center justify-center gap-2"
+            disabled={items.length === 0}
+          >
+            Send WhatsApp Enquiry
+          </Button>
+          <Button
+            onClick={handleEmailEnquiry}
+            className="w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-xl h-10 border-none font-medium text-xs flex items-center justify-center gap-2"
+            disabled={items.length === 0}
+          >
+            <Mail className="h-3.5 w-3.5" />
+            Send Email Enquiry
+          </Button>
+        </div>
       </div>
     </SheetContent>
   );
