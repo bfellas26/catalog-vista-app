@@ -75,7 +75,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
               <X className="h-5 w-5" />
             </button>
 
-            {/* Nav chevrons */}
+            {/* Nav chevrons — desktop only */}
             {products.length > 1 && (
               <>
                 <button
@@ -84,7 +84,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
                     goPrev();
                   }}
                   disabled={current === 0}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-[95] grid h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
+                  className="hidden lg:grid absolute left-4 top-1/2 -translate-y-1/2 z-[95] h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
                   aria-label="Previous product"
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -95,7 +95,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
                     goNext();
                   }}
                   disabled={current === products.length - 1}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-[95] grid h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
+                  className="hidden lg:grid absolute right-4 top-1/2 -translate-y-1/2 z-[95] h-11 w-11 place-items-center rounded-full bg-white/15 hover:bg-white/25 text-white transition disabled:opacity-25 disabled:pointer-events-none"
                   aria-label="Next product"
                 >
                   <ChevronRight className="h-5 w-5" />
@@ -114,16 +114,16 @@ export function ProductModal({ productId, onClose, products }: Props) {
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -30 }}
-                  transition={{ duration: 0.25 }}
+                  transition={{ duration: 0.22 }}
                   drag="x"
-                  dragElastic={0.15}
+                  dragElastic={0.2}
                   dragConstraints={{ left: 0, right: 0 }}
                   onDragEnd={(_e, info) => {
-                    if (info.offset.x < -60 || info.velocity.x < -400) goNext();
-                    else if (info.offset.x > 60 || info.velocity.x > 400) goPrev();
+                    if (info.offset.x < -40 || info.velocity.x < -300) goNext();
+                    else if (info.offset.x > 40 || info.velocity.x > 300) goPrev();
                   }}
-                  style={{ touchAction: "pan-y" }}
-                  className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden cursor-grab active:cursor-grabbing"
+                  style={{ touchAction: "none" }}
+                  className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-[#3a1f2d]/5 overflow-hidden cursor-grab active:cursor-grabbing select-none"
                 >
                   <ProductCardContent
                     product={product}
@@ -132,9 +132,19 @@ export function ProductModal({ productId, onClose, products }: Props) {
                 </motion.div>
               </AnimatePresence>
 
+              {/* Peek indicator dots */}
               {products.length > 1 && (
-                <div className="mt-3 text-center text-xs text-white/60 select-none">
-                  {current + 1} / {products.length}
+                <div className="mt-3 flex items-center justify-center gap-1.5 select-none">
+                  {products.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`block rounded-full transition-all ${
+                        i === current
+                          ? "w-5 h-1.5 bg-white"
+                          : "w-1.5 h-1.5 bg-white/40"
+                      }`}
+                    />
+                  ))}
                 </div>
               )}
             </div>
@@ -298,25 +308,9 @@ function ProductCardContent({
           </div>
         )}
 
-        <div className="mt-4 border-t border-[#3a1f2d]/10 pt-3 text-sm text-[#3a1f2d]/75 leading-relaxed font-light line-clamp-4">
+        <div className="mt-4 border-t border-[#3a1f2d]/10 pt-3 text-sm text-[#3a1f2d]/75 leading-relaxed font-light">
           {product.description}
         </div>
-
-        <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-          {[
-            ["Metal", product.metal],
-            ["Purity", product.purity],
-            ["Weight", product.weight],
-            ["Stones", product.stones],
-          ]
-            .filter(([, v]) => !!v)
-            .map(([k, v]) => (
-              <div key={k as string} className="flex flex-col">
-                <dt className="text-[10px] uppercase tracking-widest text-[#3a1f2d]/50">{k}</dt>
-                <dd className="mt-0.5 font-medium text-[#3a1f2d]">{v}</dd>
-              </div>
-            ))}
-        </dl>
 
         <div className="mt-auto pt-5 flex justify-end">
           {qty === 0 ? (

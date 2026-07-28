@@ -256,7 +256,7 @@ function CatalogPage() {
       </section>
 
       {/* 6. SUBSCRIPTION SECTION */}
-      <section className="bg-[#3a1f2d] text-white py-14 px-4">
+      <section className="bg-[#3a1f2d] text-white py-8 px-4">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-display text-3xl font-semibold tracking-tight">Stay updated</h2>
           <p className="mt-3 text-sm text-white/70 font-light leading-relaxed">
@@ -287,7 +287,7 @@ function CatalogPage() {
       </section>
 
       {/* 7. CONTACT SECTION */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
+      <section className="mx-auto max-w-7xl px-4 py-8 sm:py-10 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div>
             <h2 className="font-display text-3xl font-semibold tracking-tight">Get in Touch</h2>

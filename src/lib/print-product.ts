@@ -7,22 +7,12 @@ export function printProduct(product: Jewel) {
   const win = window.open("", "_blank", "width=900,height=1100");
   if (!win) return;
 
-  const specs: Array<[string, string | undefined]> = [
-    ["Metal", product.metal],
-    ["Purity", product.purity],
-    ["Weight", product.weight],
-    ["Stones", product.stones],
-  ];
-  const specRows = specs
-    .filter(([, v]) => !!v)
+  // Build all images grid
+  const imageGrid = product.images
     .map(
-      ([k, v]) =>
-        `<tr><th>${escape(k)}</th><td>${escape(String(v))}</td></tr>`,
+      (src, idx) =>
+        `<div class="imgwrap${idx === 0 ? " main" : ""}"><img src="${src}" alt="${escape(product.name)} ${idx + 1}"/></div>`,
     )
-    .join("");
-
-  const tags = (product.tags || [])
-    .map((t) => `<span class="tag">${escape(t)}</span>`)
     .join("");
 
   const html = `<!doctype html>
@@ -43,22 +33,21 @@ export function printProduct(product: Jewel) {
   .brand p{font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(58,31,45,.55);margin-top:2px}
   .meta{text-align:right;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(58,31,45,.55)}
   .meta strong{display:block;font-size:12px;color:#3a1f2d;letter-spacing:.15em;margin-bottom:4px}
+  /* Hero: main image left, details right */
   .hero{margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;position:relative;z-index:1}
-  .imgwrap{aspect-ratio:1;overflow:hidden;border-radius:14px;background:#fff;border:1px solid rgba(58,31,45,.08);box-shadow:0 10px 30px -12px rgba(58,31,45,.25)}
+  .imgwrap{overflow:hidden;border-radius:14px;background:#fff;border:1px solid rgba(58,31,45,.08);box-shadow:0 8px 24px -10px rgba(58,31,45,.2)}
+  .imgwrap.main{aspect-ratio:1}
   .imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
   .details .eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#b8862b;font-weight:600}
   .details h2{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;line-height:1.15;margin-top:10px;letter-spacing:-.5px}
   .price{margin-top:14px;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#3a1f2d}
-  .tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
-  .tag{font-size:10px;padding:4px 10px;border-radius:999px;background:rgba(58,31,45,.06);color:rgba(58,31,45,.75);letter-spacing:.08em;text-transform:uppercase}
   .divider{height:1px;background:linear-gradient(to right,transparent,rgba(58,31,45,.2),transparent);margin:20px 0}
-  .desc{margin-top:16px;font-size:12.5px;line-height:1.7;color:rgba(58,31,45,.82);font-weight:300;white-space:pre-line}
-  .specs{margin-top:22px;position:relative;z-index:1}
-  .specs h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;margin-bottom:10px}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th,td{padding:10px 14px;text-align:left;border-bottom:1px solid rgba(58,31,45,.08)}
-  th{font-weight:500;color:rgba(58,31,45,.55);text-transform:uppercase;letter-spacing:.15em;font-size:10px;width:35%}
-  td{color:#3a1f2d;font-weight:500}
+  .desc{font-size:12.5px;line-height:1.7;color:rgba(58,31,45,.82);font-weight:300;white-space:pre-line}
+  /* Additional images grid below hero */
+  .extra-images{margin-top:24px;position:relative;z-index:1}
+  .extra-images h3{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:12px;color:rgba(58,31,45,.6);letter-spacing:.05em}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .img-grid .imgwrap{aspect-ratio:1}
   .footer{margin-top:36px;padding-top:20px;border-top:1px solid rgba(58,31,45,.15);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:rgba(58,31,45,.6);letter-spacing:.12em;text-transform:uppercase;position:relative;z-index:1}
   .footer .ref{font-family:'Cormorant Garamond',serif;font-size:11px;font-style:italic;letter-spacing:.05em;text-transform:none;color:rgba(58,31,45,.7)}
   @page{size:A4;margin:0}
@@ -82,18 +71,32 @@ export function printProduct(product: Jewel) {
     </div>
 
     <div class="hero">
-      <div class="imgwrap"><img src="${product.images[0]}" alt="${escape(product.name)}"/></div>
+      <div class="imgwrap main"><img src="${product.images[0]}" alt="${escape(product.name)}"/></div>
       <div class="details">
         <div class="eyebrow">Signature Collection</div>
         <h2>${escape(product.name)}</h2>
         <div class="price">${formatINR(product.price)}</div>
-        ${tags ? `<div class="tags">${tags}</div>` : ""}
         <div class="divider"></div>
         <p class="desc">${escape(product.description)}</p>
       </div>
     </div>
 
-    ${specRows ? `<div class="specs"><h3>Specifications</h3><table>${specRows}</table></div>` : ""}
+    ${
+      product.images.length > 1
+        ? `<div class="extra-images">
+        <h3>More Views</h3>
+        <div class="img-grid">
+          ${product.images
+            .slice(1)
+            .map(
+              (src, idx) =>
+                `<div class="imgwrap"><img src="${src}" alt="${escape(product.name)} view ${idx + 2}"/></div>`,
+            )
+            .join("")}
+        </div>
+      </div>`
+        : ""
+    }
 
     <div class="footer">
       <span>concierge@lumierejewels.com &nbsp;·&nbsp; +351 21 000 0000</span>
@@ -104,7 +107,7 @@ export function printProduct(product: Jewel) {
     window.onload = () => {
       const imgs = Array.from(document.images);
       Promise.all(imgs.map(img => img.complete ? Promise.resolve() : new Promise(r => { img.onload = img.onerror = r; })))
-        .then(() => setTimeout(() => window.print(), 250));
+        .then(() => setTimeout(() => window.print(), 300));
     };
   </script>
 </body></html>`;

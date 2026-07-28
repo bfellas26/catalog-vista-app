@@ -293,7 +293,7 @@ function CategoryPage() {
                             e.stopPropagation();
                             printProduct(p);
                           }}
-                          className="absolute top-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm opacity-0 group-hover:opacity-100 transition"
+                          className="absolute top-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                           aria-label="Print product"
                           title="Print / Save as PDF"
                         >
