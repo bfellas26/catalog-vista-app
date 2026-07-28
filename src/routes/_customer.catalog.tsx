@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { Search, ShoppingBag, Minus, Plus, Mail, MapPin, Phone, Check } from "lucide-react";
+import { Search, Minus, Plus, Mail, MapPin, Phone, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +15,7 @@ import { ProductModal } from "@/components/customer/ProductModal";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
 import { z } from "zod";
+import { printProduct } from "@/lib/print-product";
 
 const catalogSearchSchema = z.object({
   product: z.string().optional(),
