@@ -1,17 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, Search, ArrowLeft, ShoppingBag, Minus, Plus } from "lucide-react";
+import { Filter, Search, ArrowLeft, Minus, Plus, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { jewelleryCategories, jewelleryProducts, formatINR } from "@/lib/jewellery-data";
 import { ProductModal } from "@/components/customer/ProductModal";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
+import { printProduct } from "@/lib/print-product";
 
 const categorySearchSchema = z.object({
   product: z.string().optional(),
@@ -110,27 +110,29 @@ function CategoryPage() {
   return (
     <div className="min-h-screen bg-[#faf6f1] text-[#3a1f2d]">
       {/* Category Banner */}
-      <section className="bg-[#3a1f2d] text-white py-14 px-4 sm:px-6 lg:px-8 border-b border-[#3a1f2d]/10">
+      <section className="bg-[#3a1f2d] text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-[#3a1f2d]/10">
         <div className="mx-auto max-w-7xl">
           <Link
             to="/catalog"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-200 hover:text-amber-100 transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-200 hover:text-amber-100 transition-colors mb-3"
           >
             <ArrowLeft className="h-4 w-4" /> Back to catalog
           </Link>
-          <div className="max-w-3xl">
-            <h1 className="font-display text-4xl sm:text-5xl font-light tracking-tight">
-              {category.name}
-            </h1>
-            <p className="mt-4 text-white/75 font-light leading-relaxed text-sm sm:text-base">
-              {category.description}
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+            <div className="max-w-3xl">
+              <h1 className="font-display text-3xl sm:text-4xl font-light tracking-tight">
+                {category.name}
+              </h1>
+              <p className="mt-1.5 text-white/70 font-light leading-relaxed text-sm">
+                {category.description}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Main catalog view */}
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 space-y-6">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-4">
         {/* Search, Filter & Sort Panel container */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl border border-[#3a1f2d]/5 shadow-sm">
@@ -277,63 +279,69 @@ function CategoryPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.04 }}
                       onClick={() => setOpenId(p.id)}
-                      className="group cursor-pointer overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 text-left shadow-sm transition hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between"
+                      className="group cursor-pointer overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 text-left shadow-sm transition hover:shadow-xl hover:-translate-y-1 flex flex-col"
                     >
-                      <div>
-                        <div className="relative aspect-square overflow-hidden bg-[#faf6f1]">
-                          <img
-                            src={p.images[0]}
-                            alt={p.name}
-                            loading="lazy"
-                            className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                          />
-                        </div>
-                        <div className="p-5">
-                          <h3 className="font-display font-medium text-[#3a1f2d] group-hover:text-[#3a1f2d]/80 transition-colors line-clamp-1">
+                      <div className="relative aspect-[4/5] overflow-hidden bg-[#faf6f1]">
+                        <img
+                          src={p.images[0]}
+                          alt={p.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            printProduct(p);
+                          }}
+                          className="absolute top-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm opacity-0 group-hover:opacity-100 transition"
+                          aria-label="Print product"
+                          title="Print / Save as PDF"
+                        >
+                          <Printer className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      <div className="p-4 flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <h3 className="font-display font-medium text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          <p className="mt-2 font-display text-lg font-bold text-[#3a1f2d]">
+                          <p className="mt-0.5 font-display text-base font-bold text-[#3a1f2d]">
                             {formatINR(p.price)}
                           </p>
                         </div>
-                      </div>
-
-                      <div className="p-5 pt-0 mt-auto" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-between h-8 mb-3">
+                        <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                           {qty === 0 ? (
-                            <Button
+                            <button
                               onClick={() => {
                                 addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                                toast.success(`${p.name} added to cart`, { duration: 1500 });
+                                toast.success(`${p.name} added`, { duration: 1500 });
                               }}
-                              size="sm"
-                              className="w-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 font-medium text-xs rounded-lg h-full border-none flex items-center justify-center gap-1.5"
+                              className="grid h-9 w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                              aria-label="Add to cart"
                             >
-                              <Plus className="h-3.5 w-3.5" /> Add
-                            </Button>
+                              <Plus className="h-4 w-4" />
+                            </button>
                           ) : (
-                            <div className="flex items-center justify-between rounded-lg border border-[#3a1f2d]/15 bg-white h-full w-full">
+                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-9">
                               <button
                                 onClick={() => {
-                                  if (qty === 1) {
-                                    removeCartItem(p.id);
-                                    toast.success(`${p.name} removed from cart`, { duration: 1500 });
-                                  } else {
-                                    setCartQty(p.id, qty - 1);
-                                  }
+                                  if (qty === 1) removeCartItem(p.id);
+                                  else setCartQty(p.id, qty - 1);
                                 }}
-                                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1]/50 transition h-full rounded-l-lg flex items-center justify-center"
+                                className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
+                                aria-label="Decrease"
                               >
-                                <Minus className="h-3 w-3" />
+                                <Minus className="h-3.5 w-3.5" />
                               </button>
-                              <span className="text-xs font-semibold text-[#3a1f2d]">{qty}</span>
+                              <span className="min-w-[1.25rem] text-center text-xs font-semibold text-[#3a1f2d]">
+                                {qty}
+                              </span>
                               <button
-                                onClick={() => {
-                                  setCartQty(p.id, qty + 1);
-                                }}
-                                className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1]/50 transition h-full rounded-r-lg flex items-center justify-center"
+                                onClick={() => setCartQty(p.id, qty + 1)}
+                                className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
+                                aria-label="Increase"
                               >
-                                <Plus className="h-3 w-3" />
+                                <Plus className="h-3.5 w-3.5" />
                               </button>
                             </div>
                           )}

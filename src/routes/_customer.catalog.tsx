@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { Search, ShoppingBag, Minus, Plus, Mail, MapPin, Phone, Check } from "lucide-react";
+import { Search, Minus, Plus, Mail, MapPin, Phone, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +15,7 @@ import { ProductModal } from "@/components/customer/ProductModal";
 import { useCartStore } from "@/store";
 import { toast } from "sonner";
 import { z } from "zod";
+import { printProduct } from "@/lib/print-product";
 
 const catalogSearchSchema = z.object({
   product: z.string().optional(),
@@ -120,15 +121,15 @@ function CatalogPage() {
 
       {/* 4. FEATURED STANDALONE PRODUCTS */}
       {standaloneProducts.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
+        <section className="mx-auto max-w-7xl px-4 pt-14 pb-10 sm:px-6 lg:px-8">
+          <div className="mb-8 text-center">
             <p className="text-xs font-semibold tracking-[0.2em] text-[#3a1f2d]/60 uppercase">
               Signature releases
             </p>
             <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold">Featured Products</h2>
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {standaloneProducts.map((p, idx) => {
               const cartItem = cartItems.find((item) => item.id === p.id);
               const qty = cartItem ? cartItem.qty : 0;
@@ -140,63 +141,69 @@ function CatalogPage() {
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.05 }}
                   onClick={() => setOpenId(p.id)}
-                  className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 text-left shadow-sm transition hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between"
+                  className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white border border-[#3a1f2d]/5 text-left shadow-sm transition hover:shadow-xl hover:-translate-y-1 flex flex-col"
                 >
-                  <div>
-                    <div className="relative aspect-square overflow-hidden bg-[#faf6f1]">
-                      <img
-                        src={p.images[0]}
-                        alt={p.name}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-display font-medium text-[#3a1f2d] group-hover:text-[#3a1f2d]/80 transition-colors line-clamp-1">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-[#faf6f1]">
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                    />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        printProduct(p);
+                      }}
+                      className="absolute top-3 right-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm opacity-0 group-hover:opacity-100 transition"
+                      aria-label="Print product"
+                      title="Print / Save as PDF"
+                    >
+                      <Printer className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="p-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="font-display font-medium text-[#3a1f2d] truncate">
                         {p.name}
                       </h3>
-                      <p className="mt-2 font-display text-lg font-bold text-[#3a1f2d]">
+                      <p className="mt-0.5 font-display text-base font-bold text-[#3a1f2d]">
                         {formatINR(p.price)}
                       </p>
                     </div>
-                  </div>
-
-                  <div className="p-5 pt-0 mt-auto" onClick={(e) => e.stopPropagation()}>
-                    <div className="flex items-center justify-between h-8 mb-3">
+                    <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                       {qty === 0 ? (
-                        <Button
+                        <button
                           onClick={() => {
                             addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                            toast.success(`${p.name} added to cart`, { duration: 1500 });
+                            toast.success(`${p.name} added`, { duration: 1500 });
                           }}
-                          size="sm"
-                          className="w-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 font-medium text-xs rounded-lg h-full border-none flex items-center justify-center gap-1.5"
+                          className="grid h-9 w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                          aria-label="Add to cart"
                         >
-                          <Plus className="h-3.5 w-3.5" /> Add
-                        </Button>
+                          <Plus className="h-4 w-4" />
+                        </button>
                       ) : (
-                        <div className="flex items-center justify-between rounded-lg border border-[#3a1f2d]/15 bg-white h-full w-full">
+                        <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-9">
                           <button
                             onClick={() => {
-                              if (qty === 1) {
-                                removeCartItem(p.id);
-                                toast.success(`${p.name} removed from cart`, { duration: 1500 });
-                              } else {
-                                setCartQty(p.id, qty - 1);
-                              }
+                              if (qty === 1) removeCartItem(p.id);
+                              else setCartQty(p.id, qty - 1);
                             }}
-                            className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1]/50 transition h-full rounded-l-lg flex items-center justify-center"
+                            className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
+                            aria-label="Decrease"
                           >
-                            <Minus className="h-3 w-3" />
+                            <Minus className="h-3.5 w-3.5" />
                           </button>
-                          <span className="text-xs font-semibold text-[#3a1f2d]">{qty}</span>
+                          <span className="min-w-[1.25rem] text-center text-xs font-semibold text-[#3a1f2d]">
+                            {qty}
+                          </span>
                           <button
-                            onClick={() => {
-                              setCartQty(p.id, qty + 1);
-                            }}
-                            className="p-1 px-3 text-[#3a1f2d]/70 hover:bg-[#faf6f1]/50 transition h-full rounded-r-lg flex items-center justify-center"
+                            onClick={() => setCartQty(p.id, qty + 1)}
+                            className="grid h-full w-8 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
+                            aria-label="Increase"
                           >
-                            <Plus className="h-3 w-3" />
+                            <Plus className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       )}
@@ -210,8 +217,8 @@ function CatalogPage() {
       )}
 
       {/* 5. CATEGORIES GRID */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
-        <div className="mb-10 text-center">
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
+        <div className="mb-8 text-center">
           <p className="text-xs font-semibold tracking-[0.2em] text-[#3a1f2d]/60 uppercase">
             Browse Collections
           </p>
@@ -220,13 +227,14 @@ function CatalogPage() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {jewelleryCategories.map((c, idx) => (
-            <motion.div
+            <motion.button
               key={c.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.05 }}
-              className="group relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#3a1f2d]/5 aspect-[4/5] flex flex-col justify-end"
+              onClick={() => navigate({ to: "/category/$id", params: { id: c.id } })}
+              className="group relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#3a1f2d]/5 aspect-[4/5] flex flex-col justify-end text-left cursor-pointer"
             >
               <img
                 src={c.image}
@@ -238,21 +246,17 @@ function CatalogPage() {
               <div className="relative p-6 sm:p-8 text-white z-10">
                 <h3 className="font-display text-2xl font-semibold tracking-tight">{c.name}</h3>
                 <p className="mt-2 text-sm text-white/70 line-clamp-2">{c.description}</p>
-                <Link
-                  to="/category/$id"
-                  params={{ id: c.id }}
-                  className="mt-5 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-200 group-hover:text-amber-100 transition-colors"
-                >
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-amber-200 group-hover:text-amber-100 transition-colors">
                   View Category →
-                </Link>
+                </span>
               </div>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </section>
 
       {/* 6. SUBSCRIPTION SECTION */}
-      <section className="bg-[#3a1f2d] text-white py-20 px-4">
+      <section className="bg-[#3a1f2d] text-white py-14 px-4">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-display text-3xl font-semibold tracking-tight">Stay updated</h2>
           <p className="mt-3 text-sm text-white/70 font-light leading-relaxed">
@@ -283,7 +287,7 @@ function CatalogPage() {
       </section>
 
       {/* 7. CONTACT SECTION */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
         <div className="grid gap-12 lg:grid-cols-2 items-center">
           <div>
             <h2 className="font-display text-3xl font-semibold tracking-tight">Get in Touch</h2>
