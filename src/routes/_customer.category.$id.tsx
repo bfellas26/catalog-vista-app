@@ -110,27 +110,29 @@ function CategoryPage() {
   return (
     <div className="min-h-screen bg-[#faf6f1] text-[#3a1f2d]">
       {/* Category Banner */}
-      <section className="bg-[#3a1f2d] text-white py-14 px-4 sm:px-6 lg:px-8 border-b border-[#3a1f2d]/10">
+      <section className="bg-[#3a1f2d] text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-[#3a1f2d]/10">
         <div className="mx-auto max-w-7xl">
           <Link
             to="/catalog"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-200 hover:text-amber-100 transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-200 hover:text-amber-100 transition-colors mb-3"
           >
             <ArrowLeft className="h-4 w-4" /> Back to catalog
           </Link>
-          <div className="max-w-3xl">
-            <h1 className="font-display text-4xl sm:text-5xl font-light tracking-tight">
-              {category.name}
-            </h1>
-            <p className="mt-4 text-white/75 font-light leading-relaxed text-sm sm:text-base">
-              {category.description}
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+            <div className="max-w-3xl">
+              <h1 className="font-display text-3xl sm:text-4xl font-light tracking-tight">
+                {category.name}
+              </h1>
+              <p className="mt-1.5 text-white/70 font-light leading-relaxed text-sm">
+                {category.description}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Main catalog view */}
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 space-y-6">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-4">
         {/* Search, Filter & Sort Panel container */}
         <div className="space-y-3">
           <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl border border-[#3a1f2d]/5 shadow-sm">
