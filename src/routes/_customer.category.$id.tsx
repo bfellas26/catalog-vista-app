@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { printProduct } from "@/lib/print-product";
 
 const categorySearchSchema = z.object({
-  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+  catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
   product: z.string().optional(),
 });
 
@@ -25,8 +25,8 @@ export const Route = createFileRoute("/_customer/category/$id")({
 
 function CategoryPage() {
   const { id } = Route.useParams();
-  const { product: openId, onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
-  const onlyCatalogue = !!onlyCatalogueParam;
+  const { product: openId, catalogueonly: catalogueonlyParam } = Route.useSearch();
+  const catalogueonly = !!catalogueonlyParam;
   const navigate = useNavigate({ from: Route.fullPath });
   const addCartItem = useCartStore((s) => s.add);
   const removeCartItem = useCartStore((s) => s.remove);
@@ -176,8 +176,8 @@ function CategoryPage() {
                   className="h-10 px-3 bg-white border border-[#3a1f2d]/10 rounded-xl text-sm font-light outline-none focus:ring-1 focus:ring-[#3a1f2d]"
                 >
                   <option value="name">Name (A-Z)</option>
-                  {!onlyCatalogue && <option value="price-asc">Price (Low to High)</option>}
-                  {!onlyCatalogue && <option value="price-desc">Price (High to Low)</option>}
+                  {!catalogueonly && <option value="price-asc">Price (Low to High)</option>}
+                  {!catalogueonly && <option value="price-desc">Price (High to Low)</option>}
                 </select>
               </div>
             </div>
@@ -193,9 +193,9 @@ function CategoryPage() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className={cn("grid gap-6 bg-white p-6 rounded-2xl border border-[#3a1f2d]/5 shadow-sm", onlyCatalogue ? "grid-cols-1" : "md:grid-cols-2")}>
+                <div className={cn("grid gap-6 bg-white p-6 rounded-2xl border border-[#3a1f2d]/5 shadow-sm", catalogueonly ? "grid-cols-1" : "md:grid-cols-2")}>
                   {/* Price Filter */}
-                  {!onlyCatalogue && (
+                  {!catalogueonly && (
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
                         <h3 className="text-xs font-bold uppercase tracking-widest text-[#3a1f2d]/60">
@@ -299,7 +299,7 @@ function CategoryPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            printProduct(p, onlyCatalogue);
+                            printProduct(p, catalogueonly);
                           }}
                           className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                           aria-label="Print product"
@@ -313,13 +313,13 @@ function CategoryPage() {
                           <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          {!onlyCatalogue && (
+                          {!catalogueonly && (
                             <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
                               {formatINR(p.price)}
                             </p>
                           )}
                         </div>
-                        {!onlyCatalogue && (
+                        {!catalogueonly && (
                           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                             {qty === 0 ? (
                               <button
@@ -371,7 +371,7 @@ function CategoryPage() {
         productId={openId ?? null}
         onClose={() => setOpenId(null)}
         products={products}
-        onlyCatalogue={onlyCatalogue}
+        catalogueonly={catalogueonly}
       />
     </div>
   );

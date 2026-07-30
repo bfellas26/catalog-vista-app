@@ -10,7 +10,7 @@ import { useCartStore } from "@/store";
 import { z } from "zod";
 
 const productSearchSchema = z.object({
-  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+  catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
 });
 
 export const Route = createFileRoute("/_customer/product/$id")({
@@ -20,8 +20,8 @@ export const Route = createFileRoute("/_customer/product/$id")({
 
 function ProductDetailsPage() {
   const { id } = Route.useParams();
-  const { onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
-  const onlyCatalogue = !!onlyCatalogueParam;
+  const { catalogueonly: catalogueonlyParam } = Route.useSearch();
+  const catalogueonly = !!catalogueonlyParam;
   const navigate = useNavigate();
   const idx = placeholderProducts.findIndex((p) => p.id === id);
   const product = placeholderProducts[Math.max(0, idx)] ?? placeholderProducts[0];
@@ -92,7 +92,7 @@ function ProductDetailsPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             {(product as any).category || product.categoryId}
           </p>
-          {!onlyCatalogue && (
+          {!catalogueonly && (
             <p className="mt-6 text-3xl font-bold text-primary">
               ₹{product.price.toLocaleString("en-IN")}
             </p>
@@ -103,7 +103,7 @@ function ProductDetailsPage() {
             quiet favourite in your everyday.
           </p>
 
-          {!onlyCatalogue && (
+          {!catalogueonly && (
             <>
               <div className="mt-8 flex items-center gap-4">
                 <div className="inline-flex items-center rounded-lg border border-border">

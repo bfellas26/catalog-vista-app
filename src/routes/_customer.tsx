@@ -22,7 +22,7 @@ import { jewelleryProducts } from "@/lib/jewellery-data";
 import { z } from "zod";
 
 const customerSearchSchema = z.object({
-  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+  catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
 });
 
 export const Route = createFileRoute("/_customer")({
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_customer")({
 
 function CustomerLayout() {
   const search = Route.useSearch();
-  const onlyCatalogue = !!search.onlyCatalogue;
+  const catalogueonly = !!search.catalogueonly;
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const cartItems = useCartStore((s) => s.items);
@@ -68,7 +68,7 @@ function CustomerLayout() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            {!onlyCatalogue && (
+            {!catalogueonly && (
               <Sheet open={cartOpen} onOpenChange={setCartOpen}>
                 <SheetTrigger asChild>
                   <button className="relative rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] transition">
@@ -122,7 +122,7 @@ function CustomerLayout() {
         </motion.main>
       </AnimatePresence>
 
-      {!onlyCatalogue && <Footer />}
+      {!catalogueonly && <Footer />}
     </div>
   );
 }

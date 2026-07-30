@@ -18,7 +18,7 @@ import { z } from "zod";
 import { printProduct } from "@/lib/print-product";
 
 const catalogSearchSchema = z.object({
-  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+  catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
   product: z.string().optional(),
 });
 
@@ -38,8 +38,8 @@ export const Route = createFileRoute("/_customer/catalog")({
 });
 
 function CatalogPage() {
-  const { product: openId, onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
-  const onlyCatalogue = !!onlyCatalogueParam;
+  const { product: openId, catalogueonly: catalogueonlyParam } = Route.useSearch();
+  const catalogueonly = !!catalogueonlyParam;
   const navigate = useNavigate({ from: Route.fullPath });
   const [q, setQ] = useState("");
   const addCartItem = useCartStore((s) => s.add);
@@ -49,7 +49,10 @@ function CatalogPage() {
 
   const setOpenId = (id: string | null) => {
     navigate({
-      search: { product: id || undefined },
+      search: (prev) => ({
+        ...prev,
+        product: id || undefined,
+      }),
       replace: true,
     });
   };
@@ -209,7 +212,7 @@ function CatalogPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          printProduct(p, onlyCatalogue);
+                          printProduct(p, catalogueonly);
                         }}
                         className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                         aria-label="Print product"
@@ -219,17 +222,17 @@ function CatalogPage() {
                       </button>
                     </div>
                     <div className="p-3 sm:p-4 flex items-center justify-between gap-2">
-                      <div className="min-w-0">
+                       <div className="min-w-0">
                         <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                           {p.name}
                         </h3>
-                        {!onlyCatalogue && (
+                        {!catalogueonly && (
                           <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
                             {formatINR(p.price)}
                           </p>
                         )}
                       </div>
-                      {!onlyCatalogue && (
+                      {!catalogueonly && (
                         <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                           {qty === 0 ? (
                             <button
@@ -311,7 +314,7 @@ function CatalogPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            printProduct(p, onlyCatalogue);
+                            printProduct(p, catalogueonly);
                           }}
                           className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                           aria-label="Print product"
@@ -325,13 +328,13 @@ function CatalogPage() {
                           <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          {!onlyCatalogue && (
+                          {!catalogueonly && (
                             <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
                               {formatINR(p.price)}
                             </p>
                           )}
                         </div>
-                        {!onlyCatalogue && (
+                        {!catalogueonly && (
                           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
                             {qty === 0 ? (
                               <button
@@ -420,7 +423,7 @@ function CatalogPage() {
       )}
 
       {/* 7. SUBSCRIPTION SECTION */}
-      {!onlyCatalogue && (
+      {!catalogueonly && (
         <section className="bg-[#3a1f2d] text-white py-8 px-4">
           <div className="mx-auto max-w-xl text-center">
             <h2 className="font-display text-3xl font-semibold tracking-tight">Stay updated</h2>
@@ -453,7 +456,7 @@ function CatalogPage() {
       )}
 
       {/* 8. CONTACT SECTION */}
-      {!onlyCatalogue && (
+      {!catalogueonly && (
         <section className="mx-auto max-w-7xl px-4 py-8 sm:py-10 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
           <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div>
@@ -505,7 +508,7 @@ function CatalogPage() {
         productId={openId ?? null}
         onClose={() => setOpenId(null)}
         products={isSearching ? searchResults : standaloneProducts}
-        onlyCatalogue={onlyCatalogue}
+        catalogueonly={catalogueonly}
       />
     </div>
   );

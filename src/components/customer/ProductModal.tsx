@@ -11,14 +11,14 @@ type Props = {
   productId: string | null;
   onClose: () => void;
   products: Jewel[];
-  onlyCatalogue?: boolean;
+  catalogueonly?: boolean;
 };
 
 // Peek gap on each side (px) — adjacent card edge visible by this amount
 const PEEK = 28;
 const GAP = 12;
 
-export function ProductModal({ productId, onClose, products, onlyCatalogue = false }: Props) {
+export function ProductModal({ productId, onClose, products, catalogueonly = false }: Props) {
   const startIndex = Math.max(0, products.findIndex((p) => p.id === productId));
   const [current, setCurrent] = useState(startIndex);
   const [fullscreenImg, setFullscreenImg] = useState<number | null>(null);
@@ -185,7 +185,7 @@ export function ProductModal({ productId, onClose, products, onlyCatalogue = fal
                       <ProductCardContent
                         product={p}
                         onFullscreen={(i) => setFullscreenImg(i)}
-                        onlyCatalogue={onlyCatalogue}
+                        catalogueonly={catalogueonly}
                       />
                     </div>
                   </div>
@@ -262,11 +262,11 @@ export function ProductModal({ productId, onClose, products, onlyCatalogue = fal
 function ProductCardContent({
   product,
   onFullscreen,
-  onlyCatalogue = false,
+  catalogueonly = false,
 }: {
   product: Jewel;
   onFullscreen: (idx: number) => void;
-  onlyCatalogue?: boolean;
+  catalogueonly?: boolean;
 }) {
   const [imgIdx, setImgIdx] = useState(0);
   const cartItems = useCartStore((s) => s.items);
@@ -325,7 +325,7 @@ function ProductCardContent({
             </h2>
           </div>
           <button
-            onClick={() => printProduct(product, onlyCatalogue)}
+            onClick={() => printProduct(product, catalogueonly)}
             className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-[#3a1f2d]/15 text-[#3a1f2d]/70 hover:bg-[#faf6f1] hover:text-[#3a1f2d] transition"
             aria-label="Print product details"
             title="Print / Save as PDF"
@@ -334,7 +334,7 @@ function ProductCardContent({
           </button>
         </div>
 
-        {!onlyCatalogue && (
+        {!catalogueonly && (
           <p className="mt-3 font-display text-xl sm:text-2xl font-bold text-[#3a1f2d]">
             {formatINR(product.price)}
           </p>
@@ -344,7 +344,7 @@ function ProductCardContent({
           {product.description}
         </div>
 
-        {!onlyCatalogue && (
+        {!catalogueonly && (
           <div className="mt-auto pt-5 flex justify-end">
             {qty === 0 ? (
               <button
