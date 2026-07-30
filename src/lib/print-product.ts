@@ -3,7 +3,7 @@ import { formatINR, brandMark, type Jewel } from "@/lib/jewellery-data";
 const escape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-export function printProduct(product: Jewel) {
+export function printProduct(product: Jewel, onlyCatalogue: boolean = false) {
   const win = window.open("", "_blank", "width=900,height=1100");
   if (!win) return;
 
@@ -75,7 +75,7 @@ export function printProduct(product: Jewel) {
       <div class="details">
         <div class="eyebrow">Exclusive Collection</div>
         <h2>${escape(product.name)}</h2>
-        <div class="price">${formatINR(product.price)}</div>
+        ${onlyCatalogue ? "" : `<div class="price">${formatINR(product.price)}</div>`}
         <div class="divider"></div>
         <p class="desc">${escape(product.description)}</p>
       </div>

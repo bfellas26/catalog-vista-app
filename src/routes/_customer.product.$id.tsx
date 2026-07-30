@@ -7,13 +7,21 @@ import { Button } from "@/components/ui/button";
 import { TagBadge } from "@/components/common/Badges";
 import { placeholderProducts } from "@/lib/placeholders";
 import { useCartStore } from "@/store";
+import { z } from "zod";
+
+const productSearchSchema = z.object({
+  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+});
 
 export const Route = createFileRoute("/_customer/product/$id")({
+  validateSearch: (search) => productSearchSchema.parse(search),
   component: ProductDetailsPage,
 });
 
 function ProductDetailsPage() {
   const { id } = Route.useParams();
+  const { onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
+  const onlyCatalogue = !!onlyCatalogueParam;
   const navigate = useNavigate();
   const idx = placeholderProducts.findIndex((p) => p.id === id);
   const product = placeholderProducts[Math.max(0, idx)] ?? placeholderProducts[0];
@@ -29,20 +37,20 @@ function ProductDetailsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-6 flex items-center justify-between">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
+        <Link to="/catalog" search={(prev) => prev} className="text-sm text-muted-foreground hover:text-foreground">
           ← Back to catalog
         </Link>
         <div className="flex gap-1">
           {prev && (
             <Button asChild variant="outline" size="sm">
-              <Link to="/product/$id" params={{ id: prev.id }}>
+              <Link to="/product/$id" params={{ id: prev.id }} search={(prev) => prev}>
                 <ChevronLeft className="mr-1 h-3.5 w-3.5" /> Previous
               </Link>
             </Button>
           )}
           {next && (
             <Button asChild variant="outline" size="sm">
-              <Link to="/product/$id" params={{ id: next.id }}>
+              <Link to="/product/$id" params={{ id: next.id }} search={(prev) => prev}>
                 Next <ChevronRight className="ml-1 h-3.5 w-3.5" />
               </Link>
             </Button>
@@ -84,52 +92,58 @@ function ProductDetailsPage() {
           <p className="mt-2 text-sm text-muted-foreground">
             {(product as any).category || product.categoryId}
           </p>
-          <p className="mt-6 text-3xl font-bold text-primary">
-            ₹{product.price.toLocaleString("en-IN")}
-          </p>
+          {!onlyCatalogue && (
+            <p className="mt-6 text-3xl font-bold text-primary">
+              ₹{product.price.toLocaleString("en-IN")}
+            </p>
+          )}
 
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
             Crafted with a considered choice of materials and finished by hand. Designed to become a
             quiet favourite in your everyday.
           </p>
 
-          <div className="mt-8 flex items-center gap-4">
-            <div className="inline-flex items-center rounded-lg border border-border">
-              <button
-                onClick={() => setQty((q) => Math.max(1, q - 1))}
-                className="p-2 hover:bg-accent"
+          {!onlyCatalogue && (
+            <>
+              <div className="mt-8 flex items-center gap-4">
+                <div className="inline-flex items-center rounded-lg border border-border">
+                  <button
+                    onClick={() => setQty((q) => Math.max(1, q - 1))}
+                    className="p-2 hover:bg-accent"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="w-10 text-center text-sm font-medium">{qty}</span>
+                  <button onClick={() => setQty((q) => q + 1)} className="p-2 hover:bg-accent">
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <Button
+                  className="flex-1 bg-primary hover:bg-primary-dark"
+                  onClick={() => {
+                    add({
+                      id: product.id,
+                      name: product.productName || (product as any).name,
+                      price: product.price,
+                      qty,
+                    });
+                    toast.success("Added to cart");
+                  }}
+                >
+                  <ShoppingBag className="mr-2 h-4 w-4" /> Add to cart
+                </Button>
+              </div>
+
+              <Button
+                variant="outline"
+                className="mt-3 w-full"
+                onClick={() => navigate({ to: "/cart" })}
               >
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="w-10 text-center text-sm font-medium">{qty}</span>
-              <button onClick={() => setQty((q) => q + 1)} className="p-2 hover:bg-accent">
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-
-            <Button
-              className="flex-1 bg-primary hover:bg-primary-dark"
-              onClick={() => {
-                add({
-                  id: product.id,
-                  name: product.productName || (product as any).name,
-                  price: product.price,
-                  qty,
-                });
-                toast.success("Added to cart");
-              }}
-            >
-              <ShoppingBag className="mr-2 h-4 w-4" /> Add to cart
-            </Button>
-          </div>
-
-          <Button
-            variant="outline"
-            className="mt-3 w-full"
-            onClick={() => navigate({ to: "/cart" })}
-          >
-            View cart
-          </Button>
+                View cart
+              </Button>
+            </>
+          )}
         </div>
       </motion.div>
     </div>

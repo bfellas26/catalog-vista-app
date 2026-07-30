@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { printProduct } from "@/lib/print-product";
 
 const categorySearchSchema = z.object({
+  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
   product: z.string().optional(),
 });
 
@@ -24,7 +25,8 @@ export const Route = createFileRoute("/_customer/category/$id")({
 
 function CategoryPage() {
   const { id } = Route.useParams();
-  const { product: openId } = Route.useSearch();
+  const { product: openId, onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
+  const onlyCatalogue = !!onlyCatalogueParam;
   const navigate = useNavigate({ from: Route.fullPath });
   const addCartItem = useCartStore((s) => s.add);
   const removeCartItem = useCartStore((s) => s.remove);
@@ -91,7 +93,10 @@ function CategoryPage() {
 
   const setOpenId = (productId: string | null) => {
     navigate({
-      search: { product: productId || undefined },
+      search: (prev) => ({
+        ...prev,
+        product: productId || undefined,
+      }),
       replace: true,
     });
   };
@@ -114,6 +119,7 @@ function CategoryPage() {
         <div className="mx-auto max-w-7xl">
           <Link
             to="/catalog"
+            search={(prev) => prev}
             className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-200 hover:text-amber-100 transition-colors mb-3"
           >
             <ArrowLeft className="h-4 w-4" /> Back to catalog
@@ -170,8 +176,8 @@ function CategoryPage() {
                   className="h-10 px-3 bg-white border border-[#3a1f2d]/10 rounded-xl text-sm font-light outline-none focus:ring-1 focus:ring-[#3a1f2d]"
                 >
                   <option value="name">Name (A-Z)</option>
-                  <option value="price-asc">Price (Low to High)</option>
-                  <option value="price-desc">Price (High to Low)</option>
+                  {!onlyCatalogue && <option value="price-asc">Price (Low to High)</option>}
+                  {!onlyCatalogue && <option value="price-desc">Price (High to Low)</option>}
                 </select>
               </div>
             </div>
@@ -187,33 +193,35 @@ function CategoryPage() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="grid gap-6 md:grid-cols-2 bg-white p-6 rounded-2xl border border-[#3a1f2d]/5 shadow-sm">
+                <div className={cn("grid gap-6 bg-white p-6 rounded-2xl border border-[#3a1f2d]/5 shadow-sm", onlyCatalogue ? "grid-cols-1" : "md:grid-cols-2")}>
                   {/* Price Filter */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-xs font-bold uppercase tracking-widest text-[#3a1f2d]/60">
-                        Price Range
-                      </h3>
-                      <button
-                        onClick={resetFilters}
-                        className="text-xs text-[#3a1f2d]/60 hover:text-[#3a1f2d] hover:underline"
-                      >
-                        Reset Filters
-                      </button>
+                  {!onlyCatalogue && (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-[#3a1f2d]/60">
+                          Price Range
+                        </h3>
+                        <button
+                          onClick={resetFilters}
+                          className="text-xs text-[#3a1f2d]/60 hover:text-[#3a1f2d] hover:underline"
+                        >
+                          Reset Filters
+                        </button>
+                      </div>
+                      <Slider
+                        min={0}
+                        max={500000}
+                        step={5000}
+                        value={priceRange}
+                        onValueChange={setPriceRange}
+                        className="py-1"
+                      />
+                      <div className="flex justify-between text-xs text-[#3a1f2d]/70 font-mono">
+                        <span>{formatINR(priceRange[0])}</span>
+                        <span>{formatINR(priceRange[1])}</span>
+                      </div>
                     </div>
-                    <Slider
-                      min={0}
-                      max={500000}
-                      step={5000}
-                      value={priceRange}
-                      onValueChange={setPriceRange}
-                      className="py-1"
-                    />
-                    <div className="flex justify-between text-xs text-[#3a1f2d]/70 font-mono">
-                      <span>{formatINR(priceRange[0])}</span>
-                      <span>{formatINR(priceRange[1])}</span>
-                    </div>
-                  </div>
+                  )}
 
                   {/* Tag Filter */}
                   {availableTags.length > 0 && (
@@ -291,7 +299,7 @@ function CategoryPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            printProduct(p);
+                            printProduct(p, onlyCatalogue);
                           }}
                           className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                           aria-label="Print product"
@@ -305,47 +313,51 @@ function CategoryPage() {
                           <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
-                            {formatINR(p.price)}
-                          </p>
-                        </div>
-                        <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                          {qty === 0 ? (
-                            <button
-                              onClick={() => {
-                                addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                                toast.success(`${p.name} added`, { duration: 1500 });
-                              }}
-                              className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
-                              aria-label="Add to cart"
-                            >
-                              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            </button>
-                          ) : (
-                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
-                              <button
-                                onClick={() => {
-                                  if (qty === 1) removeCartItem(p.id);
-                                  else setCartQty(p.id, qty - 1);
-                                }}
-                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                                aria-label="Decrease"
-                              >
-                                <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                              </button>
-                              <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
-                                {qty}
-                              </span>
-                              <button
-                                onClick={() => setCartQty(p.id, qty + 1)}
-                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                                aria-label="Increase"
-                              >
-                                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                              </button>
-                            </div>
+                          {!onlyCatalogue && (
+                            <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
+                              {formatINR(p.price)}
+                            </p>
                           )}
                         </div>
+                        {!onlyCatalogue && (
+                          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+                            {qty === 0 ? (
+                              <button
+                                onClick={() => {
+                                  addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
+                                  toast.success(`${p.name} added`, { duration: 1500 });
+                                }}
+                                className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                                aria-label="Add to cart"
+                              >
+                                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                              </button>
+                            ) : (
+                              <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
+                                <button
+                                  onClick={() => {
+                                    if (qty === 1) removeCartItem(p.id);
+                                    else setCartQty(p.id, qty - 1);
+                                  }}
+                                  className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                  aria-label="Decrease"
+                                >
+                                  <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </button>
+                                <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
+                                  {qty}
+                                </span>
+                                <button
+                                  onClick={() => setCartQty(p.id, qty + 1)}
+                                  className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                  aria-label="Increase"
+                                >
+                                  <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   );
@@ -359,6 +371,7 @@ function CategoryPage() {
         productId={openId ?? null}
         onClose={() => setOpenId(null)}
         products={products}
+        onlyCatalogue={onlyCatalogue}
       />
     </div>
   );

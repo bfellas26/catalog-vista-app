@@ -18,6 +18,7 @@ import { z } from "zod";
 import { printProduct } from "@/lib/print-product";
 
 const catalogSearchSchema = z.object({
+  onlyCatalogue: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
   product: z.string().optional(),
 });
 
@@ -37,7 +38,8 @@ export const Route = createFileRoute("/_customer/catalog")({
 });
 
 function CatalogPage() {
-  const { product: openId } = Route.useSearch();
+  const { product: openId, onlyCatalogue: onlyCatalogueParam } = Route.useSearch();
+  const onlyCatalogue = !!onlyCatalogueParam;
   const navigate = useNavigate({ from: Route.fullPath });
   const [q, setQ] = useState("");
   const addCartItem = useCartStore((s) => s.add);
@@ -207,7 +209,7 @@ function CatalogPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          printProduct(p);
+                          printProduct(p, onlyCatalogue);
                         }}
                         className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                         aria-label="Print product"
@@ -221,47 +223,51 @@ function CatalogPage() {
                         <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                           {p.name}
                         </h3>
-                        <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
-                          {formatINR(p.price)}
-                        </p>
-                      </div>
-                      <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                        {qty === 0 ? (
-                          <button
-                            onClick={() => {
-                              addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                              toast.success(`${p.name} added`, { duration: 1500 });
-                            }}
-                            className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
-                            aria-label="Add to cart"
-                          >
-                            <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                          </button>
-                        ) : (
-                          <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
-                            <button
-                              onClick={() => {
-                                if (qty === 1) removeCartItem(p.id);
-                                else setCartQty(p.id, qty - 1);
-                              }}
-                              className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                              aria-label="Decrease"
-                            >
-                              <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            </button>
-                            <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
-                              {qty}
-                            </span>
-                            <button
-                              onClick={() => setCartQty(p.id, qty + 1)}
-                              className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                              aria-label="Increase"
-                            >
-                              <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            </button>
-                          </div>
+                        {!onlyCatalogue && (
+                          <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
+                            {formatINR(p.price)}
+                          </p>
                         )}
                       </div>
+                      {!onlyCatalogue && (
+                        <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+                          {qty === 0 ? (
+                            <button
+                              onClick={() => {
+                                addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
+                                toast.success(`${p.name} added`, { duration: 1500 });
+                              }}
+                              className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                              aria-label="Add to cart"
+                            >
+                              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </button>
+                          ) : (
+                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
+                              <button
+                                onClick={() => {
+                                  if (qty === 1) removeCartItem(p.id);
+                                  else setCartQty(p.id, qty - 1);
+                                }}
+                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                aria-label="Decrease"
+                              >
+                                <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              </button>
+                              <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
+                                {qty}
+                              </span>
+                              <button
+                                onClick={() => setCartQty(p.id, qty + 1)}
+                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                aria-label="Increase"
+                              >
+                                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 );
@@ -305,7 +311,7 @@ function CatalogPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            printProduct(p);
+                            printProduct(p, onlyCatalogue);
                           }}
                           className="absolute top-2 right-2 sm:top-3 sm:right-3 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-white/90 backdrop-blur text-[#3a1f2d]/70 hover:text-[#3a1f2d] shadow-sm transition opacity-100 lg:opacity-0 lg:group-hover:opacity-100 z-10"
                           aria-label="Print product"
@@ -319,47 +325,51 @@ function CatalogPage() {
                           <h3 className="font-display font-medium text-xs sm:text-base text-[#3a1f2d] truncate">
                             {p.name}
                           </h3>
-                          <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
-                            {formatINR(p.price)}
-                          </p>
-                        </div>
-                        <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-                          {qty === 0 ? (
-                            <button
-                              onClick={() => {
-                                addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
-                                toast.success(`${p.name} added`, { duration: 1500 });
-                              }}
-                              className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
-                              aria-label="Add to cart"
-                            >
-                              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            </button>
-                          ) : (
-                            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
-                              <button
-                                onClick={() => {
-                                  if (qty === 1) removeCartItem(p.id);
-                                  else setCartQty(p.id, qty - 1);
-                                }}
-                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                                aria-label="Decrease"
-                              >
-                                <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                              </button>
-                              <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
-                                {qty}
-                              </span>
-                              <button
-                                onClick={() => setCartQty(p.id, qty + 1)}
-                                className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
-                                aria-label="Increase"
-                              >
-                                <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                              </button>
-                            </div>
+                          {!onlyCatalogue && (
+                            <p className="mt-0.5 font-display text-xs sm:text-base font-bold text-[#3a1f2d]">
+                              {formatINR(p.price)}
+                            </p>
                           )}
                         </div>
+                        {!onlyCatalogue && (
+                          <div onClick={(e) => e.stopPropagation()} className="shrink-0">
+                            {qty === 0 ? (
+                              <button
+                                onClick={() => {
+                                  addCartItem({ id: p.id, name: p.name, price: p.price, qty: 1 });
+                                  toast.success(`${p.name} added`, { duration: 1500 });
+                                }}
+                                className="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition"
+                                aria-label="Add to cart"
+                              >
+                                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                              </button>
+                            ) : (
+                              <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-7 sm:h-9 px-1">
+                                <button
+                                  onClick={() => {
+                                    if (qty === 1) removeCartItem(p.id);
+                                    else setCartQty(p.id, qty - 1);
+                                  }}
+                                  className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                  aria-label="Decrease"
+                                  >
+                                  <Minus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </button>
+                                <span className="min-w-[1rem] sm:min-w-[1.25rem] text-center text-[10px] sm:text-xs font-semibold text-[#3a1f2d]">
+                                  {qty}
+                                </span>
+                                <button
+                                  onClick={() => setCartQty(p.id, qty + 1)}
+                                  className="grid h-full w-5 sm:w-7 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d]"
+                                  aria-label="Increase"
+                                >
+                                  <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   );
@@ -385,7 +395,7 @@ function CatalogPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.05 }}
-                  onClick={() => navigate({ to: "/category/$id", params: { id: c.id } })}
+                  onClick={() => navigate({ to: "/category/$id", params: { id: c.id }, search: (prev) => prev })}
                   className="group relative overflow-hidden rounded-3xl bg-white shadow-sm border border-[#3a1f2d]/5 aspect-[4/5] flex flex-col justify-end text-left cursor-pointer"
                 >
                   <img
@@ -410,87 +420,92 @@ function CatalogPage() {
       )}
 
       {/* 7. SUBSCRIPTION SECTION */}
-      <section className="bg-[#3a1f2d] text-white py-8 px-4">
-        <div className="mx-auto max-w-xl text-center">
-          <h2 className="font-display text-3xl font-semibold tracking-tight">Stay updated</h2>
-          <p className="mt-3 text-sm text-white/70 font-light leading-relaxed">
-            Subscribe to our newsletter and receive private collection invitations, updates on
-            custom releases, and styling notes.
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              toast.success("Thank you for subscribing!");
-            }}
-            className="mt-6 flex flex-col sm:flex-row gap-2"
-          >
-            <Input
-              type="email"
-              required
-              placeholder="Your email address"
-              className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-full h-11 focus-visible:ring-amber-300"
-            />
-            <Button
-              type="submit"
-              className="bg-white text-[#3a1f2d] hover:bg-white/90 rounded-full h-11 px-6 font-medium border-none"
+      {!onlyCatalogue && (
+        <section className="bg-[#3a1f2d] text-white py-8 px-4">
+          <div className="mx-auto max-w-xl text-center">
+            <h2 className="font-display text-3xl font-semibold tracking-tight">Stay updated</h2>
+            <p className="mt-3 text-sm text-white/70 font-light leading-relaxed">
+              Subscribe to our newsletter and receive private collection invitations, updates on
+              custom releases, and styling notes.
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                toast.success("Thank you for subscribing!");
+              }}
+              className="mt-6 flex flex-col sm:flex-row gap-2"
             >
-              Subscribe
-            </Button>
-          </form>
-        </div>
-      </section>
+              <Input
+                type="email"
+                required
+                placeholder="Your email address"
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-full h-11 focus-visible:ring-amber-300"
+              />
+              <Button
+                type="submit"
+                className="bg-white text-[#3a1f2d] hover:bg-white/90 rounded-full h-11 px-6 font-medium border-none"
+              >
+                Subscribe
+              </Button>
+            </form>
+          </div>
+        </section>
+      )}
 
       {/* 8. CONTACT SECTION */}
-      <section className="mx-auto max-w-7xl px-4 py-8 sm:py-10 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
-        <div className="grid gap-12 lg:grid-cols-2 items-center">
-          <div>
-            <h2 className="font-display text-3xl font-semibold tracking-tight">Get in Touch</h2>
-            <p className="mt-4 text-sm text-[#3a1f2d]/70 leading-relaxed font-light">
-              Visit our Lisbon boutique flagship or coordinate with our specialists for bespoke
-              consultations, adjustments, and sizing requests.
-            </p>
-            <dl className="mt-8 space-y-4 text-sm text-[#3a1f2d]/80">
-              <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
-                <dd>123 Fine Design Quarter, Lisbon, Portugal</dd>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
-                <dd>+351 21 000 0000</dd>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
-                <dd>concierge@lumierejewels.com</dd>
-              </div>
-            </dl>
-          </div>
-          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#3a1f2d]/5 shadow-sm space-y-4">
-            <h3 className="font-display text-xl font-semibold">Bespoke Inquiry</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Input placeholder="First Name" className="border-[#3a1f2d]/10 h-10 text-sm" />
-              <Input placeholder="Last Name" className="border-[#3a1f2d]/10 h-10 text-sm" />
+      {!onlyCatalogue && (
+        <section className="mx-auto max-w-7xl px-4 py-8 sm:py-10 sm:px-6 lg:px-8 border-t border-[#3a1f2d]/5">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
+            <div>
+              <h2 className="font-display text-3xl font-semibold tracking-tight">Get in Touch</h2>
+              <p className="mt-4 text-sm text-[#3a1f2d]/70 leading-relaxed font-light">
+                Visit our Lisbon boutique flagship or coordinate with our specialists for bespoke
+                consultations, adjustments, and sizing requests.
+              </p>
+              <dl className="mt-8 space-y-4 text-sm text-[#3a1f2d]/80">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
+                  <dd>123 Fine Design Quarter, Lisbon, Portugal</dd>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
+                  <dd>+351 21 000 0000</dd>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-[#3a1f2d]/50 shrink-0" />
+                  <dd>concierge@lumierejewels.com</dd>
+                </div>
+              </dl>
             </div>
-            <Input placeholder="Email" type="email" className="border-[#3a1f2d]/10 h-10 text-sm" />
-            <textarea
-              placeholder="Describe your bespoke request..."
-              rows={4}
-              className="w-full p-3 rounded-lg border border-[#3a1f2d]/10 text-sm outline-none focus:ring-1 focus:ring-[#3a1f2d]"
-            />
-            <Button
-              onClick={() => toast.success("Inquiry sent successfully!")}
-              className="w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-lg h-10 border-none"
-            >
-              Send Enquiry
-            </Button>
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-[#3a1f2d]/5 shadow-sm space-y-4">
+              <h3 className="font-display text-xl font-semibold">Bespoke Inquiry</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <Input placeholder="First Name" className="border-[#3a1f2d]/10 h-10 text-sm" />
+                <Input placeholder="Last Name" className="border-[#3a1f2d]/10 h-10 text-sm" />
+              </div>
+              <Input placeholder="Email" type="email" className="border-[#3a1f2d]/10 h-10 text-sm" />
+              <textarea
+                placeholder="Describe your bespoke request..."
+                rows={4}
+                className="w-full p-3 rounded-lg border border-[#3a1f2d]/10 text-sm outline-none focus:ring-1 focus:ring-[#3a1f2d]"
+              />
+              <Button
+                onClick={() => toast.success("Inquiry sent successfully!")}
+                className="w-full bg-[#3a1f2d] hover:bg-[#3a1f2d]/90 text-white rounded-lg h-10 border-none"
+              >
+                Send Enquiry
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 9. PRODUCT MODAL */}
       <ProductModal
         productId={openId ?? null}
         onClose={() => setOpenId(null)}
         products={isSearching ? searchResults : standaloneProducts}
+        onlyCatalogue={onlyCatalogue}
       />
     </div>
   );
