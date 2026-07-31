@@ -14,7 +14,7 @@ export function EmptyState({
 }) {
   return (
     <div className="card-surface flex flex-col items-center justify-center px-6 py-16 text-center">
-      <div className="rounded-full bg-accent/60 p-4 text-muted-foreground">
+      <div className="rounded-full border border-border bg-accent/60 p-4 text-muted-foreground">
         {icon ?? <Inbox className="h-6 w-6" />}
       </div>
       <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>

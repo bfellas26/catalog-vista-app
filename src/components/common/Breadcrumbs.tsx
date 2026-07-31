@@ -17,7 +17,10 @@ export function Breadcrumbs() {
 
   return (
     <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
-      <Link to="/" className="flex items-center gap-1 hover:text-foreground">
+      <Link
+        to="/"
+        className="flex items-center gap-1 transition-colors duration-150 hover:text-foreground"
+      >
         <Home className="h-3.5 w-3.5" />
       </Link>
       {crumbs.map((c, i) => (
@@ -26,7 +29,10 @@ export function Breadcrumbs() {
           {i === crumbs.length - 1 ? (
             <span className="font-medium text-foreground">{c.label}</span>
           ) : (
-            <Link to={c.to as string} className="hover:text-foreground">
+            <Link
+              to={c.to as string}
+              className="transition-colors duration-150 hover:text-foreground"
+            >
               {c.label}
             </Link>
           )}

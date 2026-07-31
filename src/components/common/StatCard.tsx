@@ -22,14 +22,16 @@ export function StatCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="card-surface p-5"
+      className="card-surface p-5 hover:shadow-elevated"
     >
       <div className="flex items-start justify-between">
         <p className="text-sm font-medium text-muted-foreground">{label}</p>
         {icon ? <div className="rounded-lg bg-accent/60 p-2 text-primary">{icon}</div> : null}
       </div>
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-2xl font-bold tracking-tight text-foreground">{value}</span>
+        <span className="font-display text-2xl font-bold tracking-tight text-foreground tabular-nums">
+          {value}
+        </span>
         {delta ? (
           <span
             className={cn(

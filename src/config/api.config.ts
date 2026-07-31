@@ -28,5 +28,9 @@ export const API_CONFIG = {
       status: (enquiryId: string) => `/enquiries/status/${enquiryId}`,
       delete: (enquiryId: string) => `/enquiries/delete/${enquiryId}`,
     },
+    subscribers: {
+      create: "/subscribers/create",
+      list: (accountId: string) => `/subscribers/list/${accountId}`,
+    },
   },
 };

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Search, Minus, Plus, Mail, MapPin, Phone, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,15 @@ import {
   brandMark,
 } from "@/lib/jewellery-data";
 import { ProductModal } from "@/components/customer/ProductModal";
-import { useCartStore } from "@/store";
+import { useAuthStore, useCartStore } from "@/store";
+import { subscribersApi, SubscriberApiError } from "@/services/subscribersApi";
 import { toast } from "sonner";
 import { z } from "zod";
 import { printProduct } from "@/lib/print-product";
+
+// TODO: Replace with the dynamic account ID once the public catalog resolves its
+// tenant (subdomain / route param). Used only when there is no account in session.
+const FALLBACK_ACCOUNT_ID = "ACC-8832";
 
 const catalogSearchSchema = z.object({
   catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
@@ -46,6 +51,40 @@ function CatalogPage() {
   const removeCartItem = useCartStore((s) => s.remove);
   const setCartQty = useCartStore((s) => s.setQty);
   const cartItems = useCartStore((s) => s.items);
+  const sessionAccountId = useAuthStore((s) => s.user?.accountId);
+  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribing, setSubscribing] = useState(false);
+
+  const handleSubscribe = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (subscribing) return;
+
+    const emailAddress = subscribeEmail.trim();
+    if (!emailAddress) return;
+
+    setSubscribing(true);
+    try {
+      await subscribersApi.createSubscriber({
+        accountId: sessionAccountId ?? FALLBACK_ACCOUNT_ID,
+        // The newsletter strip only collects an email address, so the name is
+        // derived from it and no phone number is captured.
+        subscriberName: emailAddress.split("@")[0],
+        phoneNumber: "",
+        emailAddress,
+      });
+      toast.success("Thank you for subscribing!");
+      setSubscribeEmail("");
+    } catch (err) {
+      // 400 (validation) and 409 (already subscribed) carry a message worth showing.
+      if (err instanceof SubscriberApiError && (err.status === 400 || err.status === 409)) {
+        toast.error(err.message);
+      } else {
+        toast.error("Could not complete your subscription. Please try again later.");
+      }
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   const setOpenId = (id: string | null) => {
     navigate({
@@ -431,21 +470,19 @@ function CatalogPage() {
               Subscribe to our newsletter and receive private collection invitations, updates on
               custom releases, and styling notes.
             </p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                toast.success("Thank you for subscribing!");
-              }}
-              className="mt-6 flex flex-col sm:flex-row gap-2"
-            >
+            <form onSubmit={handleSubscribe} className="mt-6 flex flex-col sm:flex-row gap-2">
               <Input
                 type="email"
                 required
+                value={subscribeEmail}
+                onChange={(e) => setSubscribeEmail(e.target.value)}
+                disabled={subscribing}
                 placeholder="Your email address"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-full h-11 focus-visible:ring-amber-300"
               />
               <Button
                 type="submit"
+                disabled={subscribing}
                 className="bg-white text-[#3a1f2d] hover:bg-white/90 rounded-full h-11 px-6 font-medium border-none"
               >
                 Subscribe

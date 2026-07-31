@@ -70,7 +70,7 @@ export function AdminShell({
         <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/80 px-4 backdrop-blur sm:px-6">
           <button
             onClick={toggleSidebar}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+            className="rounded-lg p-2 text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
             aria-label="Toggle sidebar"
           >
             <Menu className="h-5 w-5" />
@@ -79,13 +79,13 @@ export function AdminShell({
             <div className="relative">
               <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
-                className="w-full rounded-lg border border-border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+                className="w-full rounded-lg border border-border bg-background py-2 pr-3 pl-9 text-sm outline-none transition-[border-color,box-shadow] duration-150 ease-out placeholder:text-muted-foreground/70 hover:border-ring/30 focus:border-ring focus:ring-[3px] focus:ring-ring/15"
                 placeholder="Search…"
               />
             </div>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <button className="relative rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground">
+            <button className="relative rounded-lg p-2 text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
               <Bell className="h-5 w-5" />
               <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-gold" />
             </button>
@@ -147,7 +147,7 @@ function SidebarInner({
               key={item.to}
               to={item.to}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
                 active
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-accent hover:text-foreground",
@@ -178,7 +178,7 @@ function ProfileMenu({ role }: { role: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-lg p-1.5 pr-2 hover:bg-accent">
+        <button className="flex items-center gap-2 rounded-lg p-1.5 pr-2 transition-colors duration-150 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40">
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary text-primary-foreground text-xs">
               AK
