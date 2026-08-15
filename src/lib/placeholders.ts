@@ -33,17 +33,22 @@ export const placeholderClients = Array.from({ length: 8 }).map((_, i) => ({
 
 export const placeholderBusinessSettings = {
   accountId: "ACC-8832",
-  address: "123 Design Quarter, Ave 4",
-  bannerUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8",
   brandName: "Aurora Studio",
-  city: "San Francisco",
-  country: "USA",
-  createdAt: "July 18, 2026 at 3:44:20 PM UTC+5:30",
-  createdBy: "admin@aurora.com",
+  businessLogo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150",
+  bannerImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200",
+  businessPunchline: "Elevating daily living with handcrafted minimalism.",
+  whatsAppNumber: "+1 (555) 234-5678",
   emailAddress: "contact@aurorastudio.com",
-  facebookLink: "https://facebook.com/aurorastudio",
+  country: "USA",
+  state: "California",
+  city: "San Francisco",
+  address: "123 Design Quarter, Ave 4",
   instagramLink: "https://instagram.com/aurorastudio",
-  isEmailEnabled: true,
+  facebookLink: "https://facebook.com/aurorastudio",
+  createdBy: "admin@aurora.com",
+  createdAt: "2026-07-18T15:44:20.000Z",
+  updatedBy: "admin@aurora.com",
+  updatedAt: "2026-07-18T15:44:20.000Z",
 };
 
 export const placeholderCategories = [

@@ -34,9 +34,12 @@ import { Route as CustomerCategoryIdRouteImport } from './routes/_customer.categ
 import { Route as CustomerProductIdRouteImport } from './routes/_customer.product.$id'
 import { Route as AdminClientsIndexRouteImport } from './routes/admin.clients.index'
 import { Route as AdminClientsNewRouteImport } from './routes/admin.clients.new'
+import { Route as BusinessCategoriesIndexRouteImport } from './routes/business.categories.index'
 import { Route as BusinessCategoriesNewRouteImport } from './routes/business.categories.new'
+import { Route as BusinessProductsIndexRouteImport } from './routes/business.products.index'
 import { Route as BusinessProductsNewRouteImport } from './routes/business.products.new'
 import { Route as AdminClientsEditIdRouteImport } from './routes/admin.clients.edit.$id'
+import { Route as BusinessCategoriesDetailIdRouteImport } from './routes/business.categories.detail.$id'
 import { Route as BusinessCategoriesEditIdRouteImport } from './routes/business.categories.edit.$id'
 import { Route as BusinessProductsEditIdRouteImport } from './routes/business.products.edit.$id'
 
@@ -164,10 +167,20 @@ const AdminClientsNewRoute = AdminClientsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminClientsRoute,
 } as any)
+const BusinessCategoriesIndexRoute = BusinessCategoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BusinessCategoriesRoute,
+} as any)
 const BusinessCategoriesNewRoute = BusinessCategoriesNewRouteImport.update({
   id: '/new',
   path: '/new',
   getParentRoute: () => BusinessCategoriesRoute,
+} as any)
+const BusinessProductsIndexRoute = BusinessProductsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BusinessProductsRoute,
 } as any)
 const BusinessProductsNewRoute = BusinessProductsNewRouteImport.update({
   id: '/new',
@@ -179,6 +192,12 @@ const AdminClientsEditIdRoute = AdminClientsEditIdRouteImport.update({
   path: '/edit/$id',
   getParentRoute: () => AdminClientsRoute,
 } as any)
+const BusinessCategoriesDetailIdRoute =
+  BusinessCategoriesDetailIdRouteImport.update({
+    id: '/detail/$id',
+    path: '/detail/$id',
+    getParentRoute: () => BusinessCategoriesRoute,
+  } as any)
 const BusinessCategoriesEditIdRoute =
   BusinessCategoriesEditIdRouteImport.update({
     id: '/edit/$id',
@@ -218,7 +237,10 @@ export interface FileRoutesByFullPath {
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
   '/admin/clients/': typeof AdminClientsIndexRoute
+  '/business/categories/': typeof BusinessCategoriesIndexRoute
+  '/business/products/': typeof BusinessProductsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/detail/$id': typeof BusinessCategoriesDetailIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
@@ -228,11 +250,9 @@ export interface FileRoutesByTo {
   '/catalog': typeof CustomerCatalogRoute
   '/contact': typeof CustomerContactRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/business/categories': typeof BusinessCategoriesRouteWithChildren
   '/business/dashboard': typeof BusinessDashboardRoute
   '/business/enquiries': typeof BusinessEnquiriesRoute
   '/business/product-tags': typeof BusinessProductTagsRoute
-  '/business/products': typeof BusinessProductsRouteWithChildren
   '/business/settings': typeof BusinessSettingsRoute
   '/business/subscribers': typeof BusinessSubscribersRoute
   '/login/admin': typeof LoginAdminRoute
@@ -246,7 +266,10 @@ export interface FileRoutesByTo {
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
   '/admin/clients': typeof AdminClientsIndexRoute
+  '/business/categories': typeof BusinessCategoriesIndexRoute
+  '/business/products': typeof BusinessProductsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/detail/$id': typeof BusinessCategoriesDetailIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
@@ -279,7 +302,10 @@ export interface FileRoutesById {
   '/business/categories/new': typeof BusinessCategoriesNewRoute
   '/business/products/new': typeof BusinessProductsNewRoute
   '/admin/clients/': typeof AdminClientsIndexRoute
+  '/business/categories/': typeof BusinessCategoriesIndexRoute
+  '/business/products/': typeof BusinessProductsIndexRoute
   '/admin/clients/edit/$id': typeof AdminClientsEditIdRoute
+  '/business/categories/detail/$id': typeof BusinessCategoriesDetailIdRoute
   '/business/categories/edit/$id': typeof BusinessCategoriesEditIdRoute
   '/business/products/edit/$id': typeof BusinessProductsEditIdRoute
 }
@@ -312,7 +338,10 @@ export interface FileRouteTypes {
     | '/business/categories/new'
     | '/business/products/new'
     | '/admin/clients/'
+    | '/business/categories/'
+    | '/business/products/'
     | '/admin/clients/edit/$id'
+    | '/business/categories/detail/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -322,11 +351,9 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/contact'
     | '/admin/dashboard'
-    | '/business/categories'
     | '/business/dashboard'
     | '/business/enquiries'
     | '/business/product-tags'
-    | '/business/products'
     | '/business/settings'
     | '/business/subscribers'
     | '/login/admin'
@@ -340,7 +367,10 @@ export interface FileRouteTypes {
     | '/business/categories/new'
     | '/business/products/new'
     | '/admin/clients'
+    | '/business/categories'
+    | '/business/products'
     | '/admin/clients/edit/$id'
+    | '/business/categories/detail/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
   id:
@@ -372,7 +402,10 @@ export interface FileRouteTypes {
     | '/business/categories/new'
     | '/business/products/new'
     | '/admin/clients/'
+    | '/business/categories/'
+    | '/business/products/'
     | '/admin/clients/edit/$id'
+    | '/business/categories/detail/$id'
     | '/business/categories/edit/$id'
     | '/business/products/edit/$id'
   fileRoutesById: FileRoutesById
@@ -564,12 +597,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminClientsNewRouteImport
       parentRoute: typeof AdminClientsRoute
     }
+    '/business/categories/': {
+      id: '/business/categories/'
+      path: '/'
+      fullPath: '/business/categories/'
+      preLoaderRoute: typeof BusinessCategoriesIndexRouteImport
+      parentRoute: typeof BusinessCategoriesRoute
+    }
     '/business/categories/new': {
       id: '/business/categories/new'
       path: '/new'
       fullPath: '/business/categories/new'
       preLoaderRoute: typeof BusinessCategoriesNewRouteImport
       parentRoute: typeof BusinessCategoriesRoute
+    }
+    '/business/products/': {
+      id: '/business/products/'
+      path: '/'
+      fullPath: '/business/products/'
+      preLoaderRoute: typeof BusinessProductsIndexRouteImport
+      parentRoute: typeof BusinessProductsRoute
     }
     '/business/products/new': {
       id: '/business/products/new'
@@ -584,6 +631,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/clients/edit/$id'
       preLoaderRoute: typeof AdminClientsEditIdRouteImport
       parentRoute: typeof AdminClientsRoute
+    }
+    '/business/categories/detail/$id': {
+      id: '/business/categories/detail/$id'
+      path: '/detail/$id'
+      fullPath: '/business/categories/detail/$id'
+      preLoaderRoute: typeof BusinessCategoriesDetailIdRouteImport
+      parentRoute: typeof BusinessCategoriesRoute
     }
     '/business/categories/edit/$id': {
       id: '/business/categories/edit/$id'
@@ -654,11 +708,15 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BusinessCategoriesRouteChildren {
   BusinessCategoriesNewRoute: typeof BusinessCategoriesNewRoute
+  BusinessCategoriesIndexRoute: typeof BusinessCategoriesIndexRoute
+  BusinessCategoriesDetailIdRoute: typeof BusinessCategoriesDetailIdRoute
   BusinessCategoriesEditIdRoute: typeof BusinessCategoriesEditIdRoute
 }
 
 const BusinessCategoriesRouteChildren: BusinessCategoriesRouteChildren = {
   BusinessCategoriesNewRoute: BusinessCategoriesNewRoute,
+  BusinessCategoriesIndexRoute: BusinessCategoriesIndexRoute,
+  BusinessCategoriesDetailIdRoute: BusinessCategoriesDetailIdRoute,
   BusinessCategoriesEditIdRoute: BusinessCategoriesEditIdRoute,
 }
 
@@ -667,11 +725,13 @@ const BusinessCategoriesRouteWithChildren =
 
 interface BusinessProductsRouteChildren {
   BusinessProductsNewRoute: typeof BusinessProductsNewRoute
+  BusinessProductsIndexRoute: typeof BusinessProductsIndexRoute
   BusinessProductsEditIdRoute: typeof BusinessProductsEditIdRoute
 }
 
 const BusinessProductsRouteChildren: BusinessProductsRouteChildren = {
   BusinessProductsNewRoute: BusinessProductsNewRoute,
+  BusinessProductsIndexRoute: BusinessProductsIndexRoute,
   BusinessProductsEditIdRoute: BusinessProductsEditIdRoute,
 }
 

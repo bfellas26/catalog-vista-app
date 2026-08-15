@@ -74,23 +74,22 @@ function ProductDetailsPage() {
         {/* Details */}
         <div>
           <div className="flex flex-wrap gap-1">
-            {((product as any).tags || product.tagIds || []).map((t: string) => (
+            {(product.tagIds || []).map((t: string) => (
               <TagBadge key={t} name={t} variant="gold" />
             ))}
           </div>
           <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
-            {product.productName || (product as any).name}
+            {product.productName}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {(product as any).category || product.categoryId}
+            Category: {product.categoryId}
           </p>
           <p className="mt-6 text-3xl font-bold text-primary">
             ₹{product.price.toLocaleString("en-IN")}
           </p>
 
           <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-            Crafted with a considered choice of materials and finished by hand. Designed to become a
-            quiet favourite in your everyday.
+            {product.description || "Crafted with a considered choice of materials and finished by hand."}
           </p>
 
           <div className="mt-8 flex items-center gap-4">
@@ -112,7 +111,7 @@ function ProductDetailsPage() {
               onClick={() => {
                 add({
                   id: product.id,
-                  name: product.productName || (product as any).name,
+                  name: product.productName,
                   price: product.price,
                   qty,
                 });
