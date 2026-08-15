@@ -11,13 +11,14 @@ type Props = {
   productId: string | null;
   onClose: () => void;
   products: Jewel[];
+  catalogueonly?: boolean;
 };
 
 // Peek gap on each side (px) — adjacent card edge visible by this amount
 const PEEK = 28;
 const GAP = 12;
 
-export function ProductModal({ productId, onClose, products }: Props) {
+export function ProductModal({ productId, onClose, products, catalogueonly = false }: Props) {
   const startIndex = Math.max(0, products.findIndex((p) => p.id === productId));
   const [current, setCurrent] = useState(startIndex);
   const [fullscreenImg, setFullscreenImg] = useState<number | null>(null);
@@ -184,6 +185,7 @@ export function ProductModal({ productId, onClose, products }: Props) {
                       <ProductCardContent
                         product={p}
                         onFullscreen={(i) => setFullscreenImg(i)}
+                        catalogueonly={catalogueonly}
                       />
                     </div>
                   </div>
@@ -260,9 +262,11 @@ export function ProductModal({ productId, onClose, products }: Props) {
 function ProductCardContent({
   product,
   onFullscreen,
+  catalogueonly = false,
 }: {
   product: Jewel;
   onFullscreen: (idx: number) => void;
+  catalogueonly?: boolean;
 }) {
   const [imgIdx, setImgIdx] = useState(0);
   const cartItems = useCartStore((s) => s.items);
@@ -321,7 +325,7 @@ function ProductCardContent({
             </h2>
           </div>
           <button
-            onClick={() => printProduct(product)}
+            onClick={() => printProduct(product, catalogueonly)}
             className="shrink-0 grid h-9 w-9 place-items-center rounded-full border border-[#3a1f2d]/15 text-[#3a1f2d]/70 hover:bg-[#faf6f1] hover:text-[#3a1f2d] transition"
             aria-label="Print product details"
             title="Print / Save as PDF"
@@ -330,54 +334,58 @@ function ProductCardContent({
           </button>
         </div>
 
-        <p className="mt-3 font-display text-xl sm:text-2xl font-bold text-[#3a1f2d]">
-          {formatINR(product.price)}
-        </p>
+        {!catalogueonly && (
+          <p className="mt-3 font-display text-xl sm:text-2xl font-bold text-[#3a1f2d]">
+            {formatINR(product.price)}
+          </p>
+        )}
 
         <div className="mt-4 border-t border-[#3a1f2d]/10 pt-3 text-sm text-[#3a1f2d]/75 leading-relaxed font-light">
           {product.description}
         </div>
 
-        <div className="mt-auto pt-5 flex justify-end">
-          {qty === 0 ? (
-            <button
-              onClick={() => {
-                add({ id: product.id, name: product.name, price: product.price, qty: 1 });
-                toast.success(`${product.name} added`, { duration: 1500 });
-              }}
-              className="grid h-10 w-10 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition shadow-sm"
-              aria-label="Add to cart"
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          ) : (
-            <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-10">
+        {!catalogueonly && (
+          <div className="mt-auto pt-5 flex justify-end">
+            {qty === 0 ? (
               <button
                 onClick={() => {
-                  if (qty === 1) {
-                    remove(product.id);
-                  } else {
-                    setQty(product.id, qty - 1);
-                  }
+                  add({ id: product.id, name: product.name, price: product.price, qty: 1 });
+                  toast.success(`${product.name} added`, { duration: 1500 });
                 }}
-                className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
-                aria-label="Decrease"
-              >
-                <Minus className="h-4 w-4" />
-              </button>
-              <span className="min-w-[1.5rem] text-center text-sm font-semibold text-[#3a1f2d]">
-                {qty}
-              </span>
-              <button
-                onClick={() => setQty(product.id, qty + 1)}
-                className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
-                aria-label="Increase"
+                className="grid h-10 w-10 place-items-center rounded-full bg-[#3a1f2d] text-white hover:bg-[#3a1f2d]/90 transition shadow-sm"
+                aria-label="Add to cart"
               >
                 <Plus className="h-4 w-4" />
               </button>
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="inline-flex items-center rounded-full border border-[#3a1f2d]/15 bg-white h-10">
+                <button
+                  onClick={() => {
+                    if (qty === 1) {
+                      remove(product.id);
+                    } else {
+                      setQty(product.id, qty - 1);
+                    }
+                  }}
+                  className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-l-full"
+                  aria-label="Decrease"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+                <span className="min-w-[1.5rem] text-center text-sm font-semibold text-[#3a1f2d]">
+                  {qty}
+                </span>
+                <button
+                  onClick={() => setQty(product.id, qty + 1)}
+                  className="grid h-full w-9 place-items-center text-[#3a1f2d]/70 hover:text-[#3a1f2d] rounded-r-full"
+                  aria-label="Increase"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

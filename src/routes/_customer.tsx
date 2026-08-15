@@ -19,12 +19,20 @@ import { useCartStore, useUIStore } from "@/store";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { jewelleryProducts } from "@/lib/jewellery-data";
+import { z } from "zod";
+
+const customerSearchSchema = z.object({
+  catalogueonly: z.boolean().or(z.string().transform((v) => v === "true")).optional(),
+});
 
 export const Route = createFileRoute("/_customer")({
+  validateSearch: (search) => customerSearchSchema.parse(search),
   component: CustomerLayout,
 });
 
 function CustomerLayout() {
+  const search = Route.useSearch();
+  const catalogueonly = !!search.catalogueonly;
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const cartItems = useCartStore((s) => s.items);
@@ -35,7 +43,7 @@ function CustomerLayout() {
       {/* Sticky header */}
       <header className="sticky top-0 z-40 border-b border-[#3a1f2d]/5 bg-[#faf6f1]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <Link to="/catalog" className="group flex items-center gap-3">
+          <Link to="/catalog" search={(prev) => prev} className="group flex items-center gap-3">
             <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-[#3a1f2d]/10">
               <img
                 src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=100&q=80"
@@ -51,6 +59,7 @@ function CustomerLayout() {
           <nav className="ml-8 hidden items-center gap-6 text-sm font-light text-[#3a1f2d]/70 md:flex">
             <Link
               to="/catalog"
+              search={(prev) => prev}
               className="hover:text-[#3a1f2d] transition"
               activeProps={{ className: "text-[#3a1f2d] font-medium" }}
             >
@@ -59,19 +68,21 @@ function CustomerLayout() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
-            <Sheet open={cartOpen} onOpenChange={setCartOpen}>
-              <SheetTrigger asChild>
-                <button className="relative rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] transition">
-                  <ShoppingBag className="h-5 w-5" />
-                  {cartItems.length > 0 && (
-                    <span className="absolute top-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-[#3a1f2d] text-[9px] font-bold text-white">
-                      {cartItems.reduce((count, item) => count + item.qty, 0)}
-                    </span>
-                  )}
-                </button>
-              </SheetTrigger>
-              <CartDrawerContent />
-            </Sheet>
+            {!catalogueonly && (
+              <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+                <SheetTrigger asChild>
+                  <button className="relative rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] transition">
+                    <ShoppingBag className="h-5 w-5" />
+                    {cartItems.length > 0 && (
+                      <span className="absolute top-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-[#3a1f2d] text-[9px] font-bold text-white">
+                        {cartItems.reduce((count, item) => count + item.qty, 0)}
+                      </span>
+                    )}
+                  </button>
+                </SheetTrigger>
+                <CartDrawerContent />
+              </Sheet>
+            )}
 
             <button
               className="rounded-full p-2.5 text-[#3a1f2d]/70 hover:bg-[#3a1f2d]/5 hover:text-[#3a1f2d] md:hidden transition"
@@ -87,6 +98,7 @@ function CustomerLayout() {
           <div className="border-t border-[#3a1f2d]/5 bg-white px-6 py-4 md:hidden space-y-3">
             <Link
               to="/catalog"
+              search={(prev) => prev}
               onClick={() => setMobileOpen(false)}
               className="block text-sm font-medium hover:text-[#3a1f2d]"
             >
@@ -110,7 +122,7 @@ function CustomerLayout() {
         </motion.main>
       </AnimatePresence>
 
-      <Footer />
+      {!catalogueonly && <Footer />}
     </div>
   );
 }
