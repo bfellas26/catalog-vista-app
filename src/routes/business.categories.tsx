@@ -268,7 +268,7 @@ function ProductModal({ open, onClose, categoryId, editProduct, nextDisplayOrder
     try {
       const folderId = editProduct ? editProduct.documentId : tempId;
       const res = await storageService.uploadFile({
-        file, accountId, subfolder: `products/${folderId}`, prefix: `prod_${uploadedImages.length + 1}`,
+        file, accountId, subfolder: "products", prefix: `${folderId}_${uploadedImages.length + 1}`,
       });
       setUploadedImages((prev) => [...prev, res.downloadUrl]);
       toast.success("Image uploaded");
