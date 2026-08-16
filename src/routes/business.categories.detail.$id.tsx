@@ -82,9 +82,9 @@ function ProductModal({ open, onClose, categoryId, editProduct, nextDisplayOrder
 
     setIsUploadingImage(true);
     try {
-      const folderId = editProduct ? editProduct.documentId : tempId;
+      const sanitizedName = productName.toLowerCase().replace(/\s+/g, "");
       const res = await storageService.uploadFile({
-        file, accountId: ACCOUNT_ID, subfolder: "products", prefix: `${folderId}_${uploadedImages.length + 1}`,
+        file, accountId: ACCOUNT_ID, subfolder: "products", prefix: `${sanitizedName}_${uploadedImages.length + 1}`,
       });
       setUploadedImages((prev) => [...prev, res.downloadUrl]);
       toast.success("Image uploaded");

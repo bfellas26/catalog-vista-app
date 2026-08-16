@@ -368,23 +368,13 @@ function NewClientPage() {
 
         {/* Sidebar Actions Column */}
         <div className="space-y-6">
-          <div className="card-surface p-6 space-y-6">
+          <div className="card-surface p-6 space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Contract Integration
+              Actions
             </h3>
-            <div className="rounded-lg bg-accent/30 p-3 text-xs space-y-2 text-muted-foreground">
-              <div className="flex items-center gap-1.5 font-medium text-foreground">
-                <UserCheck className="h-4 w-4 text-emerald-500" /> API Target
-              </div>
-              <p className="font-mono text-[11px]">POST /accounts/create</p>
-              <p>
-                Will transmit JSON body containing business info and login credentials to backend
-                API.
-              </p>
-            </div>
 
             {/* Actions Buttons */}
-            <div className="flex flex-col gap-2 pt-4">
+            <div className="flex flex-col gap-2">
               <Button
                 type="submit"
                 disabled={submitting}

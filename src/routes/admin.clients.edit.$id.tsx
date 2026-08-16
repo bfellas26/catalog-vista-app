@@ -387,7 +387,7 @@ function EditClientPage() {
         <div className="space-y-6">
           <div className="card-surface p-6 space-y-6">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Account Status (PATCH)
+              Account Status
             </h3>
 
             <div className="flex items-center justify-between rounded-lg border border-border p-4 bg-accent/20">
@@ -396,7 +396,7 @@ function EditClientPage() {
                   Status: {account?.status || "ENABLED"}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Toggle account access via PATCH /accounts/status/{id}
+                  Toggle active status for this account.
                 </p>
               </div>
               <Switch
@@ -423,7 +423,7 @@ function EditClientPage() {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving Changes...
                   </>
                 ) : (
-                  "Update Account (PUT)"
+                  "Update Account"
                 )}
               </Button>
               <Button

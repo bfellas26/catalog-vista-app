@@ -94,7 +94,7 @@ function ClientsPage() {
     <PageContainer>
       <PageHeader
         title="Accounts & Clients"
-        description="Manage all live business accounts integrated via the Accounts API."
+        description="Manage all live business accounts."
         actions={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={loadAccounts} disabled={loading}>
@@ -124,11 +124,11 @@ function ClientsPage() {
         {error && (
           <div className="m-4 flex items-center justify-between rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
             <div>
-              <p className="font-semibold">Backend Connection Issue</p>
+              <p className="font-semibold">Connection Issue</p>
               <p className="text-xs text-muted-foreground">{error}</p>
             </div>
             <Button size="sm" variant="outline" onClick={loadAccounts}>
-              Retry Connection
+              Retry
             </Button>
           </div>
         )}
@@ -151,14 +151,14 @@ function ClientsPage() {
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                     <RefreshCw className="mx-auto mb-2 h-6 w-6 animate-spin text-primary" />
-                    Fetching accounts from backend API...
+                    Fetching accounts...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
                     {error
-                      ? "Unable to load accounts from backend server."
+                      ? "Unable to load accounts."
                       : "No business accounts found."}
                   </td>
                 </tr>
