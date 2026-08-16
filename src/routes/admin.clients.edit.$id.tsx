@@ -143,7 +143,7 @@ function EditClientPage() {
         <PageHeader title="Edit Account" description={`Loading account ${id}...`} />
         <div className="card-surface p-12 text-center text-muted-foreground">
           <RefreshCw className="mx-auto mb-3 h-8 w-8 animate-spin text-primary" />
-          <p>Fetching account details from backend API...</p>
+          <p>Fetching account details...</p>
         </div>
       </PageContainer>
     );
@@ -155,7 +155,7 @@ function EditClientPage() {
     <PageContainer>
       <PageHeader
         title={`Edit Account: ${account?.businessName || id}`}
-        description={`Update account details (PUT /accounts/update/${id})`}
+        description="Update business profile and status."
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-3">
