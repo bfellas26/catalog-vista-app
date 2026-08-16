@@ -105,6 +105,7 @@ function ProductModal({ open, onClose, categoryId, editProduct, nextDisplayOrder
           productDescription: data.productDescription || undefined,
           productPrice: Number(data.productPrice),
           productImages: uploadedImages,
+          displayOrder: editProduct.displayOrder ?? 1,
         };
         await productsApi.updateProduct(editProduct.documentId, payload);
         onSaved({ ...editProduct, ...payload, productImages: uploadedImages });
